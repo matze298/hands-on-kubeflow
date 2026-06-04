@@ -1,0 +1,59 @@
+site_name: Kubeflow by Doing
+site_description: A local-first, GPU-aware, hands-on tutorial for Kubeflow, Kubernetes, and practical MLOps.
+site_url: https://example.com/kubeflow-by-doing
+
+repo_name: kubeflow-by-doing
+repo_url: https://github.com/your-org/kubeflow-by-doing
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - 0. Orientation:
+      - Syllabus: 00-orientation/00-syllabus.md
+      - Reader Contract: 00-orientation/01-reader-contract.md
+      - Authoring Contract: 00-orientation/02-authoring-contract.md
+      - Course Architecture: 00-orientation/03-course-architecture.md
+  - 1. Local Kubernetes:
+      - Overview: 01-local-kubernetes/00-overview.md
+  - 2. Kubeflow Pipelines:
+      - Overview: 02-kubeflow-pipelines/00-overview.md
+  - 3. Local ML Workflow:
+      - Overview: 03-local-ml-workflow/00-overview.md
+  - 4. Artifacts and Tracking:
+      - Overview: 04-artifacts-and-tracking/00-overview.md
+  - 5. Local Serving:
+      - Overview: 05-local-serving/00-overview.md
+  - 6. Local GPU:
+      - Overview: 06-local-gpu/00-overview.md
+  - 7. STACKIT Expansion:
+      - Overview: 07-stackit-expansion/00-overview.md
+  - 8. Cloud Expansion:
+      - Overview: 08-cloud-expansion/00-overview.md
+  - 9. CI/CD:
+      - Overview: 09-ci-cd/00-overview.md
+  - 10. Capstone:
+      - Overview: 10-capstone/00-overview.md
+  - Reference:
+      - References: reference/references.md

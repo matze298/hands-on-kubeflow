@@ -1,0 +1,61 @@
+# Course Architecture
+
+This tutorial is local-first and GPU-aware.
+
+The core path builds a complete ML workflow on a Linux or WSL2 development machine with an NVIDIA GPU. Later chapters expand the same workflow to STACKIT, managed Kubernetes, CI/CD, and production-style serving.
+
+## Core Architecture
+
+```text
+Linux / WSL2 dev machine
+├── NVIDIA GPU
+├── Docker or compatible container runtime
+├── local Kubernetes
+├── Kubeflow Pipelines
+├── local object storage
+├── optional marimo exploration
+├── containerized PyTorch training
+├── evaluation gate
+└── local model serving
+```
+
+## Expansion Architecture
+
+```text
+local workflow
+  ↓
+STACKIT SKE or another managed Kubernetes provider
+  ↓
+cloud object storage
+  ↓
+container registry
+  ↓
+GPU node pool
+  ↓
+CI/CD
+  ↓
+production-style serving and promotion
+```
+
+## Why Local First?
+
+Starting with cloud infrastructure creates too much incidental complexity.
+
+A local setup lets the reader learn the core ideas first:
+
+- what Kubernetes runs
+- how Kubeflow Pipelines maps ML steps to containers
+- how artifacts move between steps
+- how model promotion works
+- how serving fits into the workflow
+- how to debug failed runs
+
+Once that is clear, cloud is mostly a change in infrastructure boundaries.
+
+## Why GPU-Aware?
+
+ML engineers often need to know whether their code still behaves correctly when moved from local scripts to containerized GPU workloads.
+
+Therefore, the tutorial treats local NVIDIA GPU support as part of the core engineering story.
+
+The training task remains small, but the platform should be able to run GPU workloads.

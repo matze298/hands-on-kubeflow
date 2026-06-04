@@ -1,0 +1,56 @@
+# Kubeflow by Doing
+
+A local-first, GPU-aware, hands-on tutorial for learning Kubeflow, Kubernetes-native machine learning workflows, and practical MLOps.
+
+The tutorial is written for readers who already know Python, PyTorch, and basic deep learning, but who want to move from ML code to reproducible, containerized, Kubernetes-native MLOps workflows.
+
+The core path runs on a local Linux or WSL2 development machine with an NVIDIA GPU. Cloud, STACKIT, full Kubeflow, production serving, and CI/CD are introduced later as expansion chapters.
+
+## What You Will Build
+
+By the end of the core tutorial, you will have built a local MLOps environment:
+
+```text
+Linux / WSL2 dev machine with NVIDIA GPU
+  ↓
+local Kubernetes
+  ↓
+Kubeflow Pipelines
+  ↓
+containerized PyTorch training
+  ↓
+local object storage
+  ↓
+evaluation gate
+  ↓
+local model serving
+```
+
+The ML workload is intentionally simple. The point is not to teach deep learning from scratch, but to make the MLOps workflow concrete.
+
+## Start Here
+
+1. Read the [Syllabus](00-orientation/00-syllabus.md).
+2. Read the [Reader Contract](00-orientation/01-reader-contract.md).
+3. Read the [Authoring Contract](00-orientation/02-authoring-contract.md).
+4. Start the site locally:
+
+```bash
+uvx mkdocs-material
+mkdocs serve
+```
+
+## Tutorial Style
+
+Each chapter should be concise, practical, and reproducible.
+
+The default chapter pattern is:
+
+1. motivate the concept
+2. build something concrete
+3. verify the result
+4. debug common failures
+5. link to deeper references
+6. define acceptance criteria
+
+We explain what is likely unknown to an ML engineer moving into MLOps. We do not explain basic Python, PyTorch, or deep learning mechanics unless they affect the Kubeflow workflow.
