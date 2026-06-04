@@ -35,6 +35,8 @@ container log or event explains why
 
 The commands in this page are used throughout the rest of the tutorial.
 
+The goal is not to memorize every failure mode. The goal is to build a repeatable habit: inspect the pod, read the logs, check the events, and then decide whether the fix belongs in the image, the manifest, or the cluster.
+
 ## Core Debugging Commands
 
 Use these constantly:
@@ -301,6 +303,8 @@ When a step fails:
 5. inspect logs and events
 
 The UI is useful, but Kubernetes remains the source of truth.
+
+That means the same debugging sequence will work whether the failure comes from a hand-written manifest or from a Kubeflow component generated later in the tutorial.
 
 ## Cleanup
 

@@ -20,6 +20,8 @@ That is the same basic pattern used later for Kubeflow training components.
 
 You will create a Kubernetes `Job` that runs a short Python command.
 
+You will also see how simple runtime parameters become container environment variables, which is the same pattern used later by pipeline inputs.
+
 ## Why This Matters
 
 A training run is often a batch workload:
@@ -33,6 +35,8 @@ A training run is often a batch workload:
 In Kubernetes, that shape maps naturally to a `Job`.
 
 Kubeflow Pipelines will later create Kubernetes workloads for you. Before that, you should run one manually.
+
+This chapter is about the operational loop, not the Python snippet itself: create the workload, watch it run, inspect the logs, and rerun it when needed.
 
 ## Create the Job
 
@@ -132,6 +136,8 @@ kubectl apply -f /tmp/hello-ml-job.yaml
 ## Add Environment Variables
 
 ML jobs usually receive parameters.
+
+In Kubernetes, environment variables are a simple way to pass small inputs into a container without baking them into the image.
 
 ```bash
 cat > /tmp/parameterized-ml-job.yaml <<'EOF'

@@ -15,6 +15,8 @@ The first test is required for GPU readiness.
 
 The second test depends on your local Kubernetes setup. It is the bridge toward GPU-enabled Kubeflow components.
 
+If the Kubernetes test is not possible on your machine yet, the container-level checks still establish the baseline you need for the later GPU chapter.
+
 ## Why This Matters
 
 ML engineers often test code directly on the host GPU:
@@ -40,6 +42,8 @@ PyTorch sees CUDA
 ```
 
 If any layer is broken, the training component may fail or silently fall back to CPU.
+
+That layered check is useful because it tells you where to fix the problem instead of guessing.
 
 ## Step 1: Host GPU Check
 
@@ -122,6 +126,8 @@ kubectl -n kube-system get pods -l name=nvidia-device-plugin-ds
 !!! note
 
     Local GPU support with `kind` can be more fragile than GPU support on a real Linux Kubernetes node. If this step does not work on your machine, keep the Docker GPU check as the required local baseline and revisit Kubernetes GPU support in the dedicated local GPU chapter.
+
+This is still a valuable result: the container path tells you whether your host, runtime, and CUDA image are working even when the Kubernetes device plugin path is not ready yet.
 
 ## Step 5: Check Node GPU Capacity
 
@@ -284,6 +290,8 @@ kubectl delete pod pytorch-gpu-smoke-test --ignore-not-found
 ```
 
 Keep the NVIDIA device plugin installed if the GPU tests worked and you plan to continue with GPU workloads.
+
+If you are continuing through the tutorial, leave the cluster in the state that best matches your next chapter. This page is a smoke test, not a permanent cluster change.
 
 To remove it:
 

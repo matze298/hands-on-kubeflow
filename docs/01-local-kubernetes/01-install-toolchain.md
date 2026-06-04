@@ -1,6 +1,8 @@
 # Install the Local Toolchain
 
-This page installs the command-line tools used throughout the tutorial.
+This page installs the command-line tools used throughout the tutorial and syncs this repository's Python environment.
+
+The repository bootstrap script is built on `uv` primitives: `uv init` for project creation in a fresh clone, `uv lock` for dependency resolution, and `uv sync` for installing the locked environment.
 
 The goal is not to install every possible MLOps tool. The goal is to create a small, modern local toolchain that can build, run, and debug Kubernetes-native ML workflows.
 
@@ -89,17 +91,16 @@ uv --version
 
 Inside the tutorial repository, initialize or sync the Python environment with `uv`.
 
-For a new repo:
+For this repository:
 
 ```bash
-uv init --package kubeflow-by-doing
-uv add --dev ruff ty pytest mkdocs-material marimo
+./setup.py
 ```
 
-For an existing repo with `pyproject.toml`:
+If you already have a matching `pyproject.toml` in a different clone:
 
 ```bash
-uv sync
+uv sync --all-groups
 ```
 
 Verify:
@@ -225,6 +226,18 @@ Then check Docker Desktop WSL2 integration and NVIDIA Container Toolkit support.
 `ty` is young tooling. If it is temporarily unavailable or changes its CLI, keep the tutorial structure but document the exact version used in `pyproject.toml`.
 
 Do not replace the type-checking section with legacy defaults unless needed for compatibility.
+
+### `uv run mkdocs --version` fails
+
+That usually means the docs dependency group was not synced.
+
+Run:
+
+```bash
+./setup.py
+```
+
+If you are working in a different clone with the same layout, make sure the docs group is installed before continuing.
 
 ## Cleanup
 
