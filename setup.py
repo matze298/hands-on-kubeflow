@@ -28,6 +28,12 @@ def ensure_venv() -> None:
         _run(["uv", "venv"])
 
 
+def ensure_lockfile(lock_path: Path = ROOT / "uv.lock") -> None:
+    """Create uv.lock if it does not exist."""
+    if not lock_path.exists():
+        _run(["uv", "lock"])
+
+
 def build_app() -> typer.Typer:
     """Build the Typer CLI used after the venv is available.
 
@@ -54,6 +60,7 @@ def build_app() -> typer.Typer:
     def setup_all() -> None:
         """Run the full local setup."""
         ensure_venv()
+        ensure_lockfile()
         sync()
         hooks()
 
