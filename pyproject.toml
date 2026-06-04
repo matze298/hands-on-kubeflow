@@ -1,0 +1,14 @@
+[project]
+name = "kubeflow-hands-on"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "prek>=0.4.1",
+    "ruff>=0.15.13",
+    "ty>=0.0.38",
+]

@@ -1,0 +1,25 @@
+target-version = "py314"
+line-length = 120
+preview = true
+fix = true
+
+[lint]
+select = ["ALL"]
+
+ignore = [
+    "COM812", # Recommended ignore from ruff-format
+    "CPY001", # No copyright added yet
+    "D203",   # One blank line before class (Google prefers no extra line)
+    "D213",   # Multi-line docstring summary on first line
+    "E501",   # Line length handled by formatter guidance
+    "FIX002", # Allow ToDo comments
+    "TRY301", # Allow to raise Exceptions within try blocks
+]
+
+pydocstyle.convention = "google"
+
+[lint.per-file-ignores]
+"setup.py" = ["PLC0415", "S404", "S603"]
+
+[format]
+preview = true
