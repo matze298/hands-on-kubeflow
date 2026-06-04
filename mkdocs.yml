@@ -1,9 +1,9 @@
 site_name: Kubeflow by Doing
 site_description: A local-first, GPU-aware, hands-on tutorial for Kubeflow, Kubernetes, and practical MLOps.
-site_url: https://example.com/kubeflow-by-doing
+site_url: https://matze298.github.io/hands-on-kubeflow/
 
-repo_name: kubeflow-by-doing
-repo_url: https://github.com/your-org/kubeflow-by-doing
+repo_name: hands-on-kubeflow
+repo_url: https://github.com/matze298/hands-on-kubeflow
 
 theme:
   name: material
