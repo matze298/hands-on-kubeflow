@@ -7,9 +7,9 @@ This page defines how chapters in this tutorial should be generated, refined, an
 The intended authoring workflow is:
 
 ```text
-Generate chapter with ChatGPT
+Generate chapter prose with ChatGPT
   ↓
-refine structure and wording with Claude or Codex
+refine structure, wording, and integration with Claude or Codex
   ↓
 validate commands locally
   ↓
@@ -18,9 +18,9 @@ commit Markdown, code, manifests, and tests together
 serve with MkDocs
 ```
 
-ChatGPT is used to create the first complete draft.
+ChatGPT is used to create the first complete prose draft.
 
-Claude or Codex can then improve clarity, fix inconsistencies, tighten wording, and validate code structure.
+Claude or Codex can then improve clarity, fix inconsistencies, tighten wording, validate code structure, and integrate the chapter with the repository.
 
 ## Output Format
 

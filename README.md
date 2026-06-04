@@ -1,12 +1,11 @@
-# Kubeflow by Doing Starter
+# Kubeflow by Doing
 
-This package contains the initial MkDocs structure and core Markdown files for the tutorial.
+This repository contains the initial MkDocs structure and core Markdown files for the tutorial.
 
 ## Run Locally
 
 ```bash
-cd kubeflow-by-doing-starter
-uvx mkdocs-material
+./setup.py
 mkdocs serve
 ```
 

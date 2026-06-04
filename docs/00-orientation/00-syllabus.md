@@ -15,7 +15,7 @@ The tutorial starts from a local Linux or WSL2 development machine with an NVIDI
 3. Local ML Workflow
 4. Artifacts and Tracking
 5. Local Serving
-6. Local GPU Integration
+6. Local GPU
 10. Capstone
 ```
 
@@ -302,7 +302,7 @@ Introduce KServe conceptually and optionally.
 
 KServe is not required for the core path, but the reader should understand where it fits.
 
-## 6. Local GPU Integration
+## 6. Local GPU
 
 ### 6.1 Verify NVIDIA Container Support
 
