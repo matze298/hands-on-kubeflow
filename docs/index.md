@@ -54,3 +54,18 @@ The default chapter pattern is:
 6. define acceptance criteria
 
 We explain what is likely unknown to an ML engineer moving into MLOps. We do not explain basic Python, PyTorch, or deep learning mechanics unless they affect the Kubeflow workflow.
+
+## Course Path
+
+The first hands-on section is [Local Kubernetes](01-local-kubernetes/00-overview.md).
+
+It establishes the local environment, the cluster, the first Kubernetes job, the debugging loop, and GPU readiness before the tutorial moves on to Kubeflow Pipelines.
+
+The rest of the path expands that baseline into:
+
+- Kubeflow Pipelines
+- the local ML workflow
+- artifacts and tracking
+- local serving
+- local GPU-specific work
+- expansion tracks for STACKIT, cloud, and CI/CD

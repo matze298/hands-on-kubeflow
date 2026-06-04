@@ -37,6 +37,11 @@ nav:
       - Course Architecture: 00-orientation/03-course-architecture.md
   - 1. Local Kubernetes:
       - Overview: 01-local-kubernetes/00-overview.md
+      - Install the Local Toolchain: 01-local-kubernetes/01-install-toolchain.md
+      - Create a Local Kubernetes Cluster: 01-local-kubernetes/02-create-local-cluster.md
+      - First Kubernetes Job: 01-local-kubernetes/03-first-kubernetes-job.md
+      - Kubernetes Debugging Basics: 01-local-kubernetes/04-debugging-basics.md
+      - GPU Smoke Test: 01-local-kubernetes/05-gpu-smoke-test.md
   - 2. Kubeflow Pipelines:
       - Overview: 02-kubeflow-pipelines/00-overview.md
   - 3. Local ML Workflow:

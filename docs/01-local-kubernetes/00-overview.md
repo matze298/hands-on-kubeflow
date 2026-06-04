@@ -1,27 +1,87 @@
 # Local Kubernetes
 
-In this section, we build the local Kubernetes foundation for the tutorial.
+Kubeflow runs on Kubernetes.
 
-The goal is not to become a Kubernetes administrator. The goal is to understand enough Kubernetes to run, inspect, and debug ML workloads through Kubeflow.
+That does not mean you need to become a full-time Kubernetes administrator before using Kubeflow. It does mean that you need to understand the small set of Kubernetes concepts that show up again and again in ML workflows:
+
+- a training run becomes a `Job`
+- a running workload becomes a `Pod`
+- a model server becomes a `Deployment` and `Service`
+- credentials become `Secrets`
+- configuration becomes `ConfigMaps`
+- artifacts need persistent storage or object storage
+- GPUs are requested as schedulable resources
+- debugging usually starts with `kubectl logs`, `kubectl describe`, and Kubernetes events
 
 ## What You Will Build
 
-- local Kubernetes cluster
-- basic namespace structure
-- first Kubernetes Job
-- debugging workflow
-- GPU-readiness checks
+You will create a local Kubernetes environment on a Linux or WSL2 Linux development machine with an NVIDIA GPU.
+
+By the end of this chapter, you will have:
+
+- installed the local command-line toolchain
+- created a disposable local Kubernetes cluster
+- created a tutorial namespace
+- run a tiny workload as a Kubernetes `Job`
+- debugged common workload failures
+- verified local GPU visibility in containers
+- prepared the cluster for later Kubeflow and GPU chapters
 
 ## Why This Matters
 
-Kubeflow does not hide Kubernetes. Kubeflow turns ML workflows into Kubernetes-native workloads. To use Kubeflow well, an ML engineer needs to understand what is actually running in the cluster.
+A lot of ML tutorials hide the runtime.
+
+That is fine for a notebook, but it is not enough for MLOps.
+
+In Kubeflow, your training code does not run as a magical Python function. It runs as a container inside Kubernetes. When something fails, the failure is usually visible at the Kubernetes layer:
+
+- the image cannot be pulled
+- the pod is pending
+- the container crashed
+- the process was killed because it used too much memory
+- the GPU was not available
+- a secret or mounted file was missing
+
+This chapter teaches the minimum Kubernetes operational loop needed to understand those failures.
+
+## Mental Model
+
+| ML concept              | Kubernetes concept                   |
+| ----------------------- | ------------------------------------ |
+| training run            | `Job`                                |
+| running container       | `Pod`                                |
+| model API               | `Deployment`                         |
+| endpoint inside cluster | `Service`                            |
+| credentials             | `Secret`                             |
+| runtime settings        | `ConfigMap`                          |
+| saved artifacts         | volume or object storage             |
+| GPU request             | `resources.limits["nvidia.com/gpu"]` |
+| failed run debugging    | logs, describe, events               |
+
+## Files in This Chapter
+
+```text
+docs/01-local-kubernetes/
+├── 00-overview.md
+├── 01-install-toolchain.md
+├── 02-create-local-cluster.md
+├── 03-first-kubernetes-job.md
+├── 04-debugging-basics.md
+└── 05-gpu-smoke-test.md
+```
 
 ## Acceptance Criteria
 
-You are done with this section when:
+You are done with Chapter 1 when:
 
-- you can create and delete the local cluster
-- you can run a Kubernetes Job
-- you can inspect logs and events
-- you can explain why a failed pod failed
-- you can verify whether the local GPU is visible to containerized workloads
+- `kubectl` can talk to your local cluster
+- a namespace called `kubeflow-by-doing` exists
+- a simple Kubernetes `Job` completes successfully
+- you can inspect job logs
+- you can debug a deliberately broken pod
+- `docker run --gpus all ... nvidia-smi` works
+- if your local cluster supports GPU passthrough, a Kubernetes pod can request the GPU
+
+## Next Step
+
+Start with [Install the Local Toolchain](01-install-toolchain.md).
