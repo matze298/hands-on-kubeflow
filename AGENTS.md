@@ -22,7 +22,7 @@ Use this workflow for new chapters or chapter revisions:
    - tighten wording
    - align commands with the repo setup
    - check that the tutorial promise matches the actual files and scripts
-   - integrate code, manifests, and tests when the chapter introduces them
+   - integrate concrete code, manifest, and test contents into the chapter when they are introduced
 4. Keep edits scoped to the chapter and the files it directly depends on.
 5. Ask questions if you need clarification.
 6. Update `docs/index.md` and `mkdocs.yml` together when chapter order, names, or status labels change.
@@ -31,8 +31,9 @@ Use this workflow for new chapters or chapter revisions:
 ## Chapter Standards
 
 - Prefer concise, practical prose over long theory sections.
-- Show the runnable source of truth in repo files, not only in Markdown snippets.
-- Treat the checked-in files as the tutorial's reference or target state, while readers are expected to create their own local versions as they work through the chapters.
+- This repository is docs-first. Readers are expected to create implementation files as they work through the chapters.
+- When a chapter introduces code, prefer to show the concrete file contents inline in Markdown and direct readers to create the files in tracked repository paths.
+- Treat checked-in implementation files, when they exist, as reference implementations created while following the tutorial, not as a requirement that every chapter's target files already exist ahead of time.
 - When docs show manifest, config, or YAML contents inline, direct readers to create the file in a tracked repository path such as `infra/`; do not send them to `/tmp` or other ephemeral directories.
 - Add inline comments to code or YAML snippets only when a concept, field, or command appears for the first time in the tutorial flow; avoid re-explaining repeated structure in later chapters.
 - Avoid notebooks in the core path. Prefer scripts, containers, and pipelines.

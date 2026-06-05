@@ -71,6 +71,13 @@ The rest of the path expands that baseline into:
   - split workflow logic into reusable components
   - debug failed runs with Kubernetes tooling
 - the local ML workflow
+  - create a clean project structure under `src/`, `components/`, `pipelines/`, and `tests/`
+  - configure modern Python tooling with `uv`, `ruff`, `ty`, and `pytest`
+  - build a local training and evaluation CLI
+  - add tests and local quality gates before containerization
+  - containerize the training workflow
+  - wrap the image as Kubeflow components
+  - add a simple metric-based evaluation gate
 - artifacts and tracking
 - local serving
 - local GPU-specific work

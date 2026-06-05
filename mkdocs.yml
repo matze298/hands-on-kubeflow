@@ -52,6 +52,13 @@ nav:
       - Debugging KFP Runs: 02-kubeflow-pipelines/06-debugging-kfp-runs.md
   - 3. Local ML Workflow:
       - Overview: 03-local-ml-workflow/00-overview.md
+      - Project Structure: 03-local-ml-workflow/01-project-structure.md
+      - Modern Python Tooling: 03-local-ml-workflow/02-modern-python-tooling.md
+      - Local Training Script: 03-local-ml-workflow/03-local-training-script.md
+      - Tests and Quality Checks: 03-local-ml-workflow/04-tests-and-quality-checks.md
+      - Containerize Training: 03-local-ml-workflow/05-containerize-training.md
+      - Train in Kubeflow: 03-local-ml-workflow/06-train-in-kubeflow.md
+      - Evaluation Gates: 03-local-ml-workflow/07-evaluation-gates.md
   - 4. Artifacts and Tracking:
       - Overview: 04-artifacts-and-tracking/00-overview.md
   - 5. Local Serving:
