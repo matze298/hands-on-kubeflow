@@ -2,6 +2,8 @@
 
 This page installs standalone Kubeflow Pipelines into the local Kubernetes cluster created in Chapter 1.
 
+From this chapter onward, the tutorial assumes you use the GPU-capable local cluster path. If you need to switch from the default `kind` cluster to the `minikube` GPU profile, go back to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and follow the "Optional: Create a GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections before continuing.
+
 We install Kubeflow Pipelines only, not the full Kubeflow platform.
 
 ## What You Will Build
@@ -49,10 +51,19 @@ kubectl config current-context
 Expected:
 
 ```text
-kind-kubeflow-by-doing
+kubeflow-by-doing-gpu
 ```
 
-That is the kind cluster created in Chapter 1. If your Chapter 1 cluster name differs, use the context from that chapter instead.
+That is the GPU-capable `minikube` profile created in Chapter 1.
+
+If you still see `kind-kubeflow-by-doing`, switch now:
+
+```bash
+kubectl config use-context kubeflow-by-doing-gpu
+kubectl config set-context --current --namespace=kubeflow-by-doing
+```
+
+If either command fails, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and complete the GPU-cluster and namespace setup there first.
 
 ## Choose a KFP Version
 
@@ -282,7 +293,13 @@ kubectl delete -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platfor
 kubectl delete -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=${KFP_VERSION}"
 ```
 
-If the local cluster is disposable, the simpler cleanup is:
+If the local cluster is disposable, the simpler cleanup is to delete the cluster backend you used in Chapter 1.
+
+```bash
+minikube delete --profile kubeflow-by-doing-gpu
+```
+
+If you intentionally stayed on the CPU-only baseline instead, use:
 
 ```bash
 kind delete cluster --name kubeflow-by-doing
