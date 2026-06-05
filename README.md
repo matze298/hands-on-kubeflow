@@ -23,5 +23,12 @@ mkdocs serve
 - `docs/01-local-kubernetes/03-first-kubernetes-job.md`
 - `docs/01-local-kubernetes/04-debugging-basics.md`
 - `docs/01-local-kubernetes/05-gpu-smoke-test.md`
+- `docs/02-kubeflow-pipelines/00-overview.md`
+- `docs/02-kubeflow-pipelines/01-install-kfp.md`
+- `docs/02-kubeflow-pipelines/02-first-pipeline.md`
+- `docs/02-kubeflow-pipelines/03-run-pipeline-from-python.md`
+- `docs/02-kubeflow-pipelines/04-components-parameters-artifacts.md`
+- `docs/02-kubeflow-pipelines/05-reusable-components.md`
+- `docs/02-kubeflow-pipelines/06-debugging-kfp-runs.md`
 - section overview placeholders
 - reference links

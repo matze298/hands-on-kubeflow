@@ -64,6 +64,12 @@ It establishes the local environment, the cluster, the first Kubernetes job, the
 The rest of the path expands that baseline into:
 
 - Kubeflow Pipelines
+  - install standalone KFP locally
+  - compile and run the first pipeline
+  - submit pipeline runs from Python
+  - use parameters, artifacts, and metrics
+  - split workflow logic into reusable components
+  - debug failed runs with Kubernetes tooling
 - the local ML workflow
 - artifacts and tracking
 - local serving

@@ -44,6 +44,12 @@ nav:
       - GPU Smoke Test: 01-local-kubernetes/05-gpu-smoke-test.md
   - 2. Kubeflow Pipelines:
       - Overview: 02-kubeflow-pipelines/00-overview.md
+      - Install Kubeflow Pipelines: 02-kubeflow-pipelines/01-install-kfp.md
+      - First Pipeline: 02-kubeflow-pipelines/02-first-pipeline.md
+      - Run a Pipeline from Python: 02-kubeflow-pipelines/03-run-pipeline-from-python.md
+      - Components, Parameters, and Artifacts: 02-kubeflow-pipelines/04-components-parameters-artifacts.md
+      - Reusable Components: 02-kubeflow-pipelines/05-reusable-components.md
+      - Debugging KFP Runs: 02-kubeflow-pipelines/06-debugging-kfp-runs.md
   - 3. Local ML Workflow:
       - Overview: 03-local-ml-workflow/00-overview.md
   - 4. Artifacts and Tracking:
