@@ -114,9 +114,44 @@ uv run mkdocs --version
 uv run marimo --version
 ```
 
+## Install Docker
+
+Install Docker from Ubuntu packages:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io
+sudo usermod -aG docker "$USER"
+```
+
+Log out and back in, or start a new shell, so the `docker` group change takes effect.
+
+Install the NVIDIA Container Toolkit for Docker:
+
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update
+sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
 ## Install `kubectl`
 
-Use your operating system package manager or the official Kubernetes installation instructions.
+On Ubuntu, install `kubectl` from the Kubernetes APT repository:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg lsb-release
+sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+```
+
+On other systems, use your operating system package manager or the official Kubernetes installation instructions.
 
 Verify:
 
@@ -130,6 +165,14 @@ You do not need a cluster yet. This only verifies that the client is installed.
 
 `kind` runs Kubernetes clusters inside containers. It is a good default for local learning because it is disposable, scriptable, and widely used for Kubernetes testing.
 
+On Ubuntu, install `kind` as a standalone binary:
+
+```bash
+curl -Lo kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
+chmod +x kind
+sudo mv kind /usr/local/bin/kind
+```
+
 Verify:
 
 ```bash
@@ -140,6 +183,12 @@ kind version
 
 We use Helm later when installing Kubernetes applications.
 
+On Ubuntu, install `helm` with:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
 ```bash
 helm version
 ```
@@ -148,20 +197,25 @@ helm version
 
 We use Kustomize later for environment-specific overlays.
 
+On Ubuntu, install `kustomize` as a standalone binary:
+
+```bash
+curl -Lo kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.8.1/kustomize_v5.8.1_linux_amd64.tar.gz
+tar -xzf kustomize.tar.gz
+sudo mv kustomize /usr/local/bin/kustomize
+```
+
+If you are on a different architecture, use the matching asset from the official Kustomize release page and keep the version pinned intentionally.
+
 ```bash
 kustomize version
 ```
 
-## Verify Docker
+## Verify Docker and GPU Support
 
 ```bash
 docker version
 docker run --rm hello-world
-```
-
-## Verify NVIDIA Container Support
-
-```bash
 docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
 ```
 
@@ -184,7 +238,6 @@ kubectl version --client
 kind version
 helm version
 kustomize version
-docker version
 uv --version
 uv run ruff --version
 uv run ty --version
