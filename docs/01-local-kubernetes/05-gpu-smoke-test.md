@@ -154,21 +154,15 @@ The next two pod-based steps depend on `nvidia.com/gpu` being visible on the nod
 
 ### If `nvidia.com/gpu` Does Not Appear
 
-Check whether the device plugin is actually running:
+The GPU-capable `minikube` profile is not ready yet. Before debugging pod specs, re-check the cluster setup itself:
 
 ```bash
 kubectl -n kube-system get daemonset,pods | grep nvidia || true
 kubectl -n kube-system rollout status daemonset/nvidia-device-plugin-daemonset --timeout=120s
-kubectl -n kube-system logs daemonset/nvidia-device-plugin-daemonset
-```
-
-Check whether Kubernetes sees any GPU resource on the nodes:
-
-```bash
 kubectl get nodes -o json | rg "nvidia.com/gpu"
 ```
 
-If that still shows nothing, common fixes are:
+If that still shows nothing:
 
 - verify that `nvidia-smi` works on the host
 - verify that `docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi` works
@@ -179,23 +173,6 @@ If that still shows nothing, common fixes are:
 - if the `minikube` GPU profile still cannot expose GPUs on this machine, stop the Kubernetes GPU path instead of continuing to debug pod specs
 
 Only continue once `kubectl describe nodes | grep -A5 -B5 "nvidia.com/gpu"` shows GPU capacity.
-
-If the device plugin logs something like this:
-
-```text
-Incompatible strategy detected auto
-If this is a GPU node, did you configure the NVIDIA Container Toolkit?
-```
-
-then the plugin cannot find an NVIDIA-capable runtime inside the Kubernetes node environment. In practice, that means Docker can see the GPU but your local Kubernetes nodes still cannot, so GPU pods and Kubeflow GPU jobs will not work yet.
-
-At that point, focus on runtime wiring rather than pod manifests:
-
-- confirm the NVIDIA Container Toolkit is installed and Docker was restarted after `nvidia-ctk runtime configure --runtime=docker`
-- confirm the plugin DaemonSet is running on the node where you expect GPU capacity
-- if you are using WSL2 or Docker Desktop, re-check WSL2 GPU support and Docker GPU integration
-- recreate the `minikube` GPU profile only after Docker GPU support is known-good
-- if you cannot make the `minikube` GPU profile advertise `nvidia.com/gpu`, stop the Kubernetes GPU path on this machine
 
 ## Step 6: Run a GPU Pod
 
