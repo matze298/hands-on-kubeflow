@@ -43,7 +43,11 @@ from pathlib import Path
 
 from kfp import Client, compiler
 
-from pipelines.hello_pipeline import hello_pipeline
+try:
+    from pipelines.hello_pipeline import hello_pipeline
+except ModuleNotFoundError:
+    # Support direct execution via `python pipelines/submit_hello_pipeline.py`.
+    from hello_pipeline import hello_pipeline
 
 
 PIPELINE_PACKAGE = Path("compiled/hello_pipeline.yaml")
@@ -85,7 +89,7 @@ touch pipelines/__init__.py
 In another terminal:
 
 ```bash
-uv run python pipelines/submit_hello_pipeline.py
+uv run python -m pipelines.submit_hello_pipeline
 ```
 
 Expected output:
@@ -110,11 +114,11 @@ kubectl port-forward -n kubeflow svc/ml-pipeline 8888:8888
 
 ### Import error for `pipelines.hello_pipeline`
 
-Make sure `pipelines/__init__.py` exists and run from the repository root.
+Make sure `pipelines/__init__.py` exists and prefer module execution from the repository root.
 
 ```bash
 touch pipelines/__init__.py
-uv run python pipelines/submit_hello_pipeline.py
+uv run python -m pipelines.submit_hello_pipeline
 ```
 
 ### The run is submitted but fails
@@ -165,7 +169,7 @@ This is the basis for later CI/CD and scheduled execution chapters.
 You are done when:
 
 - the KFP API port-forward is running
-- `uv run python pipelines/submit_hello_pipeline.py` submits a run
+- `uv run python -m pipelines.submit_hello_pipeline` submits a run
 - the submitted run appears in the KFP UI
 - the run completes successfully
 

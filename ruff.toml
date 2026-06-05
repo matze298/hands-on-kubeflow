@@ -13,6 +13,7 @@ ignore = [
     "D213",   # Multi-line docstring summary on first line
     "E501",   # Line length handled by formatter guidance
     "FIX002", # Allow ToDo comments
+    "G004", # Allow f-strings in logs
     "TRY301", # Allow to raise Exceptions within try blocks
 ]
 
