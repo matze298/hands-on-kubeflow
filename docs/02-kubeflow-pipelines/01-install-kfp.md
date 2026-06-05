@@ -186,28 +186,14 @@ PY
 
 ## Verify the Result
 
-Confirm that KFP is reachable from the browser and the SDK imports locally:
+At this point, the earlier checks should already have shown that:
 
-```bash
-kubectl get pods -n kubeflow
-```
+- `kubectl get pods -n kubeflow` reports KFP pods in `Running` or `Completed`
+- `kubectl get svc -n kubeflow` includes `ml-pipeline-ui`
+- `http://localhost:8080` opens the KFP UI through port forwarding
+- `uv run python -c "import kfp; print(kfp.__version__)"` works locally
 
-Open:
-
-```text
-http://localhost:8080
-```
-
-In another terminal, verify the SDK again:
-
-```bash
-uv run python - <<'PY'
-import kfp
-print(kfp.__version__)
-PY
-```
-
-You should see the UI and the installed SDK version.
+If one of those checks still fails, use the matching troubleshooting section below before moving on.
 
 ## Common Problems
 
