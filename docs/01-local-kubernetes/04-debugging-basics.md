@@ -77,10 +77,19 @@ spec:
         - name: broken
           image: does-not-exist.example.com/ml/train:missing
           command: ["python", "-c", "print('this will not run')"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
 EOF
 
 kubectl apply -f infra/k8s/broken-image-job.yaml
 ```
+
+The resource settings are required in this namespace because the earlier quota enforces `requests` and `limits` on every container. Without them, Kubernetes rejects the pod before you can observe the image pull failure.
 
 Inspect:
 
@@ -130,6 +139,13 @@ spec:
             - |
               print("starting")
               raise RuntimeError("simulated training failure")
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
 EOF
 
 kubectl apply -f infra/k8s/crashing-job.yaml
@@ -181,6 +197,13 @@ spec:
             - |
               import os
               print(os.environ["DATASET_URI"])
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
 EOF
 
 kubectl apply -f infra/k8s/missing-env-job.yaml
@@ -211,6 +234,8 @@ kubectl delete job missing-env-job
 Create a pod that asks for more memory than your local cluster likely has:
 
 ```bash
+kubectl delete resourcequota tutorial-quota --ignore-not-found
+
 cat > infra/k8s/too-large-pod.yaml <<'EOF'
 apiVersion: v1
 kind: Pod
@@ -235,6 +260,8 @@ EOF
 kubectl apply -f infra/k8s/too-large-pod.yaml
 ```
 
+If you created the optional `tutorial-quota` earlier, remove it before this step. Otherwise the pod can be rejected at admission time for exceeding the quota, which hides the scheduling failure this example is meant to demonstrate.
+
 Inspect:
 
 ```bash
@@ -254,6 +281,7 @@ Fix:
 
 ```bash
 kubectl delete pod too-large-pod
+kubectl apply -f infra/kind/kubeflow-by-doing-quota.yaml
 ```
 
 ## Events Are Often the Answer
