@@ -40,10 +40,10 @@ This chapter is about the operational loop, not the Python snippet itself: creat
 
 ## Create the Job
 
-Apply this manifest:
+Create the manifest in `infra/kind/` so it stays in the repository and remains easy to rerun and diff later.
 
 ```bash
-cat > /tmp/hello-ml-job.yaml <<'EOF'
+cat > infra/kind/hello-ml-job.yaml <<'EOF'
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -79,7 +79,7 @@ spec:
               memory: "256Mi"
 EOF
 
-kubectl apply -f /tmp/hello-ml-job.yaml
+kubectl apply -f infra/kind/hello-ml-job.yaml
 ```
 
 ## Watch the Job
@@ -130,7 +130,7 @@ Kubernetes Jobs are immutable in several fields. For tutorial workflows, delete 
 
 ```bash
 kubectl delete job hello-ml-job
-kubectl apply -f /tmp/hello-ml-job.yaml
+kubectl apply -f infra/kind/hello-ml-job.yaml
 ```
 
 ## Add Environment Variables
@@ -139,8 +139,10 @@ ML jobs usually receive parameters.
 
 In Kubernetes, environment variables are a simple way to pass small inputs into a container without baking them into the image.
 
+Create the parameterized variant in the same directory:
+
 ```bash
-cat > /tmp/parameterized-ml-job.yaml <<'EOF'
+cat > infra/kind/parameterized-ml-job.yaml <<'EOF'
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -183,7 +185,7 @@ spec:
               memory: "256Mi"
 EOF
 
-kubectl apply -f /tmp/parameterized-ml-job.yaml
+kubectl apply -f infra/kind/parameterized-ml-job.yaml
 kubectl wait --for=condition=complete job/parameterized-ml-job --timeout=120s
 kubectl logs job/parameterized-ml-job
 ```

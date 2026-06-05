@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-ml-job
+  namespace: kubeflow-by-doing
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: hello
+          image: python:3.12-slim
+          command:
+            - python
+            - -c
+            - |
+              import platform
+              import time
+
+              print("hello from a Kubernetes Job")
+              print(f"python={platform.python_version()}")
+              print("pretending to train a tiny model...")
+              time.sleep(2)
+              print("metric.accuracy=0.99")
+              print("done")
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

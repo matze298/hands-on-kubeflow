@@ -61,7 +61,7 @@ kubectl get pods -A
 Create a job with a nonexistent image:
 
 ```bash
-cat > /tmp/broken-image-job.yaml <<'EOF'
+cat > infra/kind/broken-image-job.yaml <<'EOF'
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -78,7 +78,7 @@ spec:
           command: ["python", "-c", "print('this will not run')"]
 EOF
 
-kubectl apply -f /tmp/broken-image-job.yaml
+kubectl apply -f infra/kind/broken-image-job.yaml
 ```
 
 Inspect:
@@ -109,7 +109,7 @@ kubectl delete job broken-image-job
 Create a job that starts but exits with an error:
 
 ```bash
-cat > /tmp/crashing-job.yaml <<'EOF'
+cat > infra/kind/crashing-job.yaml <<'EOF'
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -131,7 +131,7 @@ spec:
               raise RuntimeError("simulated training failure")
 EOF
 
-kubectl apply -f /tmp/crashing-job.yaml
+kubectl apply -f infra/kind/crashing-job.yaml
 ```
 
 Inspect:
@@ -160,7 +160,7 @@ kubectl delete job crashing-job
 Create a job that expects an environment variable:
 
 ```bash
-cat > /tmp/missing-env-job.yaml <<'EOF'
+cat > infra/kind/missing-env-job.yaml <<'EOF'
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -182,7 +182,7 @@ spec:
               print(os.environ["DATASET_URI"])
 EOF
 
-kubectl apply -f /tmp/missing-env-job.yaml
+kubectl apply -f infra/kind/missing-env-job.yaml
 ```
 
 Inspect:
@@ -210,7 +210,7 @@ kubectl delete job missing-env-job
 Create a pod that asks for more memory than your local cluster likely has:
 
 ```bash
-cat > /tmp/too-large-pod.yaml <<'EOF'
+cat > infra/kind/too-large-pod.yaml <<'EOF'
 apiVersion: v1
 kind: Pod
 metadata:
@@ -231,7 +231,7 @@ spec:
           memory: "256Gi"
 EOF
 
-kubectl apply -f /tmp/too-large-pod.yaml
+kubectl apply -f infra/kind/too-large-pod.yaml
 ```
 
 Inspect:

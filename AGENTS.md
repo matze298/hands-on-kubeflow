@@ -32,6 +32,7 @@ Use this workflow for new chapters or chapter revisions:
 
 - Prefer concise, practical prose over long theory sections.
 - Show the runnable source of truth in repo files, not only in Markdown snippets.
+- When docs show manifest, config, or YAML contents inline, direct readers to create the file in a tracked repository path such as `infra/`; do not send them to `/tmp` or other ephemeral directories.
 - Avoid notebooks in the core path. Prefer scripts, containers, and pipelines.
 - Use `uv`, `ruff`, `ty`, `pytest`, and `mkdocs-material` as the default tooling vocabulary.
 - When a chapter introduces commands, verify they work from the repo root and match the bootstrap flow.
