@@ -150,7 +150,8 @@ If you do not see GPU capacity, the Kubernetes device plugin is not successfully
 Create a GPU pod:
 
 ```bash
-cat > infra/kind/gpu-smoke-test.yaml <<'EOF'
+mkdir -p infra/k8s
+cat > infra/k8s/gpu-smoke-test.yaml <<'EOF'
 apiVersion: v1
 kind: Pod
 metadata:
@@ -167,7 +168,7 @@ spec:
           nvidia.com/gpu: 1
 EOF
 
-kubectl apply -f infra/kind/gpu-smoke-test.yaml
+kubectl apply -f infra/k8s/gpu-smoke-test.yaml
 ```
 
 Watch:
@@ -191,7 +192,7 @@ NVIDIA-SMI ...
 ## Step 7: Run a PyTorch CUDA Pod
 
 ```bash
-cat > infra/kind/pytorch-gpu-smoke-test.yaml <<'EOF'
+cat > infra/k8s/pytorch-gpu-smoke-test.yaml <<'EOF'
 apiVersion: v1
 kind: Pod
 metadata:
@@ -217,7 +218,7 @@ spec:
           nvidia.com/gpu: 1
 EOF
 
-kubectl apply -f infra/kind/pytorch-gpu-smoke-test.yaml
+kubectl apply -f infra/k8s/pytorch-gpu-smoke-test.yaml
 ```
 
 Inspect logs:
