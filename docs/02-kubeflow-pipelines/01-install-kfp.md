@@ -81,12 +81,12 @@ Pin the version instead of installing from a moving branch.
 Create an environment variable:
 
 ```bash
-export KFP_VERSION=2.14.3
+export KFP_VERSION=2.16.1
 ```
 
 !!! note
 
-    If this exact version is no longer current when you read this, check the Kubeflow Pipelines release page and update `KFP_VERSION` intentionally. Do not install from an unpinned branch in a tutorial repo.
+    The official Kubeflow Pipelines installation guide currently uses `2.16.1` for the standalone development flavor. If this exact version changes later, update `KFP_VERSION` intentionally instead of installing from an unpinned branch.
 
 ## Install KFP Manifests
 
@@ -106,17 +106,27 @@ Wait briefly for custom resource definitions to register:
 
 ```bash
 kubectl wait --for condition=established --timeout=120s crd/applications.app.k8s.io
+kubectl wait --for condition=established --timeout=120s crd/workflows.argoproj.io
 ```
 
-Apply the platform-agnostic deployment:
+Apply the standalone development deployment:
 
 ```bash
-kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic?ref=${KFP_VERSION}"
+kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/dev?ref=${KFP_VERSION}"
 ```
 
 !!! warning
 
-    KFP installation manifests can change between releases. If these commands fail, keep the chapter structure but follow the current official KFP installation guide and pin the version that works for the tutorial.
+    KFP installation manifests can change between releases. If these commands fail, keep the chapter structure but follow the current official installation guide and pin the version that works for the tutorial.
+
+If you previously installed an older standalone manifest set and saw `minio` fail with an image like `gcr.io/ml-pipeline/minio:RELEASE.2019-08-14T20-37-41Z-license-compliance`, remove that installation before retrying with the current manifests:
+
+```bash
+kubectl delete -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic?ref=2.14.3" --ignore-not-found
+kubectl delete -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=2.14.3" --ignore-not-found
+kubectl delete namespace kubeflow --ignore-not-found
+kubectl create namespace kubeflow --dry-run=client -o yaml | kubectl apply -f -
+```
 
 ## Wait for KFP Pods
 
@@ -228,7 +238,27 @@ kubectl get events -n kubeflow --sort-by=.lastTimestamp
 
 Your local Docker or WSL2 environment may not have enough CPU or memory.
 
-### Pods are `ImagePullBackOff`
+### Run creation fails with `post workflows.argoproj.io`
+
+This means the KFP API backend is trying to create an Argo Workflow, but the Workflow CRD is not available yet.
+
+First verify that the CRD exists:
+
+```bash
+kubectl get crd workflows.argoproj.io
+kubectl api-resources | grep -i workflow
+```
+
+If it is missing or the resource list is empty, reapply the cluster-scoped resources and wait for the CRD explicitly:
+
+```bash
+kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=${KFP_VERSION}"
+kubectl wait --for condition=established --timeout=120s crd/workflows.argoproj.io
+```
+
+Then retry the run creation.
+
+### `minio` is `ImagePullBackOff`
 
 Inspect the failed pod:
 
@@ -238,10 +268,12 @@ kubectl describe pod -n kubeflow <pod-name>
 
 Common causes:
 
+- old standalone manifests still reference an image tag that no longer exists
 - registry access issue
-- image name changed
 - network problem
 - version mismatch
+
+If the image name looks like `gcr.io/ml-pipeline/minio:RELEASE.2019-08-14T20-37-41Z-license-compliance`, remove the old install and reinstall using the `env/dev` manifests for `KFP_VERSION=2.16.1`.
 
 ### UI is not reachable
 
