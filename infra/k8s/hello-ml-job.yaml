@@ -1,19 +1,19 @@
-apiVersion: batch/v1 # Use the batch API group because this manifest defines a Job.
-kind: Job # Create a Kubernetes Job, which runs a task to completion.
-metadata: # Standard object metadata for naming and organizing the resource.
-  name: hello-ml-job # The Job name used by kubectl and Kubernetes events.
-  namespace: kubeflow-by-doing # Run the Job in the tutorial namespace.
-spec: # Desired behavior of the Job controller.
-  backoffLimit: 0 # Do not retry failed Pods; fail immediately for easier debugging.
-  template: # Pod template that the Job controller will create.
-    spec: # Desired behavior of the Pod started by this Job.
-      restartPolicy: Never # Do not restart the container inside the Pod after exit.
-      containers: # List of containers that make up the Pod.
-        - name: hello # Container name within the Pod.
-          image: python:3.12-slim # Base image that provides Python for the demo workload.
-          command: # Entrypoint override for the container.
-            - python # Executable to run inside the container.
-            - -c # Tell Python to execute the following inline script.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-ml-job
+  namespace: kubeflow-by-doing
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: hello
+          image: python:3.12-slim
+          command:
+            - python
+            - -c
             - |
               import platform
               import time
@@ -24,10 +24,10 @@ spec: # Desired behavior of the Job controller.
               time.sleep(2)
               print("metric.accuracy=0.99")
               print("done")
-          resources: # Resource contract for scheduling and runtime enforcement.
-            requests: # Minimum resources the scheduler should reserve for this container.
-              cpu: "100m" # Request one tenth of a CPU core.
-              memory: "128Mi" # Request 128 MiB of memory.
-            limits: # Maximum resources the container may use.
-              cpu: "500m" # Cap CPU usage at half a core.
-              memory: "256Mi" # Cap memory usage at 256 MiB.
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
