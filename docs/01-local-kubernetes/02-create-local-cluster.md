@@ -140,8 +140,10 @@ You do not need to understand every line. For now, notice:
 
 A local cluster can still be overwhelmed. Add a small quota to make resource use explicit:
 
+Create this file:
+
 ```bash
-cat > /tmp/tutorial-quota.yaml <<'EOF'
+cat > infra/kind/kubeflow-by-doing-quota.yaml <<'EOF'
 apiVersion: v1
 kind: ResourceQuota
 metadata:
@@ -155,8 +157,12 @@ spec:
     limits.memory: 16Gi
     pods: "50"
 EOF
+```
 
-kubectl apply -f /tmp/tutorial-quota.yaml
+Then apply it:
+
+```bash
+kubectl apply -f infra/kind/kubeflow-by-doing-quota.yaml
 ```
 
 Verify:
