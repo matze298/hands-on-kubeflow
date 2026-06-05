@@ -9,6 +9,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 
@@ -22,16 +23,29 @@ def _run(cmd: list[str], *, env: dict[str, str] | None = None) -> None:
     subprocess.run(cmd, cwd=ROOT, check=True, env=env)
 
 
+def _project_env() -> dict[str, str]:
+    """Return an environment that targets the repository's project venv.
+
+    `uv run --script` injects a temporary `VIRTUAL_ENV` for the script's own
+    execution environment. We remove it before spawning other `uv` commands so
+    they resolve against this repository's `.venv` instead of that temporary
+    script environment.
+    """
+    env = os.environ.copy()
+    env.pop("VIRTUAL_ENV", None)
+    return env
+
+
 def ensure_venv() -> None:
     """Create the project virtual environment if it does not exist."""
     if not VENV_DIR.exists():
-        _run(["uv", "venv"])
+        _run(["uv", "venv"], env=_project_env())
 
 
 def ensure_lockfile(lock_path: Path = ROOT / "uv.lock") -> None:
     """Create uv.lock if it does not exist."""
     if not lock_path.exists():
-        _run(["uv", "lock"])
+        _run(["uv", "lock"], env=_project_env())
 
 
 def build_app() -> typer.Typer:
@@ -49,12 +63,12 @@ def build_app() -> typer.Typer:
     @app.command()
     def sync() -> None:
         """Sync the environment from uv.lock."""
-        _run(["uv", "sync", "--all-groups", "--frozen"])
+        _run(["uv", "sync", "--all-groups", "--frozen"], env=_project_env())
 
     @app.command()
     def hooks() -> None:
         """Install prek Git hooks and prepare hook environments."""
-        _run(["uv", "run", "prek", "install", "--prepare-hooks"])
+        _run(["uv", "run", "prek", "install", "--prepare-hooks"], env=_project_env())
 
     @app.command(name="all")
     def setup_all() -> None:
