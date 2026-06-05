@@ -13,7 +13,7 @@ You will run two smoke tests:
 
 The first test is required for GPU readiness.
 
-The second test depends on your local Kubernetes backend. In this tutorial, the default `kind` cluster is the CPU-safe baseline and the optional `minikube` profile is the GPU-capable path for Kubernetes GPU scheduling.
+The second test depends on your local Kubernetes backend. In this tutorial, the default `kind` cluster is the CPU-safe baseline and the optional `MicroK8s` cluster on WSL2 is the GPU-capable path for Kubernetes GPU scheduling.
 
 ## Why This Matters
 
@@ -103,30 +103,30 @@ cuda_available=True
 
 ## Step 4: Switch to the GPU-Capable Local Cluster
 
-Before continuing, make sure you are on the optional GPU-capable `minikube` profile from the cluster setup chapter:
+Before continuing, make sure you are on the optional GPU-capable `MicroK8s` cluster from the cluster setup chapter:
 
 ```bash
 kubectl config current-context
 ```
 
+Expected:
+
+```text
+microk8s
+```
+
 If this still points at `kind-kubeflow-by-doing`, switch now:
 
 ```bash
-kubectl config use-context kubeflow-by-doing-gpu
+kubectl config use-context microk8s
 kubectl create namespace kubeflow-by-doing --dry-run=client -o yaml | kubectl apply -f -
 kubectl config set-context --current --namespace=kubeflow-by-doing
-```
-
-Enable the `minikube` NVIDIA device plugin addon:
-
-```bash
-minikube addons enable nvidia-device-plugin --profile kubeflow-by-doing-gpu
 ```
 
 Check:
 
 ```bash
-kubectl -n kube-system get daemonset,pods | grep nvidia || true
+kubectl get pods -n gpu-operator-resources
 ```
 
 ## Step 5: Check Node GPU Capacity
@@ -154,11 +154,11 @@ The next two pod-based steps depend on `nvidia.com/gpu` being visible on the nod
 
 ### If `nvidia.com/gpu` Does Not Appear
 
-The GPU-capable `minikube` profile is not ready yet. Before debugging pod specs, re-check the cluster setup itself:
+The GPU-capable `MicroK8s` cluster is not ready yet. Before debugging pod specs, re-check the cluster setup itself:
 
 ```bash
-kubectl -n kube-system get daemonset,pods | grep nvidia || true
-kubectl -n kube-system rollout status daemonset/nvidia-device-plugin-daemonset --timeout=120s
+kubectl get pods -n kube-system
+kubectl get pods -n gpu-operator-resources
 kubectl get nodes -o json | rg "nvidia.com/gpu"
 ```
 
@@ -166,11 +166,9 @@ If that still shows nothing:
 
 - verify that `nvidia-smi` works on the host
 - verify that `docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi` works
-- restart Docker Desktop or the Docker daemon after enabling GPU support
-- on WSL2, verify Docker Desktop WSL2 integration and NVIDIA GPU support inside the Linux environment
-- recreate the `minikube` GPU profile after fixing host or Docker GPU support: `minikube delete --profile kubeflow-by-doing-gpu`
-- rerun `bash infra/minikube/start-gpu-cluster.sh`
-- if the `minikube` GPU profile still cannot expose GPUs on this machine, stop the Kubernetes GPU path instead of continuing to debug pod specs
+- verify that `sudo microk8s status --wait-ready` succeeds
+- rerun `bash infra/microk8s/bootstrap-gpu-cluster.sh`
+- if the `MicroK8s` GPU path still cannot expose GPUs on this machine, stop the Kubernetes GPU path instead of continuing to debug pod specs
 
 Only continue once `kubectl describe nodes | grep -A5 -B5 "nvidia.com/gpu"` shows GPU capacity.
 
@@ -276,19 +274,20 @@ cuda_available=True
 
 ### Docker sees the GPU, Kubernetes does not
 
-This means container-level GPU support works, but Kubernetes device plugin support is missing or not compatible with the GPU-capable local cluster setup.
+This means container-level GPU support works, but the `MicroK8s` GPU addon is missing or not healthy.
 
 Check:
 
 ```bash
 kubectl -n kube-system get pods
-kubectl -n kube-system logs daemonset/nvidia-device-plugin-daemonset
+kubectl -n gpu-operator-resources get pods
 kubectl describe nodes | grep nvidia.com/gpu
 ```
 
 If `kubectl describe nodes | grep nvidia.com/gpu` shows nothing, Kubernetes is not advertising a GPU resource. In that state, the pod examples in Steps 6 and 7 are expected to stay pending or fail scheduling.
 
-If the device plugin logs `Incompatible strategy detected auto`, the node runtime itself is the problem. Recreate or fix the `minikube` GPU profile before spending more time on pod specs.
+If the GPU operator logs an initialization or runtime mismatch, the node runtime itself is the problem. Recreate or fix the `MicroK8s` GPU setup before spending more time on pod specs.
+If the GPU operator pods in `gpu-operator-resources` are crashing, fix the `MicroK8s` GPU addon before spending more time on pod specs.
 
 ### GPU pod stays `Pending`
 
@@ -333,14 +332,14 @@ kubectl delete pod gpu-smoke-test --ignore-not-found
 kubectl delete pod pytorch-gpu-smoke-test --ignore-not-found
 ```
 
-Keep the NVIDIA device plugin installed if the GPU tests worked and you plan to continue with GPU workloads.
+Keep the GPU addon installed if the GPU tests worked and you plan to continue with GPU workloads.
 
 If you are continuing through the tutorial, leave the cluster in the state that best matches your next chapter. This page is a smoke test, not a permanent cluster change.
 
-To remove it:
+To reset the GPU-specific cluster state:
 
 ```bash
-minikube addons disable nvidia-device-plugin --profile kubeflow-by-doing-gpu
+sudo microk8s reset
 ```
 
 ## What You Learned
@@ -353,10 +352,10 @@ This is the foundation for GPU-enabled Kubeflow training components later.
 
 - [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 - [CUDA on WSL user guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
-- [NVIDIA Kubernetes device plugin](https://github.com/NVIDIA/k8s-device-plugin)
+- [MicroK8s GPU addon](https://microk8s.io/docs/addon-gpu)
+- [Install MicroK8s on WSL2](https://microk8s.io/docs/install-wsl2)
 - [Kubernetes device plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/)
 - [Kubernetes GPU scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
-- [Using NVIDIA GPUs with minikube](https://minikube.sigs.k8s.io/docs/tutorials/nvidia/)
 
 ## Acceptance Criteria
 

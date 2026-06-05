@@ -15,7 +15,7 @@ kbd evaluate-model ...
 
 inside a container.
 
-Then load the image into the GPU-capable local cluster from Chapter 1.
+Then import the image into the GPU-capable `MicroK8s` cluster from Chapter 1.
 
 ## Why This Matters
 
@@ -118,10 +118,12 @@ Verify:
 cat outputs/container-train/metrics.json
 ```
 
-## Load the Image into the GPU-Capable Local Cluster
+## Import the Image into the GPU-Capable Local Cluster
 
 ```bash
-minikube image load kubeflow-by-doing/train:local --profile kubeflow-by-doing-gpu
+mkdir -p build
+docker save kubeflow-by-doing/train:local > build/train-image.tar
+sudo microk8s ctr image import build/train-image.tar
 ```
 
 Verify with a one-off pod:
@@ -130,6 +132,7 @@ Verify with a one-off pod:
 kubectl run train-image-smoke-test \
   --image=kubeflow-by-doing/train:local \
   --restart=Never \
+  --image-pull-policy=Never \
   -- --help
 ```
 
@@ -147,7 +150,7 @@ kubectl delete pod train-image-smoke-test --ignore-not-found
 
 ## GPU Image Note
 
-Chapter 3 assumes the GPU-capable local cluster path is available for meaningful PyTorch-on-Kubernetes work.
+Chapter 3 assumes the GPU-capable `MicroK8s` path is available for meaningful PyTorch-on-Kubernetes work.
 
 The image shown here still uses a CPU-oriented Python base image because it is the smallest packaging step that proves the CLI, dependencies, and entrypoint are wired correctly.
 
@@ -175,10 +178,11 @@ Check that:
 
 ### Container works locally but pod fails
 
-The image probably was not loaded into the active cluster:
+The image probably was not imported into the active cluster:
 
 ```bash
-minikube image load kubeflow-by-doing/train:local --profile kubeflow-by-doing-gpu
+docker save kubeflow-by-doing/train:local > build/train-image.tar
+sudo microk8s ctr image import build/train-image.tar
 ```
 
 Then inspect pod events:
@@ -208,14 +212,14 @@ You are done when:
 - `docker build -t kubeflow-by-doing/train:local .` succeeds
 - containerized training writes `model.pt`
 - containerized evaluation writes `metrics.json`
-- the image is loaded into the GPU-capable local cluster
+- the image is imported into the GPU-capable local cluster
 - a Kubernetes pod can run `kbd --help` from the image
 
 ## References
 
 - [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
 - [uv Docker integration guide](https://docs.astral.sh/uv/guides/integration/docker/)
-- [minikube image load](https://minikube.sigs.k8s.io/docs/commands/image/)
+- [MicroK8s local image import](https://microk8s.io/docs/registry-images)
 - [PyTorch Docker images](https://hub.docker.com/r/pytorch/pytorch)
 
 ## Next Step

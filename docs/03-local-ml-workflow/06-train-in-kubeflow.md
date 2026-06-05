@@ -190,12 +190,14 @@ Verify:
 ls -lh compiled/image_classification_pipeline.yaml
 ```
 
-## Load the Image into the GPU-Capable Local Cluster
+## Import the Image into the GPU-Capable Local Cluster
 
 If you rebuilt the image, reload it:
 
 ```bash
-minikube image load kubeflow-by-doing/train:local --profile kubeflow-by-doing-gpu
+mkdir -p build
+docker save kubeflow-by-doing/train:local > build/train-image.tar
+sudo microk8s ctr image import build/train-image.tar
 ```
 
 ## Run in KFP
@@ -242,7 +244,8 @@ In the KFP UI:
 The image exists locally in Docker but not inside the active cluster.
 
 ```bash
-minikube image load kubeflow-by-doing/train:local --profile kubeflow-by-doing-gpu
+docker save kubeflow-by-doing/train:local > build/train-image.tar
+sudo microk8s ctr image import build/train-image.tar
 ```
 
 ### Component cannot find `kbd`
@@ -268,7 +271,7 @@ You are done when:
 - training and evaluation component files exist
 - the pipeline file exists
 - `compiled/image_classification_pipeline.yaml` is generated
-- the image is loaded into the GPU-capable local cluster
+- the image is imported into the GPU-capable local cluster
 - the pipeline runs in KFP
 - the training step produces a model artifact
 - the evaluation step produces metrics or a metrics artifact
@@ -279,7 +282,7 @@ You are done when:
 - [KFP SDK reference](https://www.kubeflow.org/docs/components/pipelines/reference/sdk/)
 - [KFP container components](https://www.kubeflow.org/docs/components/pipelines/user-guides/components/container-components/)
 - [Compile a pipeline](https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/compile-a-pipeline/)
-- [minikube image load](https://minikube.sigs.k8s.io/docs/commands/image/)
+- [MicroK8s local image import](https://microk8s.io/docs/registry-images)
 
 ## Next Step
 

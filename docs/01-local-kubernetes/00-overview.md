@@ -19,7 +19,7 @@ You will create a local Kubernetes environment on a Linux or WSL2 Linux developm
 
 The default cluster backend is `kind`.
 
-If you also want local Kubernetes GPU scheduling, this chapter adds an optional GPU-capable `minikube` path alongside the default `kind` flow.
+If you also want local Kubernetes GPU scheduling, this chapter adds a GPU-capable `MicroK8s` path for WSL2 alongside the default `kind` flow.
 
 By the end of this chapter, you will have:
 
@@ -30,7 +30,7 @@ By the end of this chapter, you will have:
 - debugged common workload failures
 - verified local GPU visibility in containers
 - prepared the default cluster for later Kubeflow chapters
-- optionally prepared a GPU-capable local cluster for Kubernetes GPU workloads
+- optionally prepared a GPU-capable `MicroK8s` cluster for Kubernetes GPU workloads
 
 ## Why This Matters
 

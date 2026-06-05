@@ -179,21 +179,35 @@ Verify:
 kind version
 ```
 
-## Optional: Install `minikube` for GPU-Capable Local Kubernetes
+## Optional: Install `MicroK8s` for GPU-Capable Local Kubernetes on WSL2
 
 Keep `kind` as the default cluster backend for the core tutorial path.
 
-If you also want local Kubernetes GPU scheduling, install `minikube` as the optional GPU-capable backend:
+If you also want local Kubernetes GPU scheduling on WSL2, install `MicroK8s` instead of trying to force GPU passthrough through the default `kind` cluster.
+
+If you are inside WSL2 and have not enabled `systemd` yet, run this once in the Linux shell:
 
 ```bash
-curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+echo -e "[boot]\nsystemd=true" | sudo tee /etc/wsl.conf
+```
+
+Then restart WSL from Windows PowerShell:
+
+```bash
+wsl --shutdown
+```
+
+Back in the WSL shell, install `MicroK8s`:
+
+```bash
+sudo snap install microk8s --classic
+sudo microk8s status --wait-ready
 ```
 
 Verify:
 
 ```bash
-minikube version
+sudo microk8s kubectl get nodes -o wide
 ```
 
 ## Install `helm`
@@ -270,7 +284,7 @@ docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
 If you plan to use the optional GPU-capable local Kubernetes path:
 
 ```bash
-minikube version
+sudo microk8s status --wait-ready
 ```
 
 ## Common Problems
@@ -329,7 +343,8 @@ You installed and verified the local tooling needed to build a Kubernetes-native
 - [Ruff documentation](https://docs.astral.sh/ruff/)
 - [ty documentation](https://docs.astral.sh/ty/)
 - [kind quick start](https://kind.sigs.k8s.io/docs/user/quick-start/)
-- [minikube start](https://minikube.sigs.k8s.io/docs/start/)
+- [Install MicroK8s on WSL2](https://microk8s.io/docs/install-wsl2)
+- [MicroK8s GPU addon](https://microk8s.io/docs/addon-gpu)
 - [Kubernetes kubectl documentation](https://kubernetes.io/docs/reference/kubectl/)
 - [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 - [CUDA on WSL user guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
@@ -341,7 +356,7 @@ You are done when:
 - `docker run --rm hello-world` succeeds
 - `kubectl version --client` works
 - `kind version` works
-- if you plan to use the optional GPU-ready local cluster path, `minikube version` works
+- if you plan to use the optional GPU-ready local cluster path, `sudo microk8s status --wait-ready` works
 - `uv --version` works
 - `uv run ruff --version` works inside the repo
 - `docker run --rm --gpus all ... nvidia-smi` succeeds, or you have documented why GPU support is not available on this machine

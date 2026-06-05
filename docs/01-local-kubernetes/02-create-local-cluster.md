@@ -4,7 +4,7 @@ In this page, you create the local Kubernetes cluster used for the rest of the t
 
 We use `kind` as the default cluster backend.
 
-If you want Kubernetes-level GPU scheduling locally, this page also shows an optional `minikube` profile that is better aligned with NVIDIA GPU passthrough.
+If you want Kubernetes-level GPU scheduling locally on WSL2, this page also shows an optional `MicroK8s` path that has official WSL2 and GPU support.
 
 ## What You Will Build
 
@@ -89,85 +89,89 @@ kubeflow-by-doing-worker          Ready    <none>          ...
 
 ## Optional: Create a GPU-Capable Local Cluster
 
-If you want Kubernetes pods to request `nvidia.com/gpu` locally, create a small `minikube` launcher instead of trying to retrofit GPU passthrough into the default `kind` cluster.
+If you want Kubernetes pods to request `nvidia.com/gpu` locally on WSL2, use `MicroK8s` instead of trying to retrofit GPU passthrough into the default `kind` cluster.
 
-`minikube` is another local Kubernetes backend. Unlike the default `kind` setup in this tutorial, it has an official GPU-oriented path for local development and can manage the Kubernetes node runtime in a way that is friendlier to NVIDIA GPU passthrough.
+`MicroK8s` runs natively inside the WSL2 Ubuntu environment and has official WSL2 installation and GPU addon documentation. That is the GPU-capable local cluster path used in this tutorial.
 
-In practice, this optional path does three things:
+In practice, this optional path does four things:
 
-- starts a separate local cluster profile just for GPU work
-- asks the local cluster runtime to expose all visible GPUs to Kubernetes
-- enables the NVIDIA device plugin addon so the node can advertise `nvidia.com/gpu`
+- starts a local Kubernetes cluster inside WSL2
+- enables DNS and storage so later Kubeflow services can start cleanly
+- enables the built-in registry so locally built images can be imported or pushed consistently
+- enables the GPU addon so the node can advertise `nvidia.com/gpu`
 
 Create this file:
 
 ```bash
-mkdir -p infra/minikube
-cat > infra/minikube/start-gpu-cluster.sh <<'EOF'
+mkdir -p infra/microk8s
+cat > infra/microk8s/bootstrap-gpu-cluster.sh <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROFILE="${MINIKUBE_PROFILE:-kubeflow-by-doing-gpu}"
-CPUS="${MINIKUBE_CPUS:-8}"
-MEMORY="${MINIKUBE_MEMORY:-8162}"
+sudo microk8s status --wait-ready
+sudo microk8s enable dns storage registry
+sudo microk8s enable gpu --gpu-operator-set-as-default-runtime
 
-minikube start \
-  --profile "$PROFILE" \
-  --driver docker \
-  --container-runtime docker \
-  --gpus all \
-  --cpus "$CPUS" \
-  --memory "$MEMORY"
+mkdir -p "$HOME/.kube"
+sudo microk8s config > "$HOME/.kube/microk8s-config"
 
-minikube addons enable nvidia-device-plugin --profile "$PROFILE"
+if [ -f "$HOME/.kube/config" ]; then
+  KUBECONFIG="$HOME/.kube/config:$HOME/.kube/microk8s-config" kubectl config view --flatten > "$HOME/.kube/config.merged"
+  mv "$HOME/.kube/config.merged" "$HOME/.kube/config"
+else
+  cp "$HOME/.kube/microk8s-config" "$HOME/.kube/config"
+fi
+
+kubectl config use-context microk8s
+kubectl create namespace kubeflow-by-doing --dry-run=client -o yaml | kubectl apply -f -
+kubectl config set-context --current --namespace=kubeflow-by-doing
+
+kubectl get nodes -o wide
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 EOF
 
-chmod +x infra/minikube/start-gpu-cluster.sh
+chmod +x infra/microk8s/bootstrap-gpu-cluster.sh
 ```
 
 This script:
 
-- creates a separate `minikube` profile named `kubeflow-by-doing-gpu`
-- uses the Docker driver and Docker container runtime
-- requests all visible GPUs for the local cluster
-- enables the NVIDIA device plugin addon after the cluster starts
+- waits for `MicroK8s` to be ready
+- enables the `dns`, `storage`, and `registry` addons needed later
+- enables the GPU addon and asks it to set the NVIDIA runtime as the default runtime for workloads
+- exports the `microk8s` kubeconfig into your normal `kubectl` config
+- switches the current context to `microk8s`
+- creates the tutorial namespace and sets it as the default namespace for that context
 
-Command details:
-
-- `--profile "$PROFILE"` keeps the GPU-capable cluster separate from the default `kind` flow
-- `--driver docker` tells `minikube` to run the cluster on top of Docker
-- `--container-runtime docker` keeps the runtime aligned with the NVIDIA Container Toolkit setup from the toolchain chapter
-- `--gpus all` asks the local cluster to expose every visible GPU to the Kubernetes node
-- `--cpus` and `--memory` reserve enough local resources for the cluster and the later Kubeflow workloads
-- `minikube addons enable nvidia-device-plugin` installs the device plugin addon after the cluster is up
-
-Then start the GPU-ready profile:
+Then bootstrap the GPU-ready cluster:
 
 ```bash
-bash infra/minikube/start-gpu-cluster.sh
+bash infra/microk8s/bootstrap-gpu-cluster.sh
 ```
 
 Verify:
 
 ```bash
 kubectl config current-context
-kubectl get nodes -o wide
+kubectl get pods -n kube-system
+kubectl get pods -n gpu-operator-resources
 kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 ```
 
 Expected result:
 
-- the current context is `kubeflow-by-doing-gpu` or can be switched to it with `kubectl config use-context kubeflow-by-doing-gpu`
+- the current context is `microk8s`
+- core `kube-system` pods are `Running`
+- GPU operator pods in `gpu-operator-resources` are mostly `Running` or `Completed`
 - at least one node reports a non-empty `allocatable gpu=` value
 
-If `allocatable gpu=` is blank, stop the GPU path here and debug the `minikube` GPU setup before moving on to pod specs or Kubeflow GPU workloads.
+If `kube-system` is unhealthy or `allocatable gpu=` is blank, stop the GPU path here and debug the `MicroK8s` setup before moving on to pod specs or Kubeflow workloads.
 
 ## Create the Tutorial Namespace
 
 Before creating the namespace, make sure `kubectl` points at the cluster you want to prepare:
 
 - use `kind-kubeflow-by-doing` for the default core path
-- use `kubeflow-by-doing-gpu` for the optional GPU-capable path
+- use `microk8s` for the optional GPU-capable path
 
 ```bash
 kubectl create namespace kubeflow-by-doing
@@ -257,7 +261,7 @@ kubectl describe resourcequota tutorial-quota
 
 If your machine has less memory, adjust the quota or skip this step.
 
-If you are working on the optional GPU-capable `minikube` profile, apply the same namespace and quota manifests there after switching context.
+If you are working on the optional GPU-capable `MicroK8s` path, apply the same namespace and quota manifests there after switching context.
 
 ## Common Problems
 
@@ -321,7 +325,18 @@ Disk: 50+ GiB free
 
 That is expected. The default `kind` cluster is the baseline path for the Kubernetes and Kubeflow basics.
 
-If you want local Kubernetes GPU scheduling, use the optional `minikube` GPU profile from this page instead of continuing to debug `kind` node runtime wiring.
+If you want local Kubernetes GPU scheduling on WSL2, use the optional `MicroK8s` path from this page instead of continuing to debug `kind` node runtime wiring.
+
+### `MicroK8s` core pods are unhealthy
+
+Before installing Kubeflow Pipelines, make sure the cluster itself is healthy:
+
+```bash
+kubectl get pods -n kube-system
+kubectl get pods -n gpu-operator-resources
+```
+
+If `kube-proxy`, `coredns`, or storage-related pods are in `CrashLoopBackOff`, do not continue to Chapter 2 yet.
 
 ## Cleanup
 
@@ -331,10 +346,10 @@ To delete the cluster:
 kind delete cluster --name kubeflow-by-doing
 ```
 
-To delete the optional GPU-ready profile:
+To reset the optional GPU-ready cluster:
 
 ```bash
-minikube delete --profile kubeflow-by-doing-gpu
+sudo microk8s reset
 ```
 
 Do not delete it yet if you are continuing the tutorial.
@@ -345,14 +360,15 @@ You created a local Kubernetes cluster and a namespace for tutorial workloads.
 
 You also learned that local Kubernetes should be treated as disposable infrastructure.
 
-You also saw that the tutorial separates the default `kind` baseline from the optional GPU-capable `minikube` path.
+You also saw that the tutorial separates the default `kind` baseline from the optional GPU-capable `MicroK8s` path.
 
 ## References
 
 - [kind quick start](https://kind.sigs.k8s.io/docs/user/quick-start/)
 - [kind configuration](https://kind.sigs.k8s.io/docs/user/configuration/)
-- [minikube start](https://minikube.sigs.k8s.io/docs/start/)
-- [Using NVIDIA GPUs with minikube](https://minikube.sigs.k8s.io/docs/tutorials/nvidia/)
+- [Install MicroK8s on WSL2](https://microk8s.io/docs/install-wsl2)
+- [MicroK8s GPU addon](https://microk8s.io/docs/addon-gpu)
+- [Working with MicroK8s built-in registry](https://microk8s.io/docs/registry-built-in)
 - [Kubernetes namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Kubernetes resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
 

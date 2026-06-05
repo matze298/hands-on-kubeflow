@@ -2,7 +2,7 @@
 
 This page installs standalone Kubeflow Pipelines into the local Kubernetes cluster created in Chapter 1.
 
-From this chapter onward, the tutorial assumes you use the GPU-capable local cluster path. If you need to switch from the default `kind` cluster to the `minikube` GPU profile, go back to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and follow the "Optional: Create a GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections before continuing.
+From this chapter onward, the tutorial assumes you use the GPU-capable local cluster path. If you need to switch from the default `kind` cluster to the `MicroK8s` GPU path, go back to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and follow the "Optional: Create a GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections before continuing.
 
 We install Kubeflow Pipelines only, not the full Kubeflow platform.
 
@@ -51,19 +51,28 @@ kubectl config current-context
 Expected:
 
 ```text
-kubeflow-by-doing-gpu
+microk8s
 ```
 
-That is the GPU-capable `minikube` profile created in Chapter 1.
+That is the GPU-capable `MicroK8s` context created in Chapter 1.
 
 If you still see `kind-kubeflow-by-doing`, switch now:
 
 ```bash
-kubectl config use-context kubeflow-by-doing-gpu
+kubectl config use-context microk8s
 kubectl config set-context --current --namespace=kubeflow-by-doing
 ```
 
 If either command fails, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and complete the GPU-cluster and namespace setup there first.
+
+Before installing KFP on the `MicroK8s` path, verify that the cluster itself is healthy:
+
+```bash
+kubectl get pods -n kube-system
+kubectl get pods -n gpu-operator-resources
+```
+
+Do not continue if core `kube-system` pods are in `CrashLoopBackOff`. Fix the cluster first, then come back to KFP.
 
 ## Choose a KFP Version
 
@@ -282,7 +291,7 @@ kubectl delete -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-sco
 If the local cluster is disposable, the simpler cleanup is to delete the cluster backend you used in Chapter 1.
 
 ```bash
-minikube delete --profile kubeflow-by-doing-gpu
+sudo microk8s reset
 ```
 
 If you intentionally stayed on the CPU-only baseline instead, use:
