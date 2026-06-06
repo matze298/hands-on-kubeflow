@@ -17,9 +17,9 @@ That does not mean you need to become a full-time Kubernetes administrator befor
 
 You will create a local Kubernetes environment on a Linux or WSL2 Linux development machine with an NVIDIA GPU.
 
-The default cluster backend is `kind`.
+This chapter starts with `kind` as the starter cluster backend.
 
-If you also want local Kubernetes GPU scheduling, this chapter adds a GPU-capable `MicroK8s` path for WSL2 alongside the default `kind` flow.
+If you also want local Kubernetes GPU scheduling, this chapter adds a `MicroK8s` path for WSL2 that becomes the default local ML platform for the later chapters.
 
 By the end of this chapter, you will have:
 
@@ -29,8 +29,8 @@ By the end of this chapter, you will have:
 - run a tiny workload as a Kubernetes `Job`
 - debugged common workload failures
 - verified local GPU visibility in containers
-- prepared the default cluster for later Kubeflow chapters
-- optionally prepared a GPU-capable `MicroK8s` cluster for Kubernetes GPU workloads
+- prepared the starter cluster for the first Kubernetes exercises
+- optionally prepared the `MicroK8s` cluster that the later Kubeflow and ML chapters assume
 
 ## Why This Matters
 
@@ -85,7 +85,7 @@ You are done with Chapter 1 when:
 - you can inspect job logs
 - you can debug a deliberately broken pod
 - `docker run --gpus all ... nvidia-smi` works
-- if you choose the optional GPU-ready local cluster path, a Kubernetes pod can request the GPU
+- if you choose the GPU-ready `MicroK8s` path, a Kubernetes pod can request the GPU
 
 ## Next Step
 

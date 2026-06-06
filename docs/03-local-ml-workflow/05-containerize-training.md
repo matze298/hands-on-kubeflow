@@ -15,7 +15,7 @@ kbd evaluate-model ...
 
 inside a container.
 
-Then import the image into the GPU-capable `MicroK8s` cluster from Chapter 1.
+Then import the image into the default GPU-capable `MicroK8s` cluster from Chapter 1. If you are staying on the `kind` fallback path, load the image into that cluster instead.
 
 ## Why This Matters
 
@@ -124,6 +124,12 @@ cat outputs/container-train/metrics.json
 mkdir -p build
 docker save kubeflow-by-doing/train:local > build/train-image.tar
 sudo microk8s ctr image import build/train-image.tar
+```
+
+If you are using the `kind` fallback path instead, load the image with:
+
+```bash
+kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 ```
 
 Verify with a one-off pod:

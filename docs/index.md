@@ -4,7 +4,7 @@ A local-first, GPU-aware, hands-on tutorial for learning Kubeflow, Kubernetes-na
 
 The tutorial is written for readers who already know Python, PyTorch, and basic deep learning, but who want to move from ML code to reproducible, containerized, Kubernetes-native MLOps workflows.
 
-The core path runs on a local Linux or WSL2 development machine with an NVIDIA GPU. Cloud, STACKIT, full Kubeflow, production serving, and CI/CD are introduced later as expansion chapters.
+The core path starts with `kind` for the first Kubernetes basics and then treats `MicroK8s` on WSL2 as the default local ML platform. Cloud, STACKIT, full Kubeflow, production serving, and CI/CD are introduced later as expansion chapters.
 
 ## What You Will Build
 

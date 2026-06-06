@@ -2,15 +2,16 @@
 
 This tutorial is local-first and GPU-aware.
 
-The core path builds a complete ML workflow on a Linux or WSL2 development machine with an NVIDIA GPU. Later chapters expand the same workflow to STACKIT, managed Kubernetes, CI/CD, and production-style serving.
+The core path starts with `kind` for the first Kubernetes basics, then uses `MicroK8s` on WSL2 as the default local ML platform. Later chapters expand the same workflow to STACKIT, managed Kubernetes, CI/CD, and production-style serving.
 
 ## Core Architecture
 
 ```text
 Linux / WSL2 dev machine
+├── kind starter cluster
 ├── NVIDIA GPU
 ├── Docker or compatible container runtime
-├── local Kubernetes
+├── MicroK8s default cluster for the ML path
 ├── Kubeflow Pipelines
 ├── local object storage
 ├── optional marimo exploration

@@ -25,7 +25,8 @@ infra/minio/
 ├── secret.yaml
 ├── pvc.yaml
 ├── deployment.yaml
-└── service.yaml
+├── service.yaml
+└── app-secret.yaml
 
 infra/mlflow/
 ├── deployment.yaml
@@ -67,6 +68,8 @@ lineage records
 ```
 
 Kubeflow tracks pipeline structure and artifacts. Object storage gives us durable files. MLflow gives us familiar experiment tracking. A lineage record connects the pieces.
+
+From this chapter onward, the tutorial assumes the default `MicroK8s` local Kubernetes path. The `kind` starter cluster remains available for the early Kubernetes chapters, but the artifact and tracking workflow is written for the GPU-capable `MicroK8s` setup.
 
 ## Target Architecture
 
@@ -122,7 +125,7 @@ You are done with Chapter 4 when:
 - MLflow runs locally in Kubernetes
 - training and evaluation can log to MLflow
 - model and metrics artifacts are uploaded to MinIO
-- lineage records include Git SHA, image tag, dataset URI, model URI, metrics URI, KFP run ID, and MLflow run ID
+- lineage records include Git SHA, image tag, dataset URI, model URI, metrics URI, KFP run ID, and MLflow run information where available
 - the final pipeline run produces durable artifacts outside the pod filesystem
 
 ## Next Step

@@ -200,6 +200,12 @@ docker save kubeflow-by-doing/train:local > build/train-image.tar
 sudo microk8s ctr image import build/train-image.tar
 ```
 
+If you are using the `kind` fallback path instead, load the image with:
+
+```bash
+kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
+```
+
 ## Run in KFP
 
 Port-forward the KFP UI:

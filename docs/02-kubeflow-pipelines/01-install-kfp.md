@@ -2,7 +2,7 @@
 
 This page installs standalone Kubeflow Pipelines into the local Kubernetes cluster created in Chapter 1.
 
-From this chapter onward, the tutorial assumes you use the GPU-capable local cluster path. If you need to switch from the default `kind` cluster to the `MicroK8s` GPU path, go back to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and follow the "Optional: Create a GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections before continuing.
+From this chapter onward, the tutorial assumes you use the GPU-capable local cluster path. If you are still on the starter `kind` cluster, go back to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and follow the "Create the GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections before continuing.
 
 We install Kubeflow Pipelines only, not the full Kubeflow platform.
 

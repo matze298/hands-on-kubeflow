@@ -6,7 +6,7 @@ In Chapter 1, you ran Kubernetes workloads manually. In this chapter, you let Ku
 
 The goal is not to install the full Kubeflow platform yet. The goal is to install standalone Kubeflow Pipelines locally and use it to run a small ML-shaped workflow.
 
-Chapter 2 now assumes you continue on the GPU-capable local cluster path from Chapter 1. If you are still on the default `kind` context, switch contexts first in [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the "Optional: Create a GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections, then return here.
+Chapter 2 now assumes you continue on the GPU-capable `MicroK8s` path from Chapter 1. If you are still on the starter `kind` context, switch contexts first in [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the "Create the GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections, then return here.
 
 ## What You Will Build
 
@@ -39,7 +39,7 @@ An MLOps workflow needs more:
 
 Kubeflow Pipelines gives you this workflow layer on top of Kubernetes.
 
-The commands in this chapter still work on a CPU-only cluster if you only want the workflow mechanics. The default path from here on, however, is the GPU-capable cluster because later PyTorch work assumes that setup.
+The commands in this chapter still work on a CPU-only cluster if you only want the workflow mechanics. The default path from here on, however, is the GPU-capable `MicroK8s` cluster because later PyTorch work assumes that setup.
 
 ## Mental Model
 

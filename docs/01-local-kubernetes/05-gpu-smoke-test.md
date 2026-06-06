@@ -13,7 +13,7 @@ You will run two smoke tests:
 
 The first test is required for GPU readiness.
 
-The second test depends on your local Kubernetes backend. In this tutorial, the default `kind` cluster is the CPU-safe baseline and the optional `MicroK8s` cluster on WSL2 is the GPU-capable path for Kubernetes GPU scheduling.
+The second test depends on your local Kubernetes backend. In this tutorial, the `kind` cluster is the CPU-safe starter baseline and the `MicroK8s` cluster on WSL2 is the default GPU-capable path for Kubernetes GPU scheduling.
 
 ## Why This Matters
 
@@ -103,7 +103,7 @@ cuda_available=True
 
 ## Step 4: Switch to the GPU-Capable Local Cluster
 
-Before continuing, make sure you are on the optional GPU-capable `MicroK8s` cluster from the cluster setup chapter:
+Before continuing, make sure you are on the GPU-capable `MicroK8s` cluster from the cluster setup chapter:
 
 ```bash
 kubectl config current-context

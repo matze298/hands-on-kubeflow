@@ -19,7 +19,7 @@ Then you will update the pipeline so each run records:
 - model URI
 - metrics URI
 - KFP run ID
-- MLflow run ID
+- MLflow run information where available
 - artifact prefix
 
 ## Why This Matters
@@ -140,7 +140,7 @@ def write_lineage(
         artifact_prefix=artifact_prefix,
     )
 
-    output_path = Path(lineage.path) / "lineage.json"
+    output_path = Path(lineage.path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
         json.dumps(asdict(record), indent=2, sort_keys=True),
@@ -276,7 +276,15 @@ uv run ruff format .
 uv run ruff check .
 uv run ty check
 uv run pytest
+mkdir -p build
 docker build -t kubeflow-by-doing/train:local .
+docker save kubeflow-by-doing/train:local > build/train-image.tar
+sudo microk8s ctr image import build/train-image.tar
+```
+
+If you are using the `kind` fallback path, load the image with:
+
+```bash
 kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 ```
 
@@ -393,7 +401,7 @@ Later, Codex can integrate actual KFP run metadata if the local KFP setup expose
 
 The simple CLI logging writes MLflow run IDs into summary and metrics files. Passing those values as KFP outputs requires additional parsing components.
 
-For the first version, it is acceptable to store MLflow run IDs in the uploaded `train_summary.json` and `metrics.json`, then refine the lineage component later.
+For the first version, treat MLflow run IDs as optional lineage data. Keep them `null` when the step cannot surface them yet, and refine the lineage component later if you want to wire them through explicitly.
 
 ### Secret environment variables are missing in KFP pods
 

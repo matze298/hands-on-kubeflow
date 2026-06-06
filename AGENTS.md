@@ -7,6 +7,7 @@
 - Use `uv` for dependency management and local commands.
 - Keep this repository focused on Kubeflow. Do not import tutorial-specific material from other projects unless it is clearly generic.
 - Treat the tutorial as build-along content: prose, commands, and repo state should agree.
+- Treat `MicroK8s` as the default local ML/Kubeflow platform in later chapters. Use `kind` for the initial Kubernetes starter path and as the fallback for readers without the GPU-capable local setup.
 
 ## Chapter Workflow
 
@@ -21,6 +22,7 @@ Use this workflow for new chapters or chapter revisions:
 3. Use Codex to refine and harden the draft:
    - tighten wording
    - align commands with the repo setup
+   - keep the cluster story consistent with the repo-wide `MicroK8s` default and `kind` fallback
    - check that the tutorial promise matches the actual files and scripts
    - integrate concrete code, manifest, and test contents into the chapter when they are introduced
 4. Keep edits scoped to the chapter and the files it directly depends on.

@@ -163,7 +163,7 @@ You do not need a cluster yet. This only verifies that the client is installed.
 
 ## Install `kind`
 
-`kind` runs Kubernetes clusters inside containers. It is a good default for local learning because it is disposable, scriptable, and widely used for Kubernetes testing.
+`kind` runs Kubernetes clusters inside containers. It is a good starter cluster for the first Kubernetes exercises because it is disposable, scriptable, and widely used for Kubernetes testing.
 
 On Ubuntu, install `kind` as a standalone binary:
 
@@ -181,9 +181,9 @@ kind version
 
 ## Optional: Install `MicroK8s` for GPU-Capable Local Kubernetes on WSL2
 
-Keep `kind` as the default cluster backend for the core tutorial path.
+Keep `kind` available for the starter Kubernetes path and as the fallback if you do not have the GPU-capable local setup.
 
-If you also want local Kubernetes GPU scheduling on WSL2, install `MicroK8s` instead of trying to force GPU passthrough through the default `kind` cluster.
+If you want the tutorial's default ML platform on WSL2, install `MicroK8s` instead of trying to force GPU passthrough through the `kind` cluster.
 
 If you are inside WSL2 and have not enabled `systemd` yet, run this once in the Linux shell:
 
@@ -281,7 +281,7 @@ nvidia-smi
 docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
 ```
 
-If you plan to use the optional GPU-capable local Kubernetes path:
+If you plan to use the GPU-capable `MicroK8s` path:
 
 ```bash
 sudo microk8s status --wait-ready

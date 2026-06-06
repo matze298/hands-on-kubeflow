@@ -4,7 +4,7 @@
 
 Build a local, GPU-aware Kubeflow learning environment that turns a normal PyTorch workflow into a reproducible, containerized, Kubernetes-native MLOps workflow.
 
-The tutorial starts from a local Linux or WSL2 development machine with an NVIDIA GPU and expands later to STACKIT, cloud object storage, CI/CD, and production-style deployment.
+The tutorial starts from a local Linux or WSL2 development machine with an NVIDIA GPU. Chapter 1 begins with `kind` for the first Kubernetes basics, then the core ML path uses `MicroK8s` as the default local Kubernetes platform. The course expands later to STACKIT, cloud object storage, CI/CD, and production-style deployment.
 
 ## Core Learning Path
 
@@ -56,7 +56,8 @@ Install and verify:
 - Docker or compatible container runtime
 - NVIDIA driver and container runtime support
 - `kubectl`
-- `kind` or `k3d`
+- `kind` for the starter cluster
+- `MicroK8s` for the default GPU-capable local ML path
 - `helm`
 - `kustomize`
 - `uv`
@@ -67,7 +68,7 @@ Install and verify:
 
 ### 1.2 Create a Local Kubernetes Cluster
 
-Create a disposable local Kubernetes cluster for the tutorial.
+Create a disposable local Kubernetes cluster for the starter Kubernetes path, then switch to the GPU-capable `MicroK8s` cluster for the ML chapters.
 
 Focus:
 
