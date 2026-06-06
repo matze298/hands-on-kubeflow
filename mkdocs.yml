@@ -61,6 +61,10 @@ nav:
       - Evaluation Gates: 03-local-ml-workflow/07-evaluation-gates.md
   - 4. Artifacts and Tracking:
       - Overview: 04-artifacts-and-tracking/00-overview.md
+      - Install Local Object Storage: 04-artifacts-and-tracking/01-install-minio.md
+      - Define Artifact Layout: 04-artifacts-and-tracking/02-artifact-layout.md
+      - Add Experiment Tracking: 04-artifacts-and-tracking/03-add-mlflow.md
+      - Trace Lineage: 04-artifacts-and-tracking/04-trace-lineage.md
   - 5. Local Serving:
       - Overview: 05-local-serving/00-overview.md
   - 6. Local GPU:

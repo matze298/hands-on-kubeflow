@@ -79,6 +79,10 @@ The rest of the path expands that baseline into:
   - wrap the image as Kubeflow components
   - add a simple metric-based evaluation gate
 - artifacts and tracking
+  - add MinIO-backed object storage
+  - define a portable artifact layout
+  - add MLflow experiment tracking
+  - write an explicit lineage record
 - local serving
 - local GPU-specific work
 - expansion tracks for STACKIT, cloud, and CI/CD
