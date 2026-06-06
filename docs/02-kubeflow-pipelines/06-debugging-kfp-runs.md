@@ -70,7 +70,7 @@ if __name__ == "__main__":
 Compile it:
 
 ```bash
-uv run python pipelines/failing_pipeline.py
+uv run python -m pipelines.failing_pipeline
 ```
 
 Upload and run `compiled/failing_pipeline.yaml` in the KFP UI.

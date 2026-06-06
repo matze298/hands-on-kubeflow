@@ -159,7 +159,7 @@ if __name__ == "__main__":
 ## Compile
 
 ```bash
-uv run python pipelines/tiny_ml_pipeline_refactored.py
+uv run python -m pipelines.tiny_ml_pipeline_refactored
 ```
 
 Verify:

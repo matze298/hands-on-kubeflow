@@ -131,7 +131,7 @@ if __name__ == "__main__":
 ## Compile the Pipeline
 
 ```bash
-uv run python pipelines/tiny_ml_pipeline.py
+uv run python -m pipelines.tiny_ml_pipeline
 ```
 
 Verify:

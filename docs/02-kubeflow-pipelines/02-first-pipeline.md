@@ -72,7 +72,7 @@ if __name__ == "__main__":
 Run:
 
 ```bash
-uv run python pipelines/hello_pipeline.py
+uv run python -m pipelines.hello_pipeline
 ```
 
 Verify:
@@ -163,7 +163,7 @@ uv add kfp
 Then retry:
 
 ```bash
-uv run python pipelines/hello_pipeline.py
+uv run python -m pipelines.hello_pipeline
 ```
 
 ### The UI cannot upload the pipeline

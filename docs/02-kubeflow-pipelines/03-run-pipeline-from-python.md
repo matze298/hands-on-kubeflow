@@ -42,12 +42,7 @@ Create `pipelines/submit_hello_pipeline.py`:
 from pathlib import Path
 
 from kfp import Client, compiler
-
-try:
-    from pipelines.hello_pipeline import hello_pipeline
-except ModuleNotFoundError:
-    # Support direct execution via `python pipelines/submit_hello_pipeline.py`.
-    from hello_pipeline import hello_pipeline
+from pipelines.hello_pipeline import hello_pipeline
 
 
 PIPELINE_PACKAGE = Path("compiled/hello_pipeline.yaml")
@@ -92,6 +87,8 @@ In another terminal:
 uv run python -m pipelines.submit_hello_pipeline
 ```
 
+Run modules under `pipelines/` with `python -m ...` from the repository root. That keeps the repo root on Python's import path, so imports like `from pipelines...` and `from components...` resolve consistently.
+
 Expected output:
 
 ```text
@@ -114,7 +111,7 @@ kubectl port-forward -n kubeflow svc/ml-pipeline 8888:8888
 
 ### Import error for `pipelines.hello_pipeline`
 
-Make sure `pipelines/__init__.py` exists and prefer module execution from the repository root.
+Make sure `pipelines/__init__.py` exists and run the script as a module from the repository root.
 
 ```bash
 touch pipelines/__init__.py

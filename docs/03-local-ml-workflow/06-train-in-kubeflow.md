@@ -181,7 +181,7 @@ if __name__ == "__main__":
 ## Compile the Pipeline
 
 ```bash
-uv run python pipelines/image_classification_pipeline.py
+uv run python -m pipelines.image_classification_pipeline
 ```
 
 Verify:
