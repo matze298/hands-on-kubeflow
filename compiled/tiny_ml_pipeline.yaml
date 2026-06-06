@@ -1,0 +1,224 @@
+# PIPELINE DEFINITION
+# Name: tiny-ml-pipeline
+# Description: Defines the TinyML pipeline.
+# Inputs:
+#    learning_rate: float [Default: 0.01]
+#    n_samples: int [Default: 100.0]
+components:
+  comp-evaluate-model:
+    executorLabel: exec-evaluate-model
+    inputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        metrics:
+          artifactType:
+            schemaTitle: system.Metrics
+            schemaVersion: 0.0.1
+  comp-generate-dataset:
+    executorLabel: exec-generate-dataset
+    inputDefinitions:
+      parameters:
+        n_samples:
+          defaultValue: 100.0
+          isOptional: true
+          parameterType: NUMBER_INTEGER
+    outputDefinitions:
+      artifacts:
+        dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+  comp-train-model:
+    executorLabel: exec-train-model
+    inputDefinitions:
+      artifacts:
+        dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+      parameters:
+        learning_rate:
+          defaultValue: 0.01
+          isOptional: true
+          parameterType: NUMBER_DOUBLE
+    outputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+deploymentSpec:
+  executors:
+    exec-evaluate-model:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - evaluate_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.16.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef evaluate_model(\n    model: Input[Model],\n    metrics: Output[Metrics],\n\
+          ) -> None:\n    \"\"\"Evaluates the model.\"\"\"\n    from pathlib import\
+          \ Path\n    import json\n\n    model_path = Path(model.path) / \"model.json\"\
+          \n    model_data = json.loads(model_path.read_text(encoding=\"utf-8\"))\n\
+          \n    # Fake metric for now.\n    accuracy = 0.90 if model_data[\"n_samples\"\
+          ] >= 50 else 0.70\n\n    metrics.log_metric(\"accuracy\", accuracy)\n  \
+          \  metrics.log_metric(\"n_samples\", model_data[\"n_samples\"])\n\n"
+        image: python:3.12-slim
+    exec-generate-dataset:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - generate_dataset
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.16.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef generate_dataset(dataset: Output[Dataset], n_samples: int = 100)\
+          \ -> None:\n    \"\"\"Generates a dataset.\"\"\"\n    from pathlib import\
+          \ Path\n    import json\n    import random\n\n    path = Path(dataset.path)\n\
+          \    path.mkdir(parents=True, exist_ok=True)\n\n    samples = [\n      \
+          \  {\"x\": random.random(), \"y\": random.randint(0, 1)}\n        for _\
+          \ in range(n_samples)\n    ]\n\n    (path / \"data.json\").write_text(json.dumps(samples),\
+          \ encoding=\"utf-8\")\n\n"
+        image: python:3.12-slim
+    exec-train-model:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.16.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_model(\n    dataset: Input[Dataset],\n    model: Output[Model],\n\
+          \    learning_rate: float = 0.01,\n) -> None:\n    \"\"\"Trains a model.\"\
+          \"\"\n    from pathlib import Path\n    import json\n\n    data_path = Path(dataset.path)\
+          \ / \"data.json\"\n    samples = json.loads(data_path.read_text(encoding=\"\
+          utf-8\"))\n\n    model_path = Path(model.path)\n    model_path.mkdir(parents=True,\
+          \ exist_ok=True)\n\n    # This is intentionally not real ML yet.\n    #\
+          \ The point is to create a model artifact.\n    artifact = {\n        \"\
+          kind\": \"tiny-threshold-model\",\n        \"learning_rate\": learning_rate,\n\
+          \        \"n_samples\": len(samples),\n        \"threshold\": 0.5,\n   \
+          \ }\n\n    (model_path / \"model.json\").write_text(json.dumps(artifact),\
+          \ encoding=\"utf-8\")\n\n"
+        image: python:3.12-slim
+pipelineInfo:
+  description: Defines the TinyML pipeline.
+  name: tiny-ml-pipeline
+root:
+  dag:
+    tasks:
+      evaluate-model:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-evaluate-model
+        dependentTasks:
+        - train-model
+        inputs:
+          artifacts:
+            model:
+              taskOutputArtifact:
+                outputArtifactKey: model
+                producerTask: train-model
+        taskInfo:
+          name: evaluate-model
+      generate-dataset:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-generate-dataset
+        inputs:
+          parameters:
+            n_samples:
+              componentInputParameter: n_samples
+        taskInfo:
+          name: generate-dataset
+      train-model:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-model
+        dependentTasks:
+        - generate-dataset
+        inputs:
+          artifacts:
+            dataset:
+              taskOutputArtifact:
+                outputArtifactKey: dataset
+                producerTask: generate-dataset
+          parameters:
+            learning_rate:
+              componentInputParameter: learning_rate
+        taskInfo:
+          name: train-model
+  inputDefinitions:
+    parameters:
+      learning_rate:
+        defaultValue: 0.01
+        isOptional: true
+        parameterType: NUMBER_DOUBLE
+      n_samples:
+        defaultValue: 100.0
+        isOptional: true
+        parameterType: NUMBER_INTEGER
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.16.1
