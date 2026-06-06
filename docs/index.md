@@ -90,4 +90,7 @@ The rest of the path expands that baseline into:
   - connect promotion to a smoke test
   - preview KServe as the later expansion path
 - local GPU-specific work
+  - verify the GPU path
+  - run a CUDA smoke test in the cluster
+  - make KFP training GPU-aware
 - expansion tracks for STACKIT, cloud, and CI/CD

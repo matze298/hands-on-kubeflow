@@ -305,35 +305,36 @@ KServe is not required for the core path, but the reader should understand where
 
 ## 6. Local GPU
 
-### 6.1 Verify NVIDIA Container Support
+### 6.1 Confirm the GPU Path
 
-Verify that the GPU is visible inside containers.
-
-### 6.2 Expose GPU to Local Kubernetes
-
-Install or configure the necessary local Kubernetes GPU support.
+Briefly verify that the local `MicroK8s` setup still exposes GPU resources to containers and pods.
 
 Focus:
 
-- NVIDIA device plugin
-- GPU resource requests
-- scheduling
-- common failure modes
+- container-level GPU check
+- Kubernetes-level GPU check
+- failure modes that matter for the tutorial
 
-### 6.3 Run a GPU Test Job
+### 6.2 Run a CUDA Smoke Test in the Cluster
 
-Run `nvidia-smi` and a tiny PyTorch CUDA test inside the cluster.
+Run a tiny PyTorch CUDA workload inside Kubernetes.
 
-### 6.4 Run GPU Training in Kubeflow
+Focus:
 
-Run the training component with GPU resources.
+- `nvidia.com/gpu` resource requests
+- image compatibility
+- scheduling and readiness
+
+### 6.3 Make KFP GPU-Aware
+
+Run the training component with GPU resources inside Kubeflow.
 
 Focus:
 
 - accelerator resource requests
-- CPU fallback
-- image compatibility
-- debugging failed GPU scheduling
+- CPU fallback when GPU is unavailable
+- component and image compatibility
+- debugging failed GPU scheduling in KFP
 
 ## 7. STACKIT Expansion
 
