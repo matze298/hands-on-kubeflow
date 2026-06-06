@@ -2,54 +2,91 @@
 
 Chapter 1 already proved the local GPU path at the container and cluster levels.
 
-Chapter 6 does one thing only: it makes the Kubeflow training path GPU-aware.
+Chapter 6 does one thing only:
 
-The point is not to re-teach GPU setup. The point is to close the loop from a working local GPU cluster to a KFP step that explicitly requests the GPU.
+```text
+make the Kubeflow training path GPU-aware
+```
+
+The point is not to re-teach host GPU setup. The point is to close the loop from a working local GPU-capable cluster to a KFP step that explicitly requests the GPU.
+
+## Updated Cluster Story
+
+For later chapters, this tutorial treats **MicroK8s** as the default local ML/Kubeflow platform.
+
+Use:
+
+```text
+MicroK8s = default local GPU-capable platform
+kind      = fallback for readers without the GPU-capable local setup
+```
+
+Chapter 1 used `kind` for the initial Kubernetes starter path because it is lightweight and easy to reset. For GPU-aware Kubeflow workflows, MicroK8s is the better local default because it more closely resembles a real single-node ML platform and has a dedicated GPU add-on.
 
 ## What You Will Build
 
 You will update the training path so that:
 
-- the training component requests `nvidia.com/gpu`
-- the same pipeline still works without GPU if you use the CPU fallback path
+- the training component can request `nvidia.com/gpu`
+- the same pipeline still works without GPU through a CPU fallback path
 - the GPU-enabled component image remains compatible with the local cluster
-- the Kubeflow run makes GPU scheduling failures visible
+- GPU scheduling failures are visible from KFP and Kubernetes
 
 ## Why This Matters
 
 An ML platform is not GPU-ready just because `nvidia-smi` works in a terminal.
 
-You still need to know:
+For Kubeflow, the important path is:
 
-- how to request the accelerator from a KFP step
-- how the pod behaves when scheduling succeeds or fails
-- how to keep a CPU fallback path available when the GPU path is unavailable
+```text
+KFP component
+  ↓
+Kubernetes Pod
+  ↓
+requests nvidia.com/gpu
+  ↓
+scheduled onto GPU-capable node
+  ↓
+container image has CUDA-compatible PyTorch
+  ↓
+training code uses cuda
+```
 
-That is the real difference between “GPU visible” and “GPU integrated into the workflow”.
-
-## Focus
+## What This Chapter Does Not Repeat
 
 This chapter does not repeat:
 
-- host GPU installation
+- host NVIDIA driver installation
 - Docker GPU runtime setup
 - basic Kubernetes GPU enablement
+- `nvidia-smi` smoke tests
+- Kubernetes device-plugin theory
 
-Those are covered earlier.
+Those were covered earlier.
 
-Instead, this chapter focuses on the KFP delta:
+## Chapter Files
 
-- component resource requests
-- image compatibility
-- KFP scheduling behavior
-- debugging failed GPU runs
+```text
+docs/06-local-gpu/
+├── 00-overview.md
+├── 01-cluster-gpu-readiness.md
+├── 02-gpu-training-image.md
+├── 03-gpu-aware-kfp-component.md
+├── 04-run-gpu-and-cpu-pipelines.md
+└── 05-debug-gpu-scheduling.md
+```
 
 ## Acceptance Criteria
 
-You are done with this section when:
+You are done with Chapter 6 when:
 
+- MicroK8s reports GPU capacity through `nvidia.com/gpu`
 - the training component can request `nvidia.com/gpu`
 - a KFP run succeeds on the GPU path
 - the CPU fallback still works when the GPU path is unavailable
 - GPU scheduling failures are visible in the pod or KFP logs
 - you can explain the difference between container GPU support and KFP GPU integration
+
+## Next Step
+
+Start with [Cluster GPU Readiness](01-cluster-gpu-readiness.md).

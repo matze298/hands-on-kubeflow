@@ -93,4 +93,5 @@ The rest of the path expands that baseline into:
   - verify the GPU path
   - run a CUDA smoke test in the cluster
   - make KFP training GPU-aware
+  - debug GPU scheduling failures
 - expansion tracks for STACKIT, cloud, and CI/CD

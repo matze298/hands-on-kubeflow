@@ -74,6 +74,11 @@ nav:
       - KServe Preview: 05-local-serving/05-kserve-preview.md
   - 6. Local GPU:
       - Overview: 06-local-gpu/00-overview.md
+      - Cluster GPU Readiness: 06-local-gpu/01-cluster-gpu-readiness.md
+      - GPU Training Image: 06-local-gpu/02-gpu-training-image.md
+      - GPU-Aware KFP Component: 06-local-gpu/03-gpu-aware-kfp-component.md
+      - Run GPU and CPU Pipelines: 06-local-gpu/04-run-gpu-and-cpu-pipelines.md
+      - Debug GPU Scheduling: 06-local-gpu/05-debug-gpu-scheduling.md
   - 7. STACKIT Expansion:
       - Overview: 07-stackit-expansion/00-overview.md
   - 8. Cloud Expansion:

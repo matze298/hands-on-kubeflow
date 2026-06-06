@@ -1,0 +1,207 @@
+# GPU Training Image
+
+This page adds a GPU-capable training image.
+
+The CPU image from Chapter 3 remains useful. The GPU image exists so the KFP training component can run with CUDA when the cluster schedules it onto a GPU-capable node.
+
+## What You Will Build
+
+You will create:
+
+```text
+Dockerfile.gpu
+src/kubeflow_by_doing/gpu.py
+```
+
+and build:
+
+```text
+kubeflow-by-doing/train:gpu-local
+```
+
+## Create `Dockerfile.gpu`
+
+Create `Dockerfile.gpu`:
+
+```dockerfile
+FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-runtime
+
+WORKDIR /app
+
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+COPY pyproject.toml uv.lock ./
+COPY src/ ./src/
+
+RUN pip install --no-cache-dir uv \
+    && uv sync --frozen --no-dev
+
+ENTRYPOINT ["uv", "run", "kbd"]
+```
+
+!!! note
+
+    The exact PyTorch/CUDA image tag should be kept aligned with the local NVIDIA driver and the PyTorch version in `uv.lock`. Codex should verify and pin the final image tag used by the repository.
+
+## Add a CUDA Check Command
+
+Create `src/kubeflow_by_doing/gpu.py`:
+
+```python
+from __future__ import annotations
+
+import torch
+
+
+def cuda_summary() -> dict[str, str | int | bool]:
+    available = torch.cuda.is_available()
+    summary: dict[str, str | int | bool] = {
+        "cuda_available": available,
+        "device_count": torch.cuda.device_count(),
+        "torch_version": torch.__version__,
+    }
+
+    if available:
+        summary["device_name"] = torch.cuda.get_device_name(0)
+
+    return summary
+```
+
+Update `src/kubeflow_by_doing/cli.py`:
+
+```python
+@app.command()
+def cuda_check() -> None:
+    from kubeflow_by_doing.gpu import cuda_summary
+
+    rprint(cuda_summary())
+```
+
+## Build the GPU Image
+
+```bash
+docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
+```
+
+## Test with Docker
+
+```bash
+docker run --rm --gpus all kubeflow-by-doing/train:gpu-local cuda-check
+```
+
+Expected shape:
+
+```text
+{
+  "cuda_available": true,
+  "device_count": 1,
+  "device_name": "..."
+}
+```
+
+Run a tiny training smoke test:
+
+```bash
+docker run --rm --gpus all kubeflow-by-doing/train:gpu-local \
+  train-model \
+  --output-dir /tmp/kbd-gpu-test \
+  --epochs 1 \
+  --learning-rate 0.001 \
+  --seed 42 \
+  --device cuda \
+  --n-train 32 \
+  --n-val 16 \
+  --batch-size 8
+```
+
+## Make the Image Available to the Cluster
+
+### MicroK8s
+
+Use the repo's chosen MicroK8s image workflow. A direct local import option is:
+
+```bash
+docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
+```
+
+Verify:
+
+```bash
+sudo microk8s ctr images ls | grep kubeflow-by-doing || true
+```
+
+### kind fallback
+
+```bash
+kind load docker-image kubeflow-by-doing/train:gpu-local --name kubeflow-by-doing
+```
+
+## Kubernetes GPU Image Smoke Test
+
+Create `infra/gpu/gpu-training-image-smoke.yaml`:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-training-image-smoke
+  namespace: kubeflow-by-doing
+spec:
+  restartPolicy: Never
+  containers:
+    - name: cuda-check
+      image: kubeflow-by-doing/train:gpu-local
+      imagePullPolicy: IfNotPresent
+      command: ["uv", "run", "kbd", "cuda-check"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+```
+
+Apply:
+
+```bash
+kubectl apply -f infra/gpu/gpu-training-image-smoke.yaml
+kubectl -n kubeflow-by-doing logs pod/gpu-training-image-smoke
+kubectl -n kubeflow-by-doing delete pod gpu-training-image-smoke --ignore-not-found
+```
+
+## Keep the CPU Image
+
+Do not replace the CPU image.
+
+Keep both:
+
+```text
+kubeflow-by-doing/train:local      # CPU/default
+kubeflow-by-doing/train:gpu-local  # GPU
+```
+
+This lets the pipeline expose a clear parameter:
+
+```text
+accelerator: cpu | gpu
+```
+
+## Acceptance Criteria
+
+You are done when:
+
+- `Dockerfile.gpu` exists
+- `kubeflow-by-doing/train:gpu-local` builds
+- `docker run --gpus all ... cuda-check` reports CUDA available
+- the image is available to MicroK8s or kind
+- a Kubernetes pod can run `cuda-check` with `nvidia.com/gpu: 1`
+- the CPU image still exists and still works
+
+## References
+
+- [PyTorch Docker images](https://hub.docker.com/r/pytorch/pytorch)
+- [NVIDIA CUDA container images](https://hub.docker.com/r/nvidia/cuda)
+- [MicroK8s registry and images](https://microk8s.io/docs/registry-images)
+- [kind loading images](https://kind.sigs.k8s.io/docs/user/quick-start/#loading-an-image-into-your-cluster)
+
+## Next Step
+
+Continue with [GPU-Aware KFP Component](03-gpu-aware-kfp-component.md).
