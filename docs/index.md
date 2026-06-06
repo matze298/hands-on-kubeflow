@@ -84,5 +84,10 @@ The rest of the path expands that baseline into:
   - add MLflow experiment tracking
   - write an explicit lineage record
 - local serving
+  - build a FastAPI model server
+  - containerize it
+  - deploy it to Kubernetes
+  - connect promotion to a smoke test
+  - preview KServe as the later expansion path
 - local GPU-specific work
 - expansion tracks for STACKIT, cloud, and CI/CD

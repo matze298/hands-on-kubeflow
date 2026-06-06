@@ -67,6 +67,11 @@ nav:
       - Trace Lineage: 04-artifacts-and-tracking/04-trace-lineage.md
   - 5. Local Serving:
       - Overview: 05-local-serving/00-overview.md
+      - FastAPI Model Server: 05-local-serving/01-fastapi-model-server.md
+      - Containerize Serving: 05-local-serving/02-containerize-serving.md
+      - Deploy to Kubernetes: 05-local-serving/03-deploy-to-kubernetes.md
+      - Connect Pipeline to Serving: 05-local-serving/04-connect-pipeline-to-serving.md
+      - KServe Preview: 05-local-serving/05-kserve-preview.md
   - 6. Local GPU:
       - Overview: 06-local-gpu/00-overview.md
   - 7. STACKIT Expansion:
