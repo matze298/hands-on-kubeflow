@@ -143,12 +143,14 @@ Prefer current tooling:
 - `pytest`
 - `marimo`
 - `mkdocs-material`
+- `prek` for Git hooks
 - `kind` or `k3d`
 - KFP v2-style pipelines
 - modern Kubernetes manifests
 - reproducible container builds
 
 Do not default to legacy choices unless the ecosystem forces it.
+If a chapter introduces repository commands, prefer the `uv run ...` form and keep the hook story aligned with `prek.toml` and `setup.py`.
 
 ## Local-First Rule
 

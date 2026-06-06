@@ -113,6 +113,7 @@ Prefer:
 - `pytest` for tests
 - `marimo` for notebook-like interactive exploration
 - `mkdocs-material` for documentation
+- `prek` for Git hook management
 - `kind` or `k3d` for local Kubernetes
 - Kubeflow Pipelines v2 style APIs
 - containerized components
@@ -129,6 +130,7 @@ Avoid defaulting to older stacks such as:
 - unversioned local scripts
 
 Older tools may be mentioned only when useful for comparison or compatibility.
+For Git hooks, prefer `prek` and the repository's `prek.toml` configuration instead of ad-hoc pre-commit setup.
 
 ## ML Code Assumption
 

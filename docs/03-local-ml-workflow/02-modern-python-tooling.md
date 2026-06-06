@@ -72,34 +72,42 @@ uv add --dev pytest ruff ty mkdocs-material marimo
 
     Keep dependencies minimal. The ML task is intentionally small; Kubeflow and Kubernetes are the learning targets.
 
-## Suggested Configuration
+## Example Project Files
 
-Add or adapt the following sections in `pyproject.toml`:
+Treat these as the shape of the files this tutorial expects, not as a verbatim dump of every repository.
+If your clone already has equivalent config, keep the repo's actual values and adapt only what needs to change for the chapter.
+
+`pyproject.toml` example:
 
 ```toml
 [project]
-name = "kubeflow-by-doing"
+name = "kubeflow-hands-on"
 version = "0.1.0"
 description = "Local-first Kubeflow tutorial project."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
-    "kfp>=2.0",
-    "rich>=13.0",
-    "torch>=2.7",
-    "typer>=0.12",
+    "kfp>=2.16.1",
+    "rich>=15.0.0",
+    "torch>=2.12.0",
+    "typer>=0.26.7",
 ]
 
 [project.scripts]
 kbd = "kubeflow_by_doing.cli:app"
 
 [dependency-groups]
+docs = [
+    "mkdocs-material>=9.7.6",
+]
+
 dev = [
-    "marimo",
-    "mkdocs-material",
-    "pytest",
-    "ruff",
-    "ty",
+    "marimo>=0.23.9",
+    "prek>=0.4.1",
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+    "ty>=0.0.38",
+    "typer",
 ]
 
 [build-system]
@@ -109,19 +117,51 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/kubeflow_by_doing"]
 
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM"]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
 ```
 
-If your repo already has equivalent configuration, prefer the existing convention.
+`ruff.toml` example:
+
+```toml
+target-version = "py314"
+line-length = 120
+preview = true
+fix = true
+
+[lint]
+select = ["ALL"]
+
+ignore = [
+    "COM812", # Recommended ignore from ruff-format
+    "CPY001", # No copyright added yet
+    "D203",   # One blank line before class (Google prefers no extra line)
+    "D213",   # Multi-line docstring summary on first line
+    "E501",   # Line length handled by formatter guidance
+    "FIX002", # Allow ToDo comments
+    "G004", # Allow f-strings in logs
+    "TRY301", # Allow to raise Exceptions within try blocks
+]
+
+pydocstyle.convention = "google"
+
+[lint.per-file-ignores]
+"setup.py" = ["PLC0415", "S404", "S603"]
+
+[format]
+preview = true
+```
+
+The exact Ruff ignore list is a repository preference, not a universal standard. If your team prefers a different linting balance, adjust the ignore list intentionally and keep the decision documented the same way you would for `ty` rules.
+
+The repo uses `prek` for pre-commit hooks. The bootstrap script installs them with:
+
+```bash
+uv run prek install --prepare-hooks
+```
+
+The backing config lives in `prek.toml`, which keeps the generic pre-commit hooks and the repo-local `ruff` and `ty` hooks together.
 
 ## Verify the Environment
 

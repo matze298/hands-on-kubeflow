@@ -12,8 +12,10 @@ ignore = [
     "D203",   # One blank line before class (Google prefers no extra line)
     "D213",   # Multi-line docstring summary on first line
     "E501",   # Line length handled by formatter guidance
+    "EM101", # Allow exception messages to be defined in the exception
     "FIX002", # Allow ToDo comments
     "G004", # Allow f-strings in logs
+    "TRY003", # Allow to define exception messages outside of the class
     "TRY301", # Allow to raise Exceptions within try blocks
 ]
 

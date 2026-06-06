@@ -5,6 +5,7 @@
 - Keep changes minimal and targeted to the task.
 - Prefer the existing repo conventions over introducing new patterns.
 - Use `uv` for dependency management and local commands.
+- Use `prek` for Git hook installation and keep it aligned with `setup.py` and `prek.toml`.
 - Keep this repository focused on Kubeflow. Do not import tutorial-specific material from other projects unless it is clearly generic.
 - Treat the tutorial as build-along content: prose, commands, and repo state should agree.
 - Treat `MicroK8s` as the default local ML/Kubeflow platform in later chapters. Use `kind` for the initial Kubernetes starter path and as the fallback for readers without the GPU-capable local setup.

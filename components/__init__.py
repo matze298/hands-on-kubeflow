@@ -1,1 +1,1 @@
-"""Contains reusable pipeline components."""
+"""Contains thin, reusable KFP wrappers."""

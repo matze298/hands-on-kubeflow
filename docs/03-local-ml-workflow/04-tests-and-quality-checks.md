@@ -185,7 +185,7 @@ Apply safe fixes if needed:
 
 ```bash
 uv run ruff format .
-uv run ruff check . --fix
+uv run ruff check --fix .
 ```
 
 ## Run ty

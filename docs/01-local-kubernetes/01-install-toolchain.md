@@ -21,6 +21,7 @@ Core tools:
 - `ty`
 - `pytest`
 - `mkdocs-material`
+- `prek`
 
 Optional but recommended:
 
@@ -112,6 +113,7 @@ uv run ty --version
 uv run pytest --version
 uv run mkdocs --version
 uv run marimo --version
+uv run prek --version
 ```
 
 ## Install Docker
@@ -329,6 +331,18 @@ Run:
 
 If you are working in a different clone with the same layout, make sure the docs group is installed before continuing.
 
+### `uv run prek --version` fails
+
+That usually means the dev dependency group was not synced, or the bootstrap script has not installed the hook tooling yet.
+
+Run:
+
+```bash
+./setup.py
+```
+
+If the command still fails, verify that `prek` is listed in `pyproject.toml` and that `uv sync --all-groups` completed successfully.
+
 ## Cleanup
 
 No cleanup is needed for this page.
@@ -359,6 +373,7 @@ You are done when:
 - if you plan to use the optional GPU-ready local cluster path, `sudo microk8s status --wait-ready` works
 - `uv --version` works
 - `uv run ruff --version` works inside the repo
+- `uv run prek --version` works inside the repo
 - `docker run --rm --gpus all ... nvidia-smi` succeeds, or you have documented why GPU support is not available on this machine
 
 ## Next Step

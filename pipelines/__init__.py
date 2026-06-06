@@ -1,1 +1,1 @@
-"""Kubeflow pipeline definitions."""
+"""Kubeflow pipelines."""
