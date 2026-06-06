@@ -4,7 +4,8 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from kfp import Client, compiler  # ty:ignore[possibly-missing-import]
+from kfp import compiler
+from kfp.client import Client
 
 if TYPE_CHECKING:
     from kfp.client.client import RunPipelineResult
