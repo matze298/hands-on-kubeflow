@@ -76,13 +76,9 @@ Fix for MicroK8s:
 docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
 ```
 
-Fix for kind:
+On `kind`, this failure is expected in the default tutorial flow because the GPU path is not the supported path there. Switch to the CPU fallback run or move to the MicroK8s GPU path before debugging the GPU image itself.
 
-```bash
-kind load docker-image kubeflow-by-doing/train:gpu-local --name kubeflow-by-doing
-```
-
-Or push to a registry and update the image tag.
+If you have separately configured a GPU-capable `kind` environment, you can still fix the image load the same way as the CPU image path, then rerun the GPU job.
 
 ## Failure Type 3: CUDA Unavailable
 

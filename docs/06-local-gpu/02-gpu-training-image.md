@@ -133,9 +133,9 @@ sudo microk8s ctr images ls | grep kubeflow-by-doing || true
 
 ### kind fallback
 
-```bash
-kind load docker-image kubeflow-by-doing/train:gpu-local --name kubeflow-by-doing
-```
+`kind` remains the CPU fallback cluster in this tutorial. Do not expect the GPU image to validate there unless you have separately set up a GPU-capable `kind` environment outside this tutorial.
+
+Keep using the CPU image path from the earlier chapters on `kind`, and move the GPU image validation to the MicroK8s path.
 
 ## Kubernetes GPU Image Smoke Test
 
@@ -191,7 +191,7 @@ You are done when:
 - `Dockerfile.gpu` exists
 - `kubeflow-by-doing/train:gpu-local` builds
 - `docker run --gpus all ... cuda-check` reports CUDA available
-- the image is available to MicroK8s or kind
+- the image is available to MicroK8s
 - a Kubernetes pod can run `cuda-check` with `nvidia.com/gpu: 1`
 - the CPU image still exists and still works
 

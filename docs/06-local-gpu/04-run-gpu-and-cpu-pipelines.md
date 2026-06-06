@@ -65,8 +65,9 @@ sudo microk8s ctr images ls | grep kubeflow-by-doing || true
 
 ```bash
 kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
-kind load docker-image kubeflow-by-doing/train:gpu-local --name kubeflow-by-doing
 ```
+
+The GPU image path in this chapter is MicroK8s-only in the default tutorial flow. If you stay on `kind`, keep using the CPU fallback run and do not expect the GPU run to work unless you have separately configured a GPU-capable `kind` cluster.
 
 ## Compile the Pipeline
 
@@ -102,6 +103,8 @@ pipeline succeeds
 ```
 
 ## Run GPU Path
+
+This run assumes the MicroK8s GPU-capable path from the earlier chapters.
 
 Run with:
 

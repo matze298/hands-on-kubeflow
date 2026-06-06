@@ -31,12 +31,6 @@ microk8s status
 microk8s kubectl get nodes
 ```
 
-If GPU support is not enabled yet:
-
-```bash
-sudo microk8s enable gpu
-```
-
 ## Verify GPU Capacity
 
 ```bash
@@ -54,45 +48,25 @@ Allocatable:
 
 If this does not appear, Kubernetes does not currently expose the GPU as a schedulable resource.
 
-## Run a Minimal GPU Pod
+## Optional Pod Check
 
-Create `infra/gpu/gpu-smoke-pod.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: gpu-smoke-pod
-  namespace: kubeflow-by-doing
-spec:
-  restartPolicy: Never
-  containers:
-    - name: nvidia-smi
-      image: nvidia/cuda:12.6.0-base-ubuntu24.04
-      command: ["nvidia-smi"]
-      resources:
-        limits:
-          nvidia.com/gpu: 1
-```
-
-Apply:
+If you want a pod-level confirmation, reuse the Chapter 1 GPU smoke test manifest:
 
 ```bash
-mkdir -p infra/gpu
-kubectl apply -f infra/gpu/gpu-smoke-pod.yaml
-kubectl -n kubeflow-by-doing get pod gpu-smoke-pod -w
+kubectl apply -f infra/k8s/gpu-smoke-test.yaml
+kubectl -n kubeflow-by-doing get pod gpu-smoke-test -w
 ```
 
 Inspect logs:
 
 ```bash
-kubectl -n kubeflow-by-doing logs pod/gpu-smoke-pod
+kubectl -n kubeflow-by-doing logs pod/gpu-smoke-test
 ```
 
 Clean up:
 
 ```bash
-kubectl -n kubeflow-by-doing delete pod gpu-smoke-pod --ignore-not-found
+kubectl -n kubeflow-by-doing delete pod gpu-smoke-test --ignore-not-found
 ```
 
 ## kind Fallback
@@ -122,12 +96,7 @@ kubectl describe nodes
 kubectl get pods -A | grep -i nvidia || true
 ```
 
-For MicroK8s:
-
-```bash
-sudo microk8s enable gpu
-microk8s status
-```
+If you have not completed the GPU-capable MicroK8s bootstrap yet, return to Chapter 1 and finish the cluster setup there before continuing this chapter.
 
 ### GPU pod stays `Pending`
 
@@ -151,6 +120,7 @@ You are done when:
 - MicroK8s nodes advertise `nvidia.com/gpu`, or you explicitly choose the CPU fallback path
 - the GPU smoke pod succeeds on GPU-capable MicroK8s
 - you can identify `Insufficient nvidia.com/gpu` in pod events
+- if the GPU path is unavailable, you know to stop and revisit the cluster bootstrap instead of debugging KFP first
 
 ## References
 

@@ -94,10 +94,13 @@ def train_model(
 
     return dsl.ContainerSpec(
         image=image,
-        command=["kbd"],
         args=args,
     )
 ```
+
+!!! note
+
+    Do not override `command` here. The training image already defines `ENTRYPOINT ["uv", "run", "kbd"]`, so the component only needs to pass the command arguments.
 
 !!! note
 
@@ -130,17 +133,7 @@ def configure_training_resources(
     return task
 ```
 
-If your KFP SDK uses different method names, Codex should adapt this helper.
-
-Common alternatives to check:
-
-```python
-task.set_gpu_limit("1")
-task.set_accelerator_type("nvidia.com/gpu")
-task.set_accelerator_limit(1)
-```
-
-The target pod must eventually request:
+This is the KFP v2 accelerator API pattern the tutorial expects:
 
 ```text
 nvidia.com/gpu: 1
