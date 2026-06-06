@@ -1,0 +1,148 @@
+# PIPELINE DEFINITION
+# Name: failing-pipeline
+# Description: Defines the failing pipeline.
+components:
+  comp-failing-step:
+    executorLabel: exec-failing-step
+    inputDefinitions:
+      parameters:
+        data_uri:
+          parameterType: STRING
+  comp-never-runs:
+    executorLabel: exec-never-runs
+  comp-start-step:
+    executorLabel: exec-start-step
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+deploymentSpec:
+  executors:
+    exec-failing-step:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - failing_step
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.16.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef failing_step(data_uri: str) -> None:\n    \"\"\"Failing step.\"\
+          \"\"\n    print(f\"received {data_uri=}\")\n    raise RuntimeError(\"simulated\
+          \ KFP component failure\")\n\n"
+        image: python:3.12-slim
+    exec-never-runs:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - never_runs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.16.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef never_runs() -> None:\n    \"\"\"Never runs step.\"\"\"\n   \
+          \ print(\"this should not run\")\n\n"
+        image: python:3.12-slim
+    exec-start-step:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - start_step
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.16.1'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef start_step() -> str:\n    \"\"\"Starts the pipeline.\"\"\"\n\
+          \    print(\"start step succeeded\")\n    return \"data-uri-placeholder\"\
+          \n\n"
+        image: python:3.12-slim
+pipelineInfo:
+  description: Defines the failing pipeline.
+  name: failing-pipeline
+root:
+  dag:
+    tasks:
+      failing-step:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-failing-step
+        dependentTasks:
+        - start-step
+        inputs:
+          parameters:
+            data_uri:
+              taskOutputParameter:
+                outputParameterKey: Output
+                producerTask: start-step
+        taskInfo:
+          name: failing-step
+      never-runs:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-never-runs
+        dependentTasks:
+        - failing-step
+        taskInfo:
+          name: never-runs
+      start-step:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-start-step
+        taskInfo:
+          name: start-step
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.16.1
