@@ -260,17 +260,15 @@ if tracking:
         tags["git_sha"] = git_sha
 
     with mlflow_run(run_name=f"train-{run_id or 'local'}", tags=tags) as mlflow_run_id:
-        log_params(
-            {
-                "epochs": epochs,
-                "learning_rate": learning_rate,
-                "seed": seed,
-                "n_train": n_train,
-                "n_val": n_val,
-                "batch_size": batch_size,
-                "device": str(torch_device),
-            }
-        )
+        log_params({
+            "epochs": epochs,
+            "learning_rate": learning_rate,
+            "seed": seed,
+            "n_train": n_train,
+            "n_val": n_val,
+            "batch_size": batch_size,
+            "device": str(torch_device),
+        })
         log_artifact_path(str(model_path))
         log_artifact_path(str(summary_path))
         summary["mlflow_run_id"] = mlflow_run_id
@@ -304,11 +302,7 @@ if tracking:
     if git_sha:
         tags["git_sha"] = git_sha
 
-    numeric_metrics = {
-        key: value
-        for key, value in metrics.items()
-        if isinstance(value, int | float)
-    }
+    numeric_metrics = {key: value for key, value in metrics.items() if isinstance(value, int | float)}
 
     with mlflow_run(run_name=f"evaluate-{run_id or 'local'}", tags=tags) as mlflow_run_id:
         log_metrics(numeric_metrics)
@@ -322,10 +316,10 @@ if tracking:
 Add options to both `train_model` and `evaluate_model`:
 
 ```python
-tracking: bool = typer.Option(False, help="Log run information to MLflow."),
-kfp_run_id: str | None = typer.Option(None, help="Kubeflow Pipelines run ID."),
-image_tag: str | None = typer.Option(None, help="Container image tag."),
-git_sha: str | None = typer.Option(None, help="Git commit SHA."),
+tracking: bool = (typer.Option(False, help="Log run information to MLflow."),)
+kfp_run_id: str | None = (typer.Option(None, help="Kubeflow Pipelines run ID."),)
+image_tag: str | None = (typer.Option(None, help="Container image tag."),)
+git_sha: str | None = (typer.Option(None, help="Git commit SHA."),)
 ```
 
 Pass them into `train` and `evaluate`.

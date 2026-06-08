@@ -278,15 +278,15 @@ if upload_artifacts:
 Add options to `train_model`:
 
 ```python
-run_id: str | None = typer.Option(None, help="Run ID used for artifact layout."),
-upload_artifacts: bool = typer.Option(False, help="Upload artifacts to object storage."),
+run_id: str | None = (typer.Option(None, help="Run ID used for artifact layout."),)
+upload_artifacts: bool = (typer.Option(False, help="Upload artifacts to object storage."),)
 ```
 
 Pass them into `train`:
 
 ```python
-run_id=run_id,
-upload_artifacts=upload_artifacts,
+run_id = (run_id,)
+upload_artifacts = (upload_artifacts,)
 ```
 
 Add the same options to `evaluate_model` and pass them into `evaluate`.

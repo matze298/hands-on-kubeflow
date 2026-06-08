@@ -55,10 +55,7 @@ def generate_dataset(dataset: Output[Dataset], n_samples: int = 100) -> None:
     path = Path(dataset.path)
     path.mkdir(parents=True, exist_ok=True)
 
-    samples = [
-        {"x": random.random(), "y": random.randint(0, 1)}
-        for _ in range(n_samples)
-    ]
+    samples = [{"x": random.random(), "y": random.randint(0, 1)} for _ in range(n_samples)]
 
     (path / "data.json").write_text(json.dumps(samples), encoding="utf-8")
 

@@ -142,10 +142,7 @@ class ModelServer:
             raise ValueError("pixels must be a 2D array")
 
         if tensor.shape != (self.image_size, self.image_size):
-            raise ValueError(
-                f"expected image shape {(self.image_size, self.image_size)}, "
-                f"got {tuple(tensor.shape)}"
-            )
+            raise ValueError(f"expected image shape {(self.image_size, self.image_size)}, got {tuple(tensor.shape)}")
 
         x = tensor.unsqueeze(0).unsqueeze(0).to(self.device)
 

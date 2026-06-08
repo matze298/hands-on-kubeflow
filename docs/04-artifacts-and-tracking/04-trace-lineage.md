@@ -256,14 +256,14 @@ Evaluation should receive the same lineage-related arguments.
 Target CLI arguments in the KFP component:
 
 ```python
-"--run-id",
-run_id,
-"--upload-artifacts",
-"--tracking",
-"--image-tag",
-image_tag,
-"--git-sha",
-git_sha,
+("--run-id",)
+(run_id,)
+("--upload-artifacts",)
+("--tracking",)
+("--image-tag",)
+(image_tag,)
+("--git-sha",)
+(git_sha,)
 ```
 
 ## Rebuild and Reload the Image

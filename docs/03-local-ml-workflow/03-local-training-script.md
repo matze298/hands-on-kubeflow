@@ -240,9 +240,7 @@ def train(
     torch_device = select_device(device)
     config = DatasetConfig(n_train=n_train, n_val=n_val, batch_size=batch_size, seed=seed)
     train_loader, _ = make_dataloaders(config)
-    model = TinyImageClassifier(image_size=config.image_size, n_classes=config.n_classes).to(
-        torch_device
-    )
+    model = TinyImageClassifier(image_size=config.image_size, n_classes=config.n_classes).to(torch_device)
 
     loss_fn = nn.CrossEntropyLoss()
     optimizer = Adam(model.parameters(), lr=learning_rate)

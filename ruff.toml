@@ -23,6 +23,10 @@ pydocstyle.convention = "google"
 
 [lint.per-file-ignores]
 "setup.py" = ["PLC0415", "S404", "S603"]
+"tests/**.py" = [
+    "PLR2004", # allow magic number comparisons
+    "S101", # allow asserts
+    ]
 
 [format]
 preview = true
