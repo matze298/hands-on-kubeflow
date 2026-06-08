@@ -47,10 +47,6 @@ pipelines/
 └── image_classification_pipeline.py
 ```
 
-!!! note
-
-    This chapter package contains documentation only. All code, manifests, and commands are defined inline in the docs so the tutorial reader, or Codex, can create them in the repository.
-
 ## Why This Matters
 
 Training is not the end of an ML workflow.

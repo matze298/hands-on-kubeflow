@@ -46,10 +46,6 @@ pipelines/
 └── image_classification_pipeline.py
 ```
 
-!!! note
-
-    This chapter package contains documentation only. All manifests and Python files are defined inline in the docs so the tutorial reader, or Codex, can create them in the repository.
-
 ## Why This Matters
 
 Kubernetes pods are temporary.

@@ -81,6 +81,13 @@ nav:
       - Debug GPU Scheduling: 06-local-gpu/05-debug-gpu-scheduling.md
   - 7. STACKIT Expansion:
       - Overview: 07-stackit-expansion/00-overview.md
+      - STACKIT Architecture: 07-stackit-expansion/01-stackit-architecture.md
+      - Create an SKE Cluster: 07-stackit-expansion/02-create-ske-cluster.md
+      - Container Registry and Images: 07-stackit-expansion/03-container-registry-and-images.md
+      - Object Storage and Secrets: 07-stackit-expansion/04-object-storage-and-secrets.md
+      - Run KFP on STACKIT: 07-stackit-expansion/05-run-kfp-on-stackit.md
+      - GPU Node Pool: 07-stackit-expansion/06-gpu-node-pool.md
+      - Cost Control and Cleanup: 07-stackit-expansion/07-cost-control-and-cleanup.md
   - 8. Cloud Expansion:
       - Overview: 08-cloud-expansion/00-overview.md
   - 9. CI/CD:

@@ -6,6 +6,8 @@ Build a local, GPU-aware Kubeflow learning environment that turns a normal PyTor
 
 The tutorial starts from a local Linux or WSL2 development machine with an NVIDIA GPU. Chapter 1 begins with `kind` for the first Kubernetes basics, then the core ML path uses `MicroK8s` as the default local Kubernetes platform. The course expands later to STACKIT, cloud object storage, CI/CD, and production-style deployment.
 
+This is a build-along tutorial: the chapter pages show the files, commands, and manifests to create, and the reader is expected to build the repository state while following along.
+
 ## Core Learning Path
 
 ```text

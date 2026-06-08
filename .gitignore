@@ -11,3 +11,10 @@ wheels/
 
 # Built documentation
 site/
+
+# Outputs of training runs
+outputs/
+
+# STACKIT expansion local files
+.env.stackit
+.kube/

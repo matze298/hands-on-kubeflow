@@ -94,4 +94,13 @@ The rest of the path expands that baseline into:
   - run a CUDA smoke test in the cluster
   - make KFP training GPU-aware
   - debug GPU scheduling failures
-- expansion tracks for STACKIT, cloud, and CI/CD
+- STACKIT expansion
+  - map the local workflow to STACKIT Kubernetes Engine
+  - connect `kubectl` to SKE
+  - push images to a registry reachable by the cluster
+  - replace MinIO with STACKIT Object Storage
+  - run Kubeflow Pipelines on SKE
+  - validate an optional GPU node pool
+  - clean up cloud resources explicitly
+- generic cloud expansion
+- CI/CD

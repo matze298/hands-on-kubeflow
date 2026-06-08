@@ -18,10 +18,6 @@ Kubeflow component
 pipeline with evaluation gate
 ```
 
-!!! note
-
-    This chapter package contains documentation only. The source files, tests, Dockerfile, and pipeline files are created by the reader while following the tutorial.
-
 ## What You Will Build
 
 During this chapter, you will create the target repository state:

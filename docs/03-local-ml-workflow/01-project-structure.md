@@ -35,10 +35,6 @@ kubeflow-by-doing/
 └── pyproject.toml
 ```
 
-!!! note
-
-    This tutorial package contains documentation only. You create these files while working through the chapter.
-
 ## Why This Matters
 
 Kubeflow should not be the first place where your training code is tested.

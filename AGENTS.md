@@ -37,6 +37,7 @@ Use this workflow for new chapters or chapter revisions:
 - This repository is docs-first. Readers are expected to create implementation files as they work through the chapters.
 - When a chapter introduces code, prefer to show the concrete file contents inline in Markdown and direct readers to create the files in tracked repository paths.
 - Treat checked-in implementation files, when they exist, as reference implementations created while following the tutorial, not as a requirement that every chapter's target files already exist ahead of time.
+- Do not repeat a generic "this chapter is docs-only" disclaimer in every chapter overview. State the build-along expectation once in the early course material, then keep later chapter intros focused on the actual work.
 - When docs show manifest, config, or YAML contents inline, direct readers to create the file in a tracked repository path such as `infra/`; do not send them to `/tmp` or other ephemeral directories.
 - Add inline comments to code or YAML snippets only when a concept, field, or command appears for the first time in the tutorial flow; avoid re-explaining repeated structure in later chapters.
 - Avoid notebooks in the core path. Prefer scripts, containers, and pipelines.
