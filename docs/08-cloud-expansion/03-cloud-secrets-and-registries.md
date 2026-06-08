@@ -87,7 +87,7 @@ If the registry is private, create an image pull secret.
 
 ```bash
 kubectl -n kubeflow-by-doing create secret docker-registry kbd-registry-credentials \
-  --docker-server="$KBD_REGISTRY_HOST" \
+  --docker-server="$KBD_REGISTRY" \
   --docker-username="<registry-username>" \
   --docker-password="<registry-password>" \
   --docker-email="<email>" \

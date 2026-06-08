@@ -38,7 +38,6 @@ infra/cloud/
 │   ├── artifact-store-secret.template.yaml
 │   └── image-pull-secret.md
 ├── checks/
-│   ├── cluster-check.sh
 │   ├── object-storage-check.py
 │   ├── object-storage-pod-check.yaml
 │   └── image-pull-check.yaml
