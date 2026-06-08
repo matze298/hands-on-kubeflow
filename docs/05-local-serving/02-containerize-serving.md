@@ -35,6 +35,8 @@ works in Kubernetes
 Create `Dockerfile.serve` in the repository root:
 
 ```dockerfile
+# syntax=docker/dockerfile:1.7
+
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -43,10 +45,16 @@ ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 
 COPY pyproject.toml uv.lock ./
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    pip install --no-cache-dir uv \
+    && uv sync --frozen --no-dev --no-install-project
+
+COPY README.md ./
 COPY src/ ./src/
 
-RUN pip install --no-cache-dir uv \
-    && uv sync --frozen --no-dev
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
 ENV KBD_MODEL_PATH=/models/model.pt
 ENV KBD_SERVE_DEVICE=cpu
@@ -59,6 +67,10 @@ CMD ["uv", "run", "uvicorn", "kubeflow_by_doing.serve:app", "--host", "0.0.0.0",
 !!! note
 
     This image expects the model file to be mounted at `/models/model.pt`. In Kubernetes, we will use an init container to download the model from MinIO into that path.
+
+The two-step `uv sync` keeps dependency downloads in a reusable layer and only reinstalls the local project after the source files change.
+
+`# syntax=docker/dockerfile:1.7` enables the Dockerfile features used below, including the `RUN --mount=type=cache` cache mount.
 
 ## Build the Image
 

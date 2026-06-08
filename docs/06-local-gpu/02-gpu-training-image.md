@@ -24,6 +24,8 @@ kubeflow-by-doing/train:gpu-local
 Create `Dockerfile.gpu`:
 
 ```dockerfile
+# syntax=docker/dockerfile:1.7
+
 FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-runtime
 
 WORKDIR /app
@@ -32,10 +34,16 @@ ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 
 COPY pyproject.toml uv.lock ./
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    pip install --no-cache-dir uv \
+    && uv sync --frozen --no-dev --no-install-project
+
+COPY README.md ./
 COPY src/ ./src/
 
-RUN pip install --no-cache-dir uv \
-    && uv sync --frozen --no-dev
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
 ENTRYPOINT ["uv", "run", "kbd"]
 ```
@@ -43,6 +51,8 @@ ENTRYPOINT ["uv", "run", "kbd"]
 !!! note
 
     The exact PyTorch/CUDA image tag should be kept aligned with the local NVIDIA driver and the PyTorch version in `uv.lock`. Codex should verify and pin the final image tag used by the repository.
+
+`# syntax=docker/dockerfile:1.7` enables the Dockerfile features used below, including the `RUN --mount=type=cache` cache mount.
 
 ## Add a CUDA Check Command
 

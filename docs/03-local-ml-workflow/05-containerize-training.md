@@ -44,6 +44,8 @@ If the image is wrong, the pipeline step is wrong.
 Create `Dockerfile` in the repository root:
 
 ```dockerfile
+# syntax=docker/dockerfile:1.7
+
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -52,15 +54,26 @@ ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 
 COPY pyproject.toml uv.lock ./
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    pip install --no-cache-dir uv \
+    && uv sync --frozen --no-dev --no-install-project
+
+COPY README.md ./
 COPY src/ ./src/
 
-RUN pip install --no-cache-dir uv \
-    && uv sync --frozen --no-dev
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
 ENTRYPOINT ["uv", "run", "kbd"]
 ```
 
-This keeps the image invocation model simple:
+This keeps the image invocation model simple and keeps dependency downloads in a reusable layer:
+
+- the first `uv sync` installs the locked dependencies without the local project
+- the second `uv sync` installs the local project after the source files are copied
+- BuildKit cache mounts let `uv` reuse downloaded packages across rebuilds
+- `# syntax=docker/dockerfile:1.7` enables the Dockerfile features used below, including the `RUN --mount=type=cache` cache mount
 
 - `docker run ... train-model ...` expands to `uv run kbd train-model ...`
 - KFP container components can reuse the image entrypoint and pass only CLI arguments
@@ -68,6 +81,15 @@ This keeps the image invocation model simple:
 ## Build the Image
 
 ```bash
+docker build -t kubeflow-by-doing/train:local .
+```
+
+If you prefer a wrapper script, put the same command into `build_docker.sh` and run that file instead. A small POSIX shell wrapper is enough:
+
+```sh
+#!/usr/bin/env sh
+set -eu
+
 docker build -t kubeflow-by-doing/train:local .
 ```
 
