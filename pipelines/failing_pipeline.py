@@ -24,7 +24,7 @@ def failing_step(data_uri: str) -> None:
         RuntimeError: Simulated KFP component failure.
     """
     print(f"received {data_uri=}")  # noqa:T201
-    raise RuntimeError("simulated KFP component failure")  # noqa: EM101, TRY003
+    raise RuntimeError("simulated KFP component failure")
 
 
 @component(base_image="python:3.12-slim")
