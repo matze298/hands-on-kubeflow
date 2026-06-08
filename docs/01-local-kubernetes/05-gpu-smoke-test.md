@@ -1,6 +1,6 @@
 # GPU Smoke Test
 
-This page verifies that GPU workloads are possible from containers and, when you use the GPU-capable local cluster path, from local Kubernetes.
+This page verifies that GPU workloads are possible from containers and, on the default GPU-capable local cluster path, from local Kubernetes.
 
 The tutorial targets a Linux or WSL2 Linux development machine with an NVIDIA GPU.
 

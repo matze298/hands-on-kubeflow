@@ -4,7 +4,7 @@ In this page, you create the local Kubernetes cluster used for the rest of the t
 
 We use `kind` as the starter cluster backend for the initial Kubernetes exercises.
 
-If you want Kubernetes-level GPU scheduling locally on WSL2, this page also shows the `MicroK8s` path that becomes the default local ML platform for the later chapters.
+This page also shows the `MicroK8s` path that becomes the default local ML platform for the later chapters.
 
 ## What You Will Build
 
@@ -93,7 +93,7 @@ If you want Kubernetes pods to request `nvidia.com/gpu` locally on WSL2, use `Mi
 
 `MicroK8s` runs natively inside the WSL2 Ubuntu environment and has official WSL2 installation and GPU addon documentation. That is the GPU-capable local cluster path used in the rest of the tutorial.
 
-In practice, this optional path does four things:
+In practice, this path does four things:
 
 - starts a local Kubernetes cluster inside WSL2
 - enables DNS and storage so later Kubeflow services can start cleanly
@@ -261,7 +261,7 @@ kubectl describe resourcequota tutorial-quota
 
 If your machine has less memory, adjust the quota or skip this step.
 
-If you are working on the optional GPU-capable `MicroK8s` path, apply the same namespace and quota manifests there after switching context.
+If you are working on the GPU-capable `MicroK8s` path, apply the same namespace and quota manifests there after switching context.
 
 ## Common Problems
 
@@ -346,7 +346,7 @@ To delete the cluster:
 kind delete cluster --name kubeflow-by-doing
 ```
 
-To reset the optional GPU-ready cluster:
+To reset the GPU-ready cluster:
 
 ```bash
 sudo microk8s reset
@@ -381,7 +381,7 @@ You are done when:
 - the default namespace is `kubeflow-by-doing`
 - `kubectl get pods -A` works
 - you know how to delete and recreate the cluster
-- if you choose the optional GPU-ready path, `kubectl get nodes -o jsonpath=...` shows a non-empty `nvidia.com/gpu`
+- if you use the GPU-ready `MicroK8s` path, `kubectl get nodes -o jsonpath=...` shows a non-empty `nvidia.com/gpu`
 
 ## Next Step
 

@@ -181,11 +181,11 @@ Verify:
 kind version
 ```
 
-## Optional: Install `MicroK8s` for GPU-Capable Local Kubernetes on WSL2
+## Install `MicroK8s` for the Default GPU-Capable Local Kubernetes Path on WSL2
 
 Keep `kind` available for the starter Kubernetes path and as the fallback if you do not have the GPU-capable local setup.
 
-If you want the tutorial's default ML platform on WSL2, install `MicroK8s` instead of trying to force GPU passthrough through the `kind` cluster.
+`MicroK8s` is the tutorial's default local ML platform on WSL2. Install it instead of trying to force GPU passthrough through the `kind` cluster.
 
 If you are inside WSL2 and have not enabled `systemd` yet, run this once in the Linux shell:
 
@@ -283,7 +283,7 @@ nvidia-smi
 docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
 ```
 
-If you plan to use the GPU-capable `MicroK8s` path:
+When you set up the GPU-capable `MicroK8s` path:
 
 ```bash
 sudo microk8s status --wait-ready
@@ -370,7 +370,7 @@ You are done when:
 - `docker run --rm hello-world` succeeds
 - `kubectl version --client` works
 - `kind version` works
-- if you plan to use the optional GPU-ready local cluster path, `sudo microk8s status --wait-ready` works
+- `sudo microk8s status --wait-ready` works
 - `uv --version` works
 - `uv run ruff --version` works inside the repo
 - `uv run prek --version` works inside the repo
