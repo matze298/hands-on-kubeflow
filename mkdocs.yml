@@ -90,6 +90,13 @@ nav:
       - Cost Control and Cleanup: 07-stackit-expansion/07-cost-control-and-cleanup.md
   - 8. Cloud Expansion:
       - Overview: 08-cloud-expansion/00-overview.md
+      - Portability Model: 08-cloud-expansion/01-portability-model.md
+      - Provider Overlays: 08-cloud-expansion/02-provider-overlays.md
+      - Cloud Secrets and Registries: 08-cloud-expansion/03-cloud-secrets-and-registries.md
+      - Object Storage Abstraction: 08-cloud-expansion/04-object-storage-abstraction.md
+      - GPU and Node Pools: 08-cloud-expansion/05-gpu-and-node-pools.md
+      - Cost and Cleanup: 08-cloud-expansion/06-cost-and-cleanup.md
+      - Provider Checklist: 08-cloud-expansion/07-provider-checklist.md
   - 9. CI/CD:
       - Overview: 09-ci-cd/00-overview.md
   - 10. Capstone:

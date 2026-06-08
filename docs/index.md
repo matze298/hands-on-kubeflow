@@ -103,4 +103,11 @@ The rest of the path expands that baseline into:
   - validate an optional GPU node pool
   - clean up cloud resources explicitly
 - generic cloud expansion
+  - define the portability model
+  - structure provider overlays
+  - manage cloud secrets and registry access
+  - keep object storage portable
+  - generalize GPU and node-pool setup
+  - plan provider-neutral cleanup
+  - finish with a provider checklist
 - CI/CD
