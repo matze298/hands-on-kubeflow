@@ -95,10 +95,10 @@ jobs:
           enable-cache: true
 
       - name: Set up Python
-        run: uv python install 3.12
+        run: uv python install 3.14
 
       - name: Sync dependencies
-        run: uv sync --all-extras --dev
+        run: uv sync --all-groups --frozen
 
       - name: Compile pipeline
         run: uv run python ci/compile_pipeline.py
