@@ -99,6 +99,12 @@ nav:
       - Provider Checklist: 08-cloud-expansion/07-provider-checklist.md
   - 9. CI/CD:
       - Overview: 09-ci-cd/00-overview.md
+      - CI Checks: 09-ci-cd/01-ci-checks.md
+      - Build Images: 09-ci-cd/02-build-images.md
+      - Compile Pipelines: 09-ci-cd/03-compile-pipelines.md
+      - Submit Pipelines: 09-ci-cd/04-submit-pipelines.md
+      - GitOps Promotion: 09-ci-cd/05-gitops-promotion.md
+      - Security and Maintenance: 09-ci-cd/06-security-and-maintenance.md
   - 10. Capstone:
       - Overview: 10-capstone/00-overview.md
   - Reference:

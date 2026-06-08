@@ -111,3 +111,9 @@ The rest of the path expands that baseline into:
   - plan provider-neutral cleanup
   - finish with a provider checklist
 - CI/CD
+  - automate checks and docs validation
+  - build and tag images in CI
+  - compile pipelines from a clean checkout
+  - optionally submit pipeline runs
+  - represent promotion as Git-tracked state
+  - keep secrets and expensive actions gated
