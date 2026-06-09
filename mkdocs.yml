@@ -107,5 +107,11 @@ nav:
       - Security and Maintenance: 09-ci-cd/06-security-and-maintenance.md
   - 10. Capstone:
       - Overview: 10-capstone/00-overview.md
+      - Capstone Contract: 10-capstone/01-capstone-contract.md
+      - Ingest and Validate: 10-capstone/02-ingest-and-validate.md
+      - Final Pipeline: 10-capstone/03-final-pipeline.md
+      - Run the Capstone: 10-capstone/04-run-the-capstone.md
+      - Verify End to End: 10-capstone/05-verify-end-to-end.md
+      - Cloud Mapping: 10-capstone/06-cloud-mapping.md
   - Reference:
       - References: reference/references.md

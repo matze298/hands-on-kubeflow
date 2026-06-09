@@ -117,3 +117,8 @@ The rest of the path expands that baseline into:
   - optionally submit pipeline runs
   - represent promotion as Git-tracked state
   - keep secrets and expensive actions gated
+- capstone
+  - ingest and validate data explicitly
+  - run the full local Kubeflow workflow end to end
+  - keep artifacts durable outside pod filesystems
+  - map the same pipeline to STACKIT or another cloud provider
