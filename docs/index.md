@@ -32,12 +32,11 @@ The ML workload is intentionally simple. The point is not to teach deep learning
 
 1. Read the [Syllabus](00-orientation/00-syllabus.md).
 2. Read the [Reader Contract](00-orientation/01-reader-contract.md).
-3. Read the [Authoring Contract](00-orientation/02-authoring-contract.md).
-4. Start the site locally:
+3. Start the site locally:
 
 ```bash
-uvx mkdocs-material
-mkdocs serve
+./setup.py
+uv run mkdocs serve
 ```
 
 ## Tutorial Style
@@ -122,3 +121,7 @@ The rest of the path expands that baseline into:
   - run the full local Kubeflow workflow end to end
   - keep artifacts durable outside pod filesystems
   - map the same pipeline to STACKIT or another cloud provider
+- conclusion and future reading
+  - summarize the platform shape you built
+  - explain which advanced Kubeflow and MLOps components to study next
+  - link to official references for KServe, AI gateways, Kubeflow Hub / Model Registry, Katib, Trainer, Ray / KubeRay, Kueue, DRA, AI conformance, data versioning, data quality, Spark Operator, Feast, observability, GenAI telemetry, policy, GitOps controllers, and GenAI application tooling

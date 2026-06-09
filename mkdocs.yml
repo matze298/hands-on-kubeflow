@@ -33,7 +33,6 @@ nav:
   - 0. Orientation:
       - Syllabus: 00-orientation/00-syllabus.md
       - Reader Contract: 00-orientation/01-reader-contract.md
-      - Authoring Contract: 00-orientation/02-authoring-contract.md
       - Course Architecture: 00-orientation/03-course-architecture.md
   - 1. Local Kubernetes:
       - Overview: 01-local-kubernetes/00-overview.md
@@ -113,5 +112,7 @@ nav:
       - Run the Capstone: 10-capstone/04-run-the-capstone.md
       - Verify End to End: 10-capstone/05-verify-end-to-end.md
       - Cloud Mapping: 10-capstone/06-cloud-mapping.md
+  - 11. Conclusion:
+      - Conclusion and Future Reading: 11-conclusion/00-overview.md
   - Reference:
       - References: reference/references.md

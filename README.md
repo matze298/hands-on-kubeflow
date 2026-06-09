@@ -4,7 +4,7 @@ This repository is tailored to a local-first, GPU-aware Kubeflow tutorial for re
 
 The tutorial starts with `kind` for the first Kubernetes basics and then uses `MicroK8s` on WSL2 as the default local ML platform. `kind` stays available as the starter and fallback path.
 
-The expansion chapters cover STACKIT first, then a provider-neutral cloud portability track, then CI/CD, and finally the capstone that ties the full workflow together.
+The expansion chapters cover STACKIT first, then a provider-neutral cloud portability track, then CI/CD, the capstone that ties the full workflow together, and a conclusion with future reading.
 
 The repository uses `uv` for dependency management and command execution, `ruff` and `ty` for code quality, `pytest` for tests, `mkdocs-material` for the docs site, `marimo` for optional interactive exploration, and `prek` for Git hooks.
 
@@ -14,5 +14,5 @@ The repository is meant to work both as the published tutorial source and as a r
 
 ```bash
 ./setup.py
-mkdocs serve
+uv run mkdocs serve
 ```

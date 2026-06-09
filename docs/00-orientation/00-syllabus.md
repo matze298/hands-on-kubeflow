@@ -19,6 +19,7 @@ This is a build-along tutorial: the chapter pages show the files, commands, and 
 5. Local Serving
 6. Local GPU
 10. Capstone
+11. Conclusion and Future Reading
 ```
 
 ## Expansion Tracks
@@ -41,11 +42,7 @@ Define the intended reader.
 
 The reader knows Python, PyTorch, and basic deep learning. The reader may be new to Kubernetes and Kubeflow.
 
-### 0.3 Authoring Contract
-
-Define how chapters are generated, refined, validated, and kept concise.
-
-### 0.4 Course Architecture
+### 0.3 Course Architecture
 
 Show the local-first, GPU-aware architecture and explain how later expansion chapters fit in.
 
@@ -417,11 +414,36 @@ train_model
   ↓
 evaluate_model
   ↓
-register_or_record_model
+record_or_register_model
   ↓
 deploy_model
   ↓
-smoke_test_endpoint
+smoke_test_model
 ```
 
 The capstone should run locally first and then point to STACKIT/cloud expansion steps.
+
+## 11. Conclusion and Future Reading
+
+Summarize the platform shape built by the tutorial and point readers to the next advanced topics.
+
+Focus:
+
+- KServe production serving
+- AI gateways and inference-aware routing
+- Kubeflow Hub / Model Registry
+- Katib hyperparameter tuning
+- Kubeflow Trainer and distributed training
+- Ray / KubeRay for adjacent distributed Python workloads
+- Kueue batch and GPU scheduling
+- Kubernetes Dynamic Resource Allocation
+- Kubernetes AI platform conformance
+- data versioning and reproducibility
+- data quality frameworks
+- Kubeflow Spark Operator for larger data processing
+- Feast feature stores
+- observability and drift monitoring
+- GenAI observability standards
+- image signing, provenance, and policy
+- GitOps controllers
+- GenAI application-layer tooling
