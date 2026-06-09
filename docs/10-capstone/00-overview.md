@@ -18,6 +18,21 @@ CI/CD expansion
 
 The capstone ties the core path together into one workflow.
 
+## How to Use the Capstone
+
+Treat this chapter as the end-to-end test for the tutorial.
+
+The pages give you:
+
+- the target contract
+- the files to create
+- implementation requirements
+- hints where the earlier chapters matter
+- commands to compile, run, and verify the workflow
+- acceptance criteria for each stage
+
+Build the files yourself first. Full reference implementations are placed behind collapsible spoiler blocks. Use them when you are stuck, when you want to compare your solution, or when you need to recover a broken local state.
+
 ## Final Pipeline
 
 ```text
@@ -50,9 +65,7 @@ src/kubeflow_by_doing/
 components/
 ├── ingest_data.py
 ├── validate_data.py
-├── record_or_register_model.py
-├── deploy_model.py
-└── smoke_test_model.py
+└── record_or_register_model.py
 
 pipelines/
 └── capstone_pipeline.py

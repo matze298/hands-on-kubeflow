@@ -2,6 +2,8 @@
 
 This page defines what the capstone must prove.
 
+This is the assessment chapter for the tutorial. Read the contract first, then build the files yourself. The complete reference files are available behind spoiler blocks so you can compare your solution without turning the capstone into a copy-paste exercise.
+
 ## The Contract
 
 The capstone workflow must run from a clean repository state and produce an inspectable platform run.
@@ -98,9 +100,17 @@ gpu_count
 cpu_image
 gpu_image
 serve_image
+artifact_bucket
 min_accuracy
 deploy_after_promotion
 git_sha
+n_train
+n_val
+image_size
+n_classes
+epochs
+learning_rate
+batch_size
 ```
 
 ## Create `reports/capstone-runbook.md`
@@ -111,70 +121,72 @@ Create:
 mkdir -p reports
 ```
 
-Create `reports/capstone-runbook.md`:
+Create `reports/capstone-runbook.md` yourself. It should capture the goal, the final pipeline, required services, required images, required secrets, run ID convention, and success criteria.
 
-```markdown
-# Capstone Runbook
+??? example "Reference implementation: `reports/capstone-runbook.md`"
 
-## Goal
+    ````markdown
+    # Capstone Runbook
 
-Run the full local Kubeflow by Doing workflow end to end.
+    ## Goal
 
-## Pipeline
+    Run the full local Kubeflow by Doing workflow end to end.
 
-```text
-ingest_data
-  ↓
-validate_data
-  ↓
-train_model
-  ↓
-evaluate_model
-  ↓
-record_or_register_model
-  ↓
-deploy_model
-  ↓
-smoke_test_model
-```
+    ## Pipeline
 
-## Required Services
+    ```text
+    ingest_data
+      ↓
+    validate_data
+      ↓
+    train_model
+      ↓
+    evaluate_model
+      ↓
+    record_or_register_model
+      ↓
+    deploy_model
+      ↓
+    smoke_test_model
+    ```
 
-- Kubernetes cluster: MicroK8s preferred, kind fallback
-- Kubeflow Pipelines
-- object storage: MinIO locally
-- optional MLflow
-- model server Deployment
+    ## Required Services
 
-## Required Images
+    - Kubernetes cluster: MicroK8s preferred, kind fallback
+    - Kubeflow Pipelines
+    - object storage: MinIO locally
+    - optional MLflow
+    - model server Deployment
 
-- training image
-- optional GPU training image
-- serving image
+    ## Required Images
 
-## Required Secrets
+    - training image
+    - optional GPU training image
+    - serving image
 
-- `artifact-store-credentials`
-- optional registry pull secret
+    ## Required Secrets
 
-## Run ID
+    - `artifact-store-credentials`
+    - optional registry pull secret
 
-Use a unique run ID:
+    ## Run ID
 
-```bash
-export KBD_RUN_ID="capstone-local-$(date +%Y%m%d-%H%M%S)"
-```
+    Use a unique run ID:
 
-## Success Criteria
+    ```bash
+    export KBD_RUN_ID="capstone-local-$(date +%Y%m%d-%H%M%S)"
+    ```
 
-- KFP run succeeds
-- model artifact exists in object storage
-- metrics artifact exists in object storage
-- lineage artifact exists in object storage
-- promotion or registry record exists
-- model server responds to `/healthz`
-- model server responds to `/predict`
-```
+    ## Success Criteria
+
+    - KFP run succeeds
+    - model artifact exists in object storage
+    - metrics artifact exists in object storage
+    - lineage artifact exists in object storage
+    - promotion or registry record exists
+    - model server responds to `/healthz`
+    - model server responds to `/predict`
+    ````
 
 ## Local Preflight
 

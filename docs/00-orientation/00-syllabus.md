@@ -403,7 +403,7 @@ Promote model versions through Git-based deployment changes.
 
 ## 10. Capstone
 
-Build the final end-to-end local workflow:
+Use the final end-to-end local workflow as a guided assessment:
 
 ```text
 ingest_data
@@ -421,7 +421,7 @@ deploy_model
 smoke_test_model
 ```
 
-The capstone should run locally first and then point to STACKIT/cloud expansion steps.
+The capstone should run locally first and then point to STACKIT/cloud expansion steps. Readers should build the final files themselves from the contract, requirements, hints, and verification checks; complete reference implementations stay behind spoiler blocks.
 
 ## 11. Conclusion and Future Reading
 

@@ -11,18 +11,18 @@ You will verify:
 - lineage
 - registry record
 - MLflow tracking
-- served endpoint
-- smoke test result
+- served endpoint, for deploy-enabled runs
+- smoke test result, for deploy-enabled runs
 
 ## KFP Run Status
 
-In the KFP UI, confirm:
+In the KFP UI, open the run you want to verify and confirm:
 
 ```text
 run status: succeeded
 ```
 
-Then inspect each step:
+For the CPU-only capstone run from the first pass, inspect:
 
 ```text
 ingest_data
@@ -33,6 +33,11 @@ read_accuracy
 promote_model
 write_lineage
 record_or_register_model
+```
+
+For the deploy-enabled run, also inspect:
+
+```text
 deploy_model
 smoke_test_model
 ```
@@ -56,6 +61,8 @@ kubectl -n minio port-forward svc/minio 9000:9000
 ```
 
 List run artifacts:
+
+The examples below use the deploy-enabled run. For the CPU-only run, set `run_id = "capstone-cpu-001"` and skip the endpoint checks.
 
 ```bash
 uv run python - <<'PY'
@@ -191,6 +198,8 @@ Check:
 
 ## Verify Served Endpoint
 
+This section only applies to a run submitted with `deploy_after_promotion: true`, such as `capstone-deploy-001`.
+
 Port-forward:
 
 ```bash
@@ -211,47 +220,58 @@ uv run kbd-client predict --endpoint http://localhost:8000/predict --image-size 
 
 ## Create `src/kubeflow_by_doing/capstone_report.py`
 
-Create a small local reporting helper:
+Create a small local reporting helper yourself.
 
-```python
-from __future__ import annotations
+Requirements:
 
-import json
-import os
+- read `KBD_RUN_ID`, `KBD_ARTIFACT_BUCKET`, `KBD_S3_ENDPOINT_URL`, and S3 credentials from the environment
+- list the run prefix from object storage
+- print a JSON report containing the run ID and object URIs
+- keep this as a local verification helper; it does not need to run inside KFP
 
-import boto3
-from botocore.client import Config
+??? example "Reference implementation: `src/kubeflow_by_doing/capstone_report.py`"
 
+    ```python
+    from __future__ import annotations
 
-def main() -> None:
-    run_id = os.environ["KBD_RUN_ID"]
-    bucket = os.environ["KBD_ARTIFACT_BUCKET"]
+    import json
+    import os
 
-    client = boto3.client(
-        "s3",
-        endpoint_url=os.environ["KBD_S3_ENDPOINT_URL"],
-        aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
-        aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
-        region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
-        config=Config(signature_version="s3v4"),
-    )
-
-    response = client.list_objects_v2(Bucket=bucket, Prefix=f"runs/{run_id}/")
-    objects = [f"s3://{bucket}/{item['Key']}" for item in response.get("Contents", [])]
-
-    print(json.dumps({"run_id": run_id, "objects": objects}, indent=2))
+    import boto3
+    from botocore.client import Config
 
 
-if __name__ == "__main__":
-    main()
-```
+    def main() -> None:
+        run_id = os.environ["KBD_RUN_ID"]
+        bucket = os.environ["KBD_ARTIFACT_BUCKET"]
+
+        client = boto3.client(
+            "s3",
+            endpoint_url=os.environ["KBD_S3_ENDPOINT_URL"],
+            aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+            aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
+            region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
+            config=Config(signature_version="s3v4"),
+        )
+
+        response = client.list_objects_v2(Bucket=bucket, Prefix=f"runs/{run_id}/")
+        objects = [f"s3://{bucket}/{item['Key']}" for item in response.get("Contents", [])]
+
+        print(json.dumps({"run_id": run_id, "objects": objects}, indent=2))
+
+
+    if __name__ == "__main__":
+        main()
+    ```
 
 Run:
 
 ```bash
-export KBD_RUN_ID=capstone-deploy-001
+export KBD_RUN_ID=capstone-cpu-001
 uv run python -m kubeflow_by_doing.capstone_report
 ```
+
+For a deploy-enabled run, set `KBD_RUN_ID=capstone-deploy-001`.
 
 ## Common Problems
 
@@ -299,8 +319,8 @@ You are done when:
 - lineage JSON can be inspected
 - registry record says promoted
 - MLflow run exists if tracking is enabled
-- model server responds to health
-- model server returns predictions
+- model server responds to health for deploy-enabled runs
+- model server returns predictions for deploy-enabled runs
 - capstone report script lists artifacts
 
 ## Next Step

@@ -118,7 +118,8 @@ The rest of the path expands that baseline into:
   - keep secrets and expensive actions gated
 - capstone
   - ingest and validate data explicitly
-  - run the full local Kubeflow workflow end to end
+  - use the full local Kubeflow workflow as a guided end-to-end test
+  - keep complete reference implementations behind spoiler blocks
   - keep artifacts durable outside pod filesystems
   - map the same pipeline to STACKIT or another cloud provider
 - conclusion and future reading

@@ -68,7 +68,7 @@ Serving image:
 docker build -f Dockerfile.serve -t kubeflow-by-doing/serve:local .
 ```
 
-Optional GPU image:
+Optional GPU image, only for the GPU capstone path:
 
 ```bash
 docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
@@ -81,6 +81,11 @@ docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
 ```bash
 docker save kubeflow-by-doing/train:local | sudo microk8s ctr image import -
 docker save kubeflow-by-doing/serve:local | sudo microk8s ctr image import -
+```
+
+For the optional GPU capstone path:
+
+```bash
 docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
 ```
 
@@ -89,6 +94,11 @@ docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
 ```bash
 kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 kind load docker-image kubeflow-by-doing/serve:local --name kubeflow-by-doing
+```
+
+For the optional GPU capstone path:
+
+```bash
 kind load docker-image kubeflow-by-doing/train:gpu-local --name kubeflow-by-doing
 ```
 
@@ -143,6 +153,7 @@ gpu_count: 0
 cpu_image: kubeflow-by-doing/train:local
 gpu_image: kubeflow-by-doing/train:gpu-local
 serve_image: kubeflow-by-doing/serve:local
+artifact_bucket: kubeflow-by-doing
 min_accuracy: 0.5
 deploy_after_promotion: false
 git_sha: <git rev-parse --short HEAD>
@@ -191,6 +202,7 @@ deploy_after_promotion: true
 min_accuracy: 0.5
 accelerator: cpu
 gpu_count: 0
+artifact_bucket: kubeflow-by-doing
 ```
 
 Expected additional steps:
@@ -210,6 +222,7 @@ run_id: capstone-gpu-001
 accelerator: gpu
 gpu_count: 1
 gpu_image: kubeflow-by-doing/train:gpu-local
+artifact_bucket: kubeflow-by-doing
 min_accuracy: 0.5
 deploy_after_promotion: false
 ```

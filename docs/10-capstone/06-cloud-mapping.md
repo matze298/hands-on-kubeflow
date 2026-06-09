@@ -59,6 +59,7 @@ gpu_count
 cpu_image
 gpu_image
 serve_image
+artifact_bucket
 min_accuracy
 deploy_after_promotion
 git_sha
@@ -80,6 +81,8 @@ accelerator: cpu
 gpu_count: 0
 cpu_image: <STACKIT registry training image>
 gpu_image: <STACKIT registry GPU image>
+serve_image: <STACKIT registry serving image>
+artifact_bucket: <STACKIT object storage bucket>
 min_accuracy: 0.5
 deploy_after_promotion: false
 git_sha: <git sha>
@@ -94,6 +97,8 @@ accelerator: cpu
 gpu_count: 0
 cpu_image: <provider registry training image>
 gpu_image: <provider registry GPU image>
+serve_image: <provider registry serving image>
+artifact_bucket: <provider object storage bucket>
 min_accuracy: 0.5
 deploy_after_promotion: false
 git_sha: <git sha>
