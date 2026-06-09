@@ -29,9 +29,12 @@ ingest_data
 validate_data
 train_model
 evaluate_model
+read_accuracy
+promote_model
+write_lineage
 record_or_register_model
 deploy_model
-smoke_test_endpoint
+smoke_test_model
 ```
 
 ## Verify Object Storage

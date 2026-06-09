@@ -21,7 +21,7 @@ record_or_register_model
   ↓
 deploy_model
   ↓
-smoke_test_endpoint
+smoke_test_model
 ```
 
 ## What Counts as Success
@@ -135,7 +135,7 @@ record_or_register_model
   ↓
 deploy_model
   ↓
-smoke_test_endpoint
+smoke_test_model
 ```
 
 ## Required Services

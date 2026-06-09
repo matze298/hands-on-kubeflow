@@ -142,6 +142,7 @@ accelerator: cpu
 gpu_count: 0
 cpu_image: kubeflow-by-doing/train:local
 gpu_image: kubeflow-by-doing/train:gpu-local
+serve_image: kubeflow-by-doing/serve:local
 min_accuracy: 0.5
 deploy_after_promotion: false
 git_sha: <git rev-parse --short HEAD>

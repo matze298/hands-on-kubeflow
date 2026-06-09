@@ -135,6 +135,7 @@ from kfp import dsl
 )
 def deploy_model(
     model_uri: str,
+    serve_image: str = "kubeflow-by-doing/serve:local",
     namespace: str = "kubeflow-by-doing",
     configmap_name: str = "model-server-config",
     deployment_name: str = "model-server",
@@ -173,7 +174,15 @@ def deploy_model(
                             "kubeflow-by-doing/restarted-at": restarted_at,
                             "kubeflow-by-doing/model-uri": model_uri,
                         }
-                    }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "server",
+                                "image": serve_image,
+                            }
+                        ]
+                    },
                 }
             }
         },
@@ -230,7 +239,7 @@ Target intent:
 ```python
 from kfp import kubernetes
 
-deploy_task = deploy_model(model_uri=model_uri)
+deploy_task = deploy_model(model_uri=model_uri, serve_image=serve_image)
 kubernetes.set_service_account_name(deploy_task, "pipeline-deployer")
 ```
 
@@ -243,7 +252,7 @@ Update `pipelines/image_classification_pipeline.py`.
 Inside the successful promotion branch, add:
 
 ```python
-deploy_task = deploy_model(model_uri=model_uri)
+deploy_task = deploy_model(model_uri=model_uri, serve_image=serve_image)
 smoke_test_model().after(deploy_task)
 ```
 

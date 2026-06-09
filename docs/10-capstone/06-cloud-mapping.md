@@ -58,6 +58,7 @@ accelerator
 gpu_count
 cpu_image
 gpu_image
+serve_image
 min_accuracy
 deploy_after_promotion
 git_sha

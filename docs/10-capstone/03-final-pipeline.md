@@ -27,7 +27,7 @@ record_or_register_model
   ↓
 deploy_model
   ↓
-smoke_test_endpoint
+smoke_test_model
 ```
 
 ## Create `registry.py`
@@ -273,6 +273,7 @@ def capstone_pipeline(
     gpu_count: int = 0,
     cpu_image: str = "kubeflow-by-doing/train:local",
     gpu_image: str = "kubeflow-by-doing/train:gpu-local",
+    serve_image: str = "kubeflow-by-doing/serve:local",
     min_accuracy: float = 0.5,
     deploy_after_promotion: bool = False,
     git_sha: str = "unknown",
@@ -378,7 +379,10 @@ def capstone_pipeline(
         attach_artifact_secret(record_task)
 
         with dsl.If(deploy_after_promotion == True):  # noqa: E712
-            deploy_task = deploy_model(model_uri=model_uri).after(record_task)
+            deploy_task = deploy_model(
+                model_uri=model_uri,
+                serve_image=serve_image,
+            ).after(record_task)
             kubernetes.set_service_account_name(deploy_task, "pipeline-deployer")
             smoke_test_model().after(deploy_task)
 
