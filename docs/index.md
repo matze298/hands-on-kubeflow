@@ -124,4 +124,4 @@ The rest of the path expands that baseline into:
 - conclusion and future reading
   - summarize the platform shape you built
   - explain which advanced Kubeflow and MLOps components to study next
-  - link to official references for KServe, AI gateways, Kubeflow Hub / Model Registry, Katib, Trainer, Ray / KubeRay, Kueue, DRA, AI conformance, data versioning, data quality, Spark Operator, Feast, observability, GenAI telemetry, policy, GitOps controllers, and GenAI application tooling
+  - link to official references for KServe, inference runtimes, AI gateways, Kubeflow Hub / Model Registry, Katib, Trainer, Ray / KubeRay, JobSet, Kueue, DRA, AI conformance, data versioning, data quality, Spark Operator, Feast, observability, GenAI telemetry, policy, GitOps controllers, GenAI application tooling, MCP, and LLM security

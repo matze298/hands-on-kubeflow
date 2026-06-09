@@ -430,11 +430,13 @@ Summarize the platform shape built by the tutorial and point readers to the next
 Focus:
 
 - KServe production serving
+- inference runtime optimization
 - AI gateways and inference-aware routing
 - Kubeflow Hub / Model Registry
 - Katib hyperparameter tuning
 - Kubeflow Trainer and distributed training
 - Ray / KubeRay for adjacent distributed Python workloads
+- JobSet for multi-job distributed workloads
 - Kueue batch and GPU scheduling
 - Kubernetes Dynamic Resource Allocation
 - Kubernetes AI platform conformance
@@ -447,3 +449,4 @@ Focus:
 - image signing, provenance, and policy
 - GitOps controllers
 - GenAI application-layer tooling
+- MCP and OWASP GenAI security

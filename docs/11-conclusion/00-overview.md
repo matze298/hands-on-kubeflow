@@ -41,11 +41,13 @@ Pick the next step based on the bottleneck you actually have:
 | If you need... | Study next |
 |---|---|
 | production-grade model serving | KServe |
+| faster LLM or model inference runtimes | vLLM, SGLang, Triton, and TensorRT-LLM |
 | inference-aware LLM traffic routing | AI gateways and Gateway API inference work |
 | a real model lifecycle system | Kubeflow Hub / Model Registry |
 | automated hyperparameter search | Katib |
 | distributed training or LLM fine-tuning | Kubeflow Trainer |
 | distributed Python services or non-KFP compute | Ray and KubeRay |
+| multi-job distributed AI workloads | JobSet |
 | quota-aware GPU scheduling | Kueue |
 | flexible accelerator allocation or partitioned devices | Kubernetes Dynamic Resource Allocation |
 | shared Kubeflow environments | full Kubeflow platform operations |
@@ -60,6 +62,7 @@ Pick the next step based on the bottleneck you actually have:
 | production credential handling | secret management and identity |
 | reconciled deployments | Argo CD or Flux |
 | RAG or AI application workflows | GenAI application layer |
+| agent tool integration or LLM security | MCP and OWASP GenAI security |
 
 ## Production Serving with KServe
 
@@ -82,6 +85,28 @@ References:
 - [KServe InferenceService documentation](https://kserve.github.io/website/docs/model-serving/predictive-inference/frameworks/overview)
 - [KServe generative inference runtime overview](https://kserve.github.io/website/docs/model-serving/generative-inference/overview)
 - [KServe installation guide](https://kserve.github.io/website/docs/admin-guide/kubernetes-deployment)
+
+## Inference Runtime Optimization
+
+KServe and Kubernetes decide how a model is deployed. The inference runtime decides how efficiently requests are executed inside the serving container.
+
+For small tutorial models, FastAPI is enough. For larger models, especially LLMs and multimodal models, runtime choice can dominate latency, throughput, memory use, batching behavior, quantization options, and GPU cost.
+
+Study inference runtimes when you need:
+
+- continuous batching or dynamic batching
+- optimized KV-cache behavior
+- quantization or speculative decoding
+- OpenAI-compatible LLM serving APIs
+- multi-GPU or distributed inference
+- model-specific serving performance tuning
+
+References:
+
+- [vLLM Kubernetes deployment](https://docs.vllm.ai/en/latest/deployment/k8s/)
+- [SGLang documentation](https://docs.sglang.io/)
+- [NVIDIA Triton Inference Server documentation](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/)
+- [TensorRT-LLM documentation](https://nvidia.github.io/TensorRT-LLM/)
 
 ## AI Gateways and Inference-Aware Routing
 
@@ -185,6 +210,26 @@ References:
 
 - [Ray on Kubernetes](https://docs.ray.io/en/latest/cluster/kubernetes/index.html)
 - [KubeRay project repository](https://github.com/ray-project/kuberay)
+
+## Multi-Job Workloads with JobSet
+
+Kubeflow Trainer gives you a higher-level training API. Some platform teams also need a lower-level Kubernetes-native API for groups of related Jobs.
+
+JobSet models distributed AI, ML, and HPC workloads as a group of Kubernetes Jobs that should be managed together. It is especially relevant when a workload has distinct roles such as leaders, workers, parameter servers, or other replicated job groups, and when it should integrate with Kueue for queued admission.
+
+Study JobSet when you need:
+
+- multiple related Kubernetes Jobs managed as one workload
+- stable networking between distributed workers
+- explicit leader-worker or role-based job groups
+- failure and success policies across a distributed workload
+- Kueue integration for multi-job AI workloads
+
+References:
+
+- [JobSet overview](https://jobset.sigs.k8s.io/docs/overview/)
+- [JobSet concepts](https://jobset.sigs.k8s.io/docs/concepts/)
+- [JobSet example workloads](https://jobset.sigs.k8s.io/docs/tasks/example-workloads/)
 
 ## GPU and Batch Scheduling with Kueue
 
@@ -480,6 +525,27 @@ References:
 - [LangSmith RAG evaluation tutorial](https://docs.langchain.com/langsmith/evaluate-rag-tutorial)
 - [LlamaIndex question-answering / RAG documentation](https://docs.llamaindex.ai/en/v0.10.34/use_cases/q_and_a/)
 
+## Agent Tooling and GenAI Security
+
+RAG is often the first GenAI application pattern. Agentic applications add another boundary: the model can call tools, read external context, and sometimes trigger real actions.
+
+The Model Context Protocol is the emerging standard to study for tool and context integration. Security guidance such as the OWASP Top 10 for LLMs and GenAI Apps is the matching operational topic. This is separate from Kubeflow itself, but it becomes important when deployed models can use tools, retrieve untrusted content, or act on behalf of users.
+
+Study agent tooling and GenAI security when you need:
+
+- standardized tool and context integration
+- approval flows for sensitive tool calls
+- prompt-injection and tool-poisoning threat models
+- least-privilege access for agents
+- guardrails and security checks around retrieved content
+- auditability for model-triggered actions
+
+References:
+
+- [Model Context Protocol introduction](https://modelcontextprotocol.io/docs/getting-started/intro)
+- [OpenAI Agents SDK MCP documentation](https://openai.github.io/openai-agents-python/mcp/)
+- [OWASP Top 10 for LLMs and GenAI Apps 2025](https://genai.owasp.org/llm-top-10/)
+
 ## Suggested Learning Order
 
 A practical order after this tutorial is:
@@ -487,16 +553,16 @@ A practical order after this tutorial is:
 1. Run the capstone again from a clean checkout.
 2. Move the capstone to one cloud provider.
 3. Add KServe for production-style serving.
-4. Add AI gateway and inference-aware routing only when serving traffic becomes a bottleneck.
+4. Add optimized inference runtimes, AI gateways, and inference-aware routing only when serving traffic becomes a bottleneck.
 5. Add Model Registry for model lifecycle metadata.
 6. Add data versioning, data quality, distributed data processing, and reproducibility controls.
 7. Add full Kubeflow platform operations if multiple users need the platform.
 8. Add observability, GenAI telemetry, and drift checks.
 9. Add secret management, identity, and supply-chain controls.
-10. Add Katib, Trainer, Kueue, DRA, or Ray when training, accelerators, and distributed compute become bottlenecks.
+10. Add Katib, Trainer, JobSet, Kueue, DRA, or Ray when training, accelerators, and distributed compute become bottlenecks.
 11. Add Feast when feature reuse becomes a real data problem.
 12. Check AI conformance only when evaluating a shared or managed AI platform.
-13. Add GenAI/RAG application tooling only when the product requires it.
+13. Add GenAI/RAG, MCP, and LLM security tooling only when the product requires it.
 
 Do not add all of these at once. Each one introduces a new platform boundary.
 
