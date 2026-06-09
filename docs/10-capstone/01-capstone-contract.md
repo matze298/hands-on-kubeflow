@@ -19,16 +19,22 @@ train_model
   ↓
 evaluate_model
   ↓
+read_accuracy
+  ↓
+promote_model
+  ↓
+write_lineage
+  ↓
 record_or_register_model
   ↓
-deploy_model
+deploy_model, if enabled
   ↓
-smoke_test_model
+smoke_test_model, if deployed
 ```
 
 ## What Counts as Success
 
-A successful capstone run has:
+A successful CPU baseline run has:
 
 ```text
 KFP run succeeded
@@ -38,6 +44,12 @@ model artifact exists
 metrics artifact exists
 promotion or registry record exists
 lineage record exists
+MLflow run exists if tracking is enabled
+```
+
+A successful deploy-enabled run additionally has:
+
+```text
 model server updated or confirmed
 smoke test passed
 ```
@@ -87,6 +99,10 @@ s3://kubeflow-by-doing/runs/<run_id>/
 ├── registry/
 └── lineage/
 ```
+
+The pipeline `artifact_bucket` parameter and the `KBD_ARTIFACT_BUCKET` value in `artifact-store-credentials` must point to the same bucket.
+
+The parameter is used when the pipeline constructs durable artifact URIs. The secret-backed environment value is used by the container code that uploads files. If they differ, the run can upload artifacts to one bucket while recording URIs for another.
 
 ## What Must Be Parameterized
 
@@ -143,11 +159,17 @@ Create `reports/capstone-runbook.md` yourself. It should capture the goal, the f
       ↓
     evaluate_model
       ↓
+    read_accuracy
+      ↓
+    promote_model
+      ↓
+    write_lineage
+      ↓
     record_or_register_model
       ↓
-    deploy_model
+    deploy_model, if enabled
       ↓
-    smoke_test_model
+    smoke_test_model, if deployed
     ```
 
     ## Required Services
@@ -184,8 +206,8 @@ Create `reports/capstone-runbook.md` yourself. It should capture the goal, the f
     - metrics artifact exists in object storage
     - lineage artifact exists in object storage
     - promotion or registry record exists
-    - model server responds to `/healthz`
-    - model server responds to `/predict`
+    - model server responds to `/healthz` when deployment is enabled
+    - model server responds to `/predict` when deployment is enabled
     ````
 
 ## Local Preflight

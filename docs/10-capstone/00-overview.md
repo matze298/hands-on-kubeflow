@@ -44,11 +44,17 @@ train_model
   ↓
 evaluate_model
   ↓
+read_accuracy
+  ↓
+promote_model
+  ↓
+write_lineage
+  ↓
 record_or_register_model
   ↓
-deploy_model
+deploy_model, if enabled
   ↓
-smoke_test_model
+smoke_test_model, if deployed
 ```
 
 ## What You Will Build
@@ -106,7 +112,7 @@ The final workflow should prove:
 - metrics control promotion
 - lineage is recorded
 - a promoted model can be served
-- the served endpoint can be smoke-tested
+- the served endpoint can be smoke-tested when deployment is enabled
 - the same design maps to STACKIT or another cloud provider
 
 ## Local Platform Target

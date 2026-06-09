@@ -54,6 +54,10 @@ Check object storage secret:
 kubectl -n kubeflow-by-doing get secret artifact-store-credentials
 ```
 
+The `artifact_bucket` run parameter must match the `KBD_ARTIFACT_BUCKET` value in that secret.
+
+The pipeline uses `artifact_bucket` to construct object URIs, while the container code uses `KBD_ARTIFACT_BUCKET` when uploading files.
+
 ## Build Images
 
 CPU training image:
