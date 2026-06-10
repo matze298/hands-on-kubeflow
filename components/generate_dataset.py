@@ -1,9 +1,6 @@
 """Generate dataset pipeline component."""
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from kfp.dsl import Dataset, Output
+from kfp.dsl import Dataset, Output
 from kfp.dsl.component_decorator import component
 
 

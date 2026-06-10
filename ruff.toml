@@ -23,6 +23,9 @@ pydocstyle.convention = "google"
 
 [lint.per-file-ignores]
 "setup.py" = ["PLC0415", "S404", "S603"]
+"components/**.py" = [
+    "TC002", # kubeflow pipelines dsl needs to be imported without type checking to work correctly
+]
 "tests/**.py" = [
     "PLR2004", # allow magic number comparisons
     "S101", # allow asserts
