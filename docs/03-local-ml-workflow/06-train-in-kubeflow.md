@@ -64,6 +64,7 @@ def train_model(  # noqa: PLR0913, PLR0917
 ) -> ContainerSpec:
     return ContainerSpec(
         image="kubeflow-by-doing/train:local",
+        command=["uv", "run", "kbd"],
         args=[  # ty: ignore[invalid-argument-type]
             "train-model",
             "--output-dir",
@@ -86,7 +87,7 @@ def train_model(  # noqa: PLR0913, PLR0917
     )
 ```
 
-The component does not set `command=["kbd"]` because the image already defines `ENTRYPOINT ["uv", "run", "kbd"]`.
+The component sets `command=["uv", "run", "kbd"]` explicitly. The Docker image also defines `ENTRYPOINT ["uv", "run", "kbd"]`, and that makes local `docker run ... train-model ...` convenient. KFP component compilation, however, should not rely on the image entrypoint being preserved. If the compiled pipeline contains only `args`, Kubernetes may try to execute the first argument, such as `train-model`, directly and fail with `executable file not found in $PATH`.
 
 KFP inspects component and pipeline annotations when decorators run. Do not hide KFP artifact imports behind `TYPE_CHECKING`, and do not use `from __future__ import annotations` in these component or pipeline files. The public `from kfp import dsl` style works at runtime, but this repository imports decorators and helper classes from their concrete modules so `ty` can resolve them without separate KFP type stubs.
 
@@ -111,6 +112,7 @@ def evaluate_model(  # noqa: PLR0913, PLR0917
 ) -> ContainerSpec:
     return ContainerSpec(
         image="kubeflow-by-doing/train:local",
+        command=["uv", "run", "kbd"],
         args=[  # ty: ignore[invalid-argument-type]
             "evaluate-model",
             "--model-dir",
@@ -190,7 +192,7 @@ Verify:
 ls -lh compiled/image_classification_pipeline.yaml
 ```
 
-## Import the Image into the GPU-Capable Local Cluster
+## Import the Image into the Active Local Cluster
 
 If you rebuilt the image, reload it:
 
@@ -264,6 +266,8 @@ docker run --rm kubeflow-by-doing/train:local --help
 
 If it fails locally, fix the Dockerfile before debugging KFP.
 
+If the pod log says `exec: "train-model": executable file not found in $PATH`, inspect the compiled YAML. The component likely omitted `command=["uv", "run", "kbd"]`, so Kubernetes tried to run the subcommand as the executable.
+
 ### Metrics do not show in the UI
 
 First verify that evaluation writes a valid metrics file.
@@ -277,7 +281,7 @@ You are done when:
 - training and evaluation component files exist
 - the pipeline file exists
 - `compiled/image_classification_pipeline.yaml` is generated
-- the image is imported into the GPU-capable local cluster
+- the image is imported into the active local cluster
 - the pipeline runs in KFP
 - the training step produces a model artifact
 - the evaluation step produces metrics or a metrics artifact

@@ -22,6 +22,7 @@ def train_model(  # noqa: PLR0913, PLR0917
     """
     return ContainerSpec(
         image="kubeflow-by-doing/train:local",
+        command=["uv", "run", "kbd"],
         args=[  # ty: ignore[invalid-argument-type]
             "train-model",
             "--output-dir",

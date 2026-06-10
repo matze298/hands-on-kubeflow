@@ -94,6 +94,10 @@ deploymentSpec:
         - '{{$.inputs.parameters[''n_val'']}}'
         - --batch-size
         - '{{$.inputs.parameters[''batch_size'']}}'
+        command:
+        - uv
+        - run
+        - kbd
         image: kubeflow-by-doing/train:local
     exec-train-model:
       container:
@@ -115,6 +119,10 @@ deploymentSpec:
         - '{{$.inputs.parameters[''n_val'']}}'
         - --batch-size
         - '{{$.inputs.parameters[''batch_size'']}}'
+        command:
+        - uv
+        - run
+        - kbd
         image: kubeflow-by-doing/train:local
 pipelineInfo:
   description: Define the local image classification pipeline.

@@ -37,13 +37,12 @@ Update `components/train_model.py` so the component can receive the image and de
 Target structure:
 
 ```python
-from __future__ import annotations
-
-from kfp import dsl
 from kfp.dsl import Model, Output
+from kfp.dsl.container_component_decorator import container_component
+from kfp.dsl.structures import ContainerSpec
 
 
-@dsl.container_component
+@container_component
 def train_model(
     model: Output[Model],
     image: str,
@@ -59,7 +58,7 @@ def train_model(
     tracking: bool = False,
     image_tag: str = "unknown",
     git_sha: str = "unknown",
-) -> dsl.ContainerSpec:
+) -> ContainerSpec:
     args = [
         "train-model",
         "--output-dir",
@@ -92,15 +91,14 @@ def train_model(
     if tracking:
         args.append("--tracking")
 
-    return dsl.ContainerSpec(
+    return ContainerSpec(
         image=image,
+        command=["uv", "run", "kbd"],
         args=args,
     )
 ```
 
-!!! note
-
-    Do not override `command` here. The training image already defines `ENTRYPOINT ["uv", "run", "kbd"]`, so the component only needs to pass the command arguments.
+The training image still defines `ENTRYPOINT ["uv", "run", "kbd"]` for local `docker run` commands. Keep `command=["uv", "run", "kbd"]` in the KFP component as well, because the compiled pipeline should make the Kubernetes execution contract explicit instead of relying on the image entrypoint.
 
 !!! note
 
