@@ -13,8 +13,8 @@ You will refactor the tiny ML pipeline into:
 ```text
 components/
 ├── generate_dataset.py
-├── train_model.py
-└── evaluate_model.py
+├── train_model_tiny.py
+└── evaluate_model_tiny.py
 
 pipelines/
 └── tiny_ml_pipeline_refactored.py
@@ -47,11 +47,11 @@ touch components/__init__.py
 Create `components/generate_dataset.py`:
 
 ```python
-from kfp import dsl
 from kfp.dsl import Dataset, Output
+from kfp.dsl.component_decorator import component
 
 
-@dsl.component(base_image="python:3.12-slim")
+@component(base_image="python:3.12-slim")
 def generate_dataset(dataset: Output[Dataset], n_samples: int = 100) -> None:
     from pathlib import Path
     import json
@@ -65,14 +65,16 @@ def generate_dataset(dataset: Output[Dataset], n_samples: int = 100) -> None:
     (path / "data.json").write_text(json.dumps(samples), encoding="utf-8")
 ```
 
-Create `components/train_model.py`:
+KFP component decorators inspect annotations when the module is imported. Keep KFP decorators and artifact types such as `Dataset`, `Input`, `Model`, `Output`, and `Metrics` imported normally, not only inside a `TYPE_CHECKING` block. The public `from kfp import dsl` style also works at runtime, but this repository uses the concrete decorator imports so `ty` can resolve them without KFP package stubs.
+
+Create `components/train_model_tiny.py`:
 
 ```python
-from kfp import dsl
 from kfp.dsl import Dataset, Input, Model, Output
+from kfp.dsl.component_decorator import component
 
 
-@dsl.component(base_image="python:3.12-slim")
+@component(base_image="python:3.12-slim")
 def train_model(
     dataset: Input[Dataset],
     model: Output[Model],
@@ -97,14 +99,14 @@ def train_model(
     (model_path / "model.json").write_text(json.dumps(artifact), encoding="utf-8")
 ```
 
-Create `components/evaluate_model.py`:
+Create `components/evaluate_model_tiny.py`:
 
 ```python
-from kfp import dsl
 from kfp.dsl import Input, Metrics, Model, Output
+from kfp.dsl.component_decorator import component
 
 
-@dsl.component(base_image="python:3.12-slim")
+@component(base_image="python:3.12-slim")
 def evaluate_model(
     model: Input[Model],
     metrics: Output[Metrics],
@@ -126,15 +128,16 @@ def evaluate_model(
 Create `pipelines/tiny_ml_pipeline_refactored.py`:
 
 ```python
-from kfp import compiler, dsl
+from kfp.compiler.compiler import Compiler
+from kfp.dsl.pipeline_context import pipeline
 
-from components.evaluate_model import evaluate_model
+from components.evaluate_model_tiny import evaluate_model
 from components.generate_dataset import generate_dataset
-from components.train_model import train_model
+from components.train_model_tiny import train_model
 
 
-@dsl.pipeline(name="tiny-ml-pipeline-refactored")
-def tiny_ml_pipeline_refactored(
+@pipeline(name="tiny-ml-pipeline")
+def tiny_ml_pipeline(
     n_samples: int = 100,
     learning_rate: float = 0.01,
 ) -> None:
@@ -147,8 +150,8 @@ def tiny_ml_pipeline_refactored(
 
 
 if __name__ == "__main__":
-    compiler.Compiler().compile(
-        pipeline_func=tiny_ml_pipeline_refactored,
+    Compiler().compile(
+        pipeline_func=tiny_ml_pipeline,
         package_path="compiled/tiny_ml_pipeline_refactored.yaml",
     )
 ```

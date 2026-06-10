@@ -44,13 +44,12 @@ This page introduces that idea with a small metric threshold.
 Create `components/promote_model.py`:
 
 ```python
-from __future__ import annotations
+from kfp.dsl.component_decorator import component
+from kfp.dsl.types.artifact_types import Artifact, Model
+from kfp.dsl.types.type_annotations import Input, Output
 
-from kfp import dsl
-from kfp.dsl import Artifact, Input, Model, Output
 
-
-@dsl.component(base_image="python:3.12-slim")
+@component(base_image="python:3.12-slim")
 def read_accuracy(metrics_path: str) -> float:
     from pathlib import Path
     import json
@@ -59,7 +58,7 @@ def read_accuracy(metrics_path: str) -> float:
     return float(metrics["accuracy"])
 
 
-@dsl.component(base_image="python:3.12-slim")
+@component(base_image="python:3.12-slim")
 def promote_model(
     model: Input[Model],
     promotion: Output[Artifact],
@@ -90,17 +89,17 @@ def promote_model(
 Update `pipelines/image_classification_pipeline.py`:
 
 ```python
-from __future__ import annotations
-
-from kfp import compiler, dsl
+from kfp.compiler.compiler import Compiler
+from kfp.dsl.pipeline_context import pipeline
+from kfp.dsl.tasks_group import If
 
 from components.evaluate_model import evaluate_model
 from components.promote_model import promote_model, read_accuracy
 from components.train_model import train_model
 
 
-@dsl.pipeline(name="image-classification-local")
-def image_classification_pipeline(
+@pipeline(name="image-classification-local")
+def image_classification_pipeline(  # noqa: PLR0913, PLR0917
     epochs: int = 2,
     learning_rate: float = 1e-3,
     seed: int = 42,
@@ -128,7 +127,7 @@ def image_classification_pipeline(
 
     accuracy_task = read_accuracy(metrics_path=evaluate_task.outputs["metrics_artifact"])
 
-    with dsl.If(accuracy_task.output >= min_accuracy):
+    with If(accuracy_task.output >= min_accuracy):
         promote_model(
             model=train_task.outputs["model"],
             accuracy=accuracy_task.output,
@@ -137,7 +136,7 @@ def image_classification_pipeline(
 
 
 if __name__ == "__main__":
-    compiler.Compiler().compile(
+    Compiler().compile(
         pipeline_func=image_classification_pipeline,
         package_path="compiled/image_classification_pipeline.yaml",
     )
@@ -197,7 +196,7 @@ That is why this chapter uses a small `read_accuracy` helper component instead o
 
 ### Promotion step runs even when accuracy is low
 
-Check the `dsl.If(...)` condition wiring and inspect the compiled YAML if needed.
+Check the `If(...)` condition wiring and inspect the compiled YAML if needed.
 
 ### Promotion step fails because model URI is missing
 

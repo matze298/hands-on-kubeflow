@@ -125,6 +125,8 @@ if __name__ == "__main__":
     )
 ```
 
+KFP reads component and pipeline annotations when decorators run. Keep `dsl` and KFP artifact types imported normally; do not place them only inside a `TYPE_CHECKING` block. If those annotations are only available to the type checker, the Python file may import, but KFP will not have the runtime annotation objects it needs to compile the pipeline correctly.
+
 ## Compile the Pipeline
 
 ```bash

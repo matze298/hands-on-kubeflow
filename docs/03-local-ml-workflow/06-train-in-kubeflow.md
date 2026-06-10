@@ -47,14 +47,13 @@ The component wrapper should be thin because the package and image already do th
 Create `components/train_model.py`:
 
 ```python
-from __future__ import annotations
-
-from kfp import dsl
 from kfp.dsl import Model, Output
+from kfp.dsl.container_component_decorator import container_component
+from kfp.dsl.structures import ContainerSpec
 
 
-@dsl.container_component
-def train_model(
+@container_component
+def train_model(  # noqa: PLR0913, PLR0917
     model: Output[Model],
     epochs: int = 2,
     learning_rate: float = 1e-3,
@@ -62,10 +61,10 @@ def train_model(
     n_train: int = 256,
     n_val: int = 64,
     batch_size: int = 32,
-) -> dsl.ContainerSpec:
-    return dsl.ContainerSpec(
+) -> ContainerSpec:
+    return ContainerSpec(
         image="kubeflow-by-doing/train:local",
-        args=[
+        args=[  # ty: ignore[invalid-argument-type]
             "train-model",
             "--output-dir",
             model.path,
@@ -89,29 +88,30 @@ def train_model(
 
 The component does not set `command=["kbd"]` because the image already defines `ENTRYPOINT ["uv", "run", "kbd"]`.
 
+KFP inspects component and pipeline annotations when decorators run. Do not hide KFP artifact imports behind `TYPE_CHECKING`, and do not use `from __future__ import annotations` in these component or pipeline files. The public `from kfp import dsl` style works at runtime, but this repository imports decorators and helper classes from their concrete modules so `ty` can resolve them without separate KFP type stubs.
+
 ## Create the Evaluation Component
 
 Create `components/evaluate_model.py`:
 
 ```python
-from __future__ import annotations
-
-from kfp import dsl
 from kfp.dsl import Input, Model, OutputPath
+from kfp.dsl.container_component_decorator import container_component
+from kfp.dsl.structures import ContainerSpec
 
 
-@dsl.container_component
-def evaluate_model(
+@container_component
+def evaluate_model(  # noqa: PLR0913, PLR0917
     model: Input[Model],
-    metrics_artifact: OutputPath("Dataset"),
+    metrics_artifact: OutputPath("Dataset"),  # ty: ignore[invalid-type-form]
     seed: int = 42,
     n_train: int = 256,
     n_val: int = 64,
     batch_size: int = 32,
-) -> dsl.ContainerSpec:
-    return dsl.ContainerSpec(
+) -> ContainerSpec:
+    return ContainerSpec(
         image="kubeflow-by-doing/train:local",
-        args=[
+        args=[  # ty: ignore[invalid-argument-type]
             "evaluate-model",
             "--model-dir",
             model.path,
@@ -136,16 +136,15 @@ def evaluate_model(
 Create `pipelines/image_classification_pipeline.py`:
 
 ```python
-from __future__ import annotations
-
-from kfp import compiler, dsl
+from kfp.compiler.compiler import Compiler
+from kfp.dsl.pipeline_context import pipeline
 
 from components.evaluate_model import evaluate_model
 from components.train_model import train_model
 
 
-@dsl.pipeline(name="image-classification-local")
-def image_classification_pipeline(
+@pipeline(name="image-classification-local")
+def image_classification_pipeline(  # noqa: PLR0913, PLR0917
     epochs: int = 2,
     learning_rate: float = 1e-3,
     seed: int = 42,
@@ -153,6 +152,7 @@ def image_classification_pipeline(
     n_val: int = 64,
     batch_size: int = 32,
 ) -> None:
+    """Define the local image classification pipeline."""
     train_task = train_model(
         epochs=epochs,
         learning_rate=learning_rate,
@@ -172,7 +172,7 @@ def image_classification_pipeline(
 
 
 if __name__ == "__main__":
-    compiler.Compiler().compile(
+    Compiler().compile(
         pipeline_func=image_classification_pipeline,
         package_path="compiled/image_classification_pipeline.yaml",
     )
