@@ -26,6 +26,7 @@ This page points to the next topics worth studying. They are not required for th
 
 ## Topics
 
+- [Platform choice](#kubeflow-vs-managed-ml-platforms)
 - [Serving and inference](#production-serving-with-kserve)
 - [Lifecycle, tuning, and training](#model-lifecycle-with-kubeflow-hub-and-model-registry)
 - [Scheduling and accelerators](#gpu-and-batch-scheduling-with-kueue)
@@ -40,6 +41,7 @@ Pick the next step based on the bottleneck you actually have:
 
 | If you need... | Study next |
 |---|---|
+| the fastest path inside one cloud provider | a managed ML platform |
 | production-grade model serving | KServe |
 | faster LLM or model inference runtimes | vLLM, SGLang, Triton, and TensorRT-LLM |
 | inference-aware LLM traffic routing | AI gateways and Gateway API inference work |
@@ -63,6 +65,38 @@ Pick the next step based on the bottleneck you actually have:
 | reconciled deployments | Argo CD or Flux |
 | RAG or AI application workflows | GenAI application layer |
 | agent tool integration or LLM security | MCP and OWASP GenAI security |
+
+## Kubeflow vs Managed ML Platforms
+
+This tutorial teaches the open Kubernetes-native path because it makes the mechanics visible: containers, pods, pipeline steps, object storage, secrets, scheduling, artifacts, lineage, and deployment state.
+
+That does not mean every team should operate this stack themselves. Managed ML platforms can be the better choice when the product goal matters more than learning or controlling the platform internals.
+
+| Choose this Kubeflow/Kubernetes path when... | Prefer a managed ML platform when... |
+|---|---|
+| you need to understand and control the platform mechanics | you need to ship quickly inside one cloud provider |
+| portability across local, on-prem, STACKIT, EKS, AKS, GKE, or another Kubernetes provider matters | your organization has already standardized on one cloud platform |
+| custom containers, custom runtimes, custom scheduling, or unusual GPU requirements are important | managed training jobs, endpoints, registries, monitoring, and IAM integration are enough |
+| platform engineering is part of the goal | operating Kubernetes ML infrastructure is not a differentiator |
+| you want open building blocks that can be replaced independently | you want one integrated product surface with fewer infrastructure decisions |
+
+Common managed alternatives include Amazon SageMaker AI, Azure Machine Learning, Google Gemini Enterprise Agent Platform / the Vertex AI lineage, and Databricks Machine Learning. Study these when you want to compare operational tradeoffs rather than add another open source component.
+
+The differences are not only cost and regional availability. The more important question is where your organization already has data, identity, governance, and operational habits:
+
+| Platform | Strongest fit when... |
+|---|---|
+| [Amazon SageMaker AI](https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html) | your ML platform should integrate deeply with AWS services such as S3, ECR, IAM, managed training, hosted endpoints, and the broader SageMaker data and AI platform |
+| [Azure Machine Learning](https://learn.microsoft.com/azure/machine-learning/overview-what-is-azure-machine-learning) | your organization already standardizes on Azure, Microsoft identity, Azure Key Vault, Azure Container Registry, Azure DevOps or GitHub Actions, and Azure-managed endpoints |
+| [Google Gemini Enterprise Agent Platform / Vertex AI](https://cloud.google.com/vertex-ai) | your workflows center on Google Cloud data and AI services such as BigQuery, Gemini, Model Garden, managed training, pipelines, prediction, model registry, and feature management |
+| [Databricks Machine Learning](https://docs.databricks.com/en/machine-learning/index.html) | your ML work is tightly coupled to lakehouse data, Spark, MLflow, Unity Catalog governance, feature engineering, Databricks jobs, and managed model serving |
+
+References:
+
+- [Amazon SageMaker AI overview](https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html)
+- [Azure Machine Learning overview](https://learn.microsoft.com/azure/machine-learning/overview-what-is-azure-machine-learning)
+- [Google Gemini Enterprise Agent Platform / Vertex AI](https://cloud.google.com/vertex-ai)
+- [Databricks Machine Learning](https://docs.databricks.com/en/machine-learning/index.html)
 
 ## Production Serving with KServe
 

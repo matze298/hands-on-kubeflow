@@ -21,7 +21,7 @@ This page collects further reading for concepts used throughout the tutorial.
 ## Local Kubernetes
 
 - [kind documentation](https://kind.sigs.k8s.io/)
-- [k3d documentation](https://k3d.io/)
+- [MicroK8s documentation](https://microk8s.io/docs)
 
 ## NVIDIA GPU Containers
 
@@ -55,6 +55,10 @@ This page collects further reading for concepts used throughout the tutorial.
 
 ## Further Reading
 
+- [Amazon SageMaker AI overview](https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html)
+- [Azure Machine Learning overview](https://learn.microsoft.com/azure/machine-learning/overview-what-is-azure-machine-learning)
+- [Google Gemini Enterprise Agent Platform / Vertex AI](https://cloud.google.com/vertex-ai)
+- [Databricks Machine Learning](https://docs.databricks.com/en/machine-learning/index.html)
 - [KServe introduction](https://kserve.github.io/website/docs/intro)
 - [KServe InferenceService documentation](https://kserve.github.io/website/docs/model-serving/predictive-inference/frameworks/overview)
 - [KServe generative inference runtime overview](https://kserve.github.io/website/docs/model-serving/generative-inference/overview)

@@ -120,7 +120,18 @@ Focus:
 - pipeline submission
 - inspecting runs in the UI
 
-### 2.3 Components, Parameters, and Artifacts
+### 2.3 Run a Pipeline from Python
+
+Submit a compiled pipeline run from a local Python script.
+
+Focus:
+
+- KFP client setup
+- endpoint configuration
+- repeatable scripted submissions
+- mapping submitted runs back to the UI
+
+### 2.4 Components, Parameters, and Artifacts
 
 Turn a toy ML workflow into pipeline components.
 
@@ -130,7 +141,7 @@ Pipeline:
 generate_data → train_model → evaluate_model
 ```
 
-### 2.4 Reusable Components
+### 2.5 Reusable Components
 
 Refactor components so that they can be tested and reused.
 
@@ -140,6 +151,10 @@ Focus:
 - container images
 - typed inputs and outputs
 - local testing before pipeline execution
+
+### 2.6 Debugging KFP Runs
+
+Debug failed pipeline steps by mapping KFP state back to Kubernetes pods, logs, and events.
 
 ## 3. Local ML Workflow
 
@@ -174,24 +189,36 @@ Set up:
 - task commands
 - lockfile-based reproducibility
 
-### 3.3 Containerize Training
+### 3.3 Train a PyTorch Model Locally
+
+Create a simple image classification training script.
+
+The ML code is intentionally minimal. The focus is the workflow.
+
+### 3.4 Add Tests and Quality Checks
+
+Add local checks before the workflow moves into containers and Kubeflow.
+
+Focus:
+
+- unit tests
+- linting and formatting
+- type checking
+- fast feedback before image builds
+
+### 3.5 Containerize Training
 
 Build a training image that can run locally and in Kubernetes.
 
 Focus:
 
 - reproducible image builds
+- Docker cache mounts for dependency reuse
 - GPU-capable image variant
 - CPU fallback where practical
 - loading local images into the local cluster
 
-### 3.4 Train a PyTorch Model Locally
-
-Create a simple image classification training script.
-
-The ML code is intentionally minimal. The focus is the workflow.
-
-### 3.5 Train the Model in Kubeflow
+### 3.6 Train the Model in Kubeflow
 
 Run the same training logic as a Kubeflow component.
 
@@ -201,7 +228,7 @@ Pipeline:
 prepare_data → train → evaluate
 ```
 
-### 3.6 Add Evaluation Gates
+### 3.7 Add Evaluation Gates
 
 Only promote a model if its evaluation metric passes a threshold.
 
@@ -274,7 +301,18 @@ Focus:
 - prediction endpoint
 - local testing
 
-### 5.2 Deploy the Server to Kubernetes
+### 5.2 Containerize Serving
+
+Build a serving image for the FastAPI model server.
+
+Focus:
+
+- serving Dockerfile
+- Docker cache mounts for dependency reuse
+- local container test
+- image loading into the local cluster
+
+### 5.3 Deploy the Server to Kubernetes
 
 Deploy the model server into the local cluster.
 
@@ -286,7 +324,7 @@ Focus:
 - Secret
 - port forwarding
 
-### 5.3 Connect Pipeline to Serving
+### 5.4 Connect Pipeline to Serving
 
 Connect model promotion to the served model URI.
 
@@ -296,7 +334,7 @@ Focus:
 - smoke test endpoint
 - local rollout
 
-### 5.4 KServe Preview
+### 5.5 KServe Preview
 
 Introduce KServe conceptually and optionally.
 
@@ -385,21 +423,37 @@ Focus:
 
 ## 9. CI/CD Expansion
 
-### 9.1 Build Images in CI
+### 9.1 CI Checks
+
+Run the same local quality gates in CI.
+
+Focus:
+
+- formatting
+- linting
+- type checking
+- tests
+- docs build
+
+### 9.2 Build Images in CI
 
 Build training and serving images automatically.
 
-### 9.2 Compile Pipelines in CI
+### 9.3 Compile Pipelines in CI
 
 Validate KFP pipeline definitions on every pull request.
 
-### 9.3 Trigger Pipeline Runs
+### 9.4 Trigger Pipeline Runs
 
 Submit pipeline runs from CI or scripts.
 
-### 9.4 GitOps Promotion
+### 9.5 GitOps Promotion
 
 Promote model versions through Git-based deployment changes.
+
+### 9.6 Security and Maintenance
+
+Keep secrets out of the repository and gate expensive or production-affecting actions.
 
 ## 10. Capstone
 
@@ -414,11 +468,17 @@ train_model
   ↓
 evaluate_model
   ↓
+read_accuracy
+  ↓
+promote_model
+  ↓
+write_lineage
+  ↓
 record_or_register_model
   ↓
-deploy_model
+deploy_model, if enabled
   ↓
-smoke_test_model
+smoke_test_model, if deployed
 ```
 
 The capstone should run locally first and then point to STACKIT/cloud expansion steps. Readers should build the final files themselves from the contract, requirements, hints, and verification checks; complete reference implementations stay behind spoiler blocks.
@@ -429,6 +489,7 @@ Summarize the platform shape built by the tutorial and point readers to the next
 
 Focus:
 
+- when to use this Kubeflow/Kubernetes path instead of a managed ML platform
 - KServe production serving
 - inference runtime optimization
 - AI gateways and inference-aware routing
@@ -447,6 +508,7 @@ Focus:
 - observability and drift monitoring
 - GenAI observability standards
 - image signing, provenance, and policy
+- secret management and identity
 - GitOps controllers
 - GenAI application-layer tooling
 - MCP and OWASP GenAI security

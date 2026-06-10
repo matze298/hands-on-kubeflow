@@ -53,6 +53,8 @@ A local setup lets the reader learn the core ideas first:
 
 Once that is clear, cloud is mostly a change in infrastructure boundaries.
 
+This tutorial teaches the open Kubernetes-native path so the mechanics are visible. If the goal is to ship quickly inside one cloud provider, a managed ML platform may be a better operational choice. The full tradeoff belongs at the end, after the reader has built the workflow, in [Conclusion and Future Reading](../11-conclusion/00-overview.md).
+
 ## Why GPU-Aware?
 
 ML engineers often need to know whether their code still behaves correctly when moved from local scripts to containerized GPU workloads.
