@@ -58,6 +58,14 @@ This page collects further reading for concepts used throughout the tutorial.
 - [Flyte secrets](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/secrets/)
 - [Flyte monorepo with uv pattern](https://www.union.ai/docs/v2/flyte/user-guide/project-patterns/monorepo-with-uv/)
 
+## Workflow Orchestration Alternatives
+
+- [Apache Airflow overview](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
+- [Dagster overview](https://docs.dagster.io/)
+- [Prefect introduction](https://docs.prefect.io/v3/get-started/index)
+- [Metaflow documentation](https://docs.metaflow.org/)
+- [Argo Workflows overview](https://argo-workflows.readthedocs.io/en/latest/)
+
 ## STACKIT
 
 - [STACKIT documentation](https://docs.stackit.cloud/)

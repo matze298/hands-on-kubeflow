@@ -27,6 +27,7 @@ This page points to the next topics worth studying. They are not required for th
 ## Topics
 
 - [Platform choice](#kubeflow-vs-managed-ml-platforms)
+- [Workflow orchestration alternatives](#workflow-orchestrator-alternatives)
 - [Serving and inference](#production-serving-with-kserve)
 - [Lifecycle, tuning, and training](#model-lifecycle-with-kubeflow-hub-and-model-registry)
 - [Scheduling and accelerators](#gpu-and-batch-scheduling-with-kueue)
@@ -42,6 +43,10 @@ Pick the next step based on the bottleneck you actually have:
 | If you need... | Study next |
 |---|---|
 | the fastest path inside one cloud provider | a managed ML platform |
+| a different workflow orchestrator | the orchestrator alternatives table below |
+| typed ML workflows with strong task boundaries | Flyte |
+| scheduled data engineering DAGs | Apache Airflow |
+| asset-centric data platform orchestration | Dagster |
 | production-grade model serving | KServe |
 | faster LLM or model inference runtimes | vLLM, SGLang, Triton, and TensorRT-LLM |
 | inference-aware LLM traffic routing | AI gateways and Gateway API inference work |
@@ -97,6 +102,62 @@ References:
 - [Azure Machine Learning overview](https://learn.microsoft.com/azure/machine-learning/overview-what-is-azure-machine-learning)
 - [Google Gemini Enterprise Agent Platform / Vertex AI](https://cloud.google.com/vertex-ai)
 - [Databricks Machine Learning](https://docs.databricks.com/en/machine-learning/index.html)
+
+## Workflow Orchestrator Alternatives
+
+Kubeflow Pipelines is the right baseline for this tutorial because it keeps the ML workflow close to Kubernetes, containers, artifacts, and the rest of the Kubeflow ecosystem. It is not the only reasonable orchestrator.
+
+The decision is less about which tool is "best" and more about the primary unit your team wants to operate:
+
+```text
+containerized ML component -> Kubeflow Pipelines
+typed Python task          -> Flyte
+scheduled batch DAG        -> Airflow
+data asset                 -> Dagster
+Python function/flow       -> Prefect
+data-science flow          -> Metaflow
+raw Kubernetes workflow    -> Argo Workflows
+managed cloud job          -> cloud ML platform
+```
+
+### Quick Comparison
+
+| Alternative | Use it when... | Be careful when... |
+|---|---|---|
+| [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/) | you want Kubernetes-native ML pipelines, containerized components, artifact tracking, and a path into the broader Kubeflow stack | your team mostly needs general-purpose scheduled data workflows rather than ML platform primitives |
+| [Flyte](https://www.union.ai/docs/v2/flyte/user-guide/core-concepts/tasks/) | you want typed Python task interfaces, strong separation between task code and execution environment, local-to-remote workflow development, caching, resources, and Kubernetes execution | your team wants the Kubeflow ecosystem specifically, or does not want to operate another workflow backend |
+| [Apache Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html) | you already run scheduled data engineering DAGs, need a large integration ecosystem, and care about backfills, calendars, operators, and operational familiarity | your core problem is ML artifact typing, Kubernetes-native training components, or dynamic ML task graphs |
+| [Dagster](https://docs.dagster.io/) | your team thinks in data assets, lineage, freshness, partitions, and data-platform observability rather than only task order | your workflow is mostly containerized ML training on Kubernetes and you do not need asset-centric modeling |
+| [Prefect](https://docs.prefect.io/v3/get-started/index) | you want a Python-first flow model with low local friction, dynamic runtime behavior, retries, state tracking, and flexible deployment targets | you need a strict Kubernetes-native ML platform contract with standardized artifacts and component specs |
+| [Metaflow](https://docs.metaflow.org/) | your priority is data-scientist ergonomics, local development, scalable compute, and productionizing Python flows with minimal platform ceremony | you need to teach or operate the Kubernetes resource model directly |
+| [Argo Workflows](https://argo-workflows.readthedocs.io/en/latest/) | you want a low-level, container-native Kubernetes workflow engine and are comfortable modeling workflow steps as Kubernetes resources | you want higher-level ML SDK abstractions, model metadata, or data-science-oriented ergonomics |
+| Managed ML platforms | your organization already lives in one cloud and wants managed training, endpoints, registries, IAM, monitoring, and support boundaries | portability, platform internals, or custom Kubernetes scheduling are central requirements |
+
+### Practical Recommendation
+
+If you are learning, stay with Kubeflow Pipelines through the capstone. The tutorial is designed to make the Kubernetes and ML platform mechanics visible.
+
+After that:
+
+- choose Flyte if the tutorial left you wanting a more Pythonic, typed task model
+- choose Airflow if your organization already has data DAGs and scheduling conventions
+- choose Dagster if the real problem is asset lineage, freshness, and data contracts
+- choose Prefect if the team values simple Python flow authoring and flexible deployment more than ML-specific platform structure
+- choose Metaflow if the team is data-science-led and wants a gentle path from local Python to scalable production runs
+- choose Argo Workflows if you are a platform team building directly on Kubernetes primitives
+- choose a managed ML platform if the company already accepted one cloud provider as the platform boundary
+
+Avoid mixing orchestrators early. It is usually better to run one workflow layer well than to split training, data preparation, promotion, and serving across multiple schedulers before the operating model is clear.
+
+References:
+
+- [Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/)
+- [Flyte tasks](https://www.union.ai/docs/v2/flyte/user-guide/core-concepts/tasks/)
+- [Apache Airflow overview](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
+- [Dagster overview](https://docs.dagster.io/)
+- [Prefect introduction](https://docs.prefect.io/v3/get-started/index)
+- [Metaflow documentation](https://docs.metaflow.org/)
+- [Argo Workflows overview](https://argo-workflows.readthedocs.io/en/latest/)
 
 ## Production Serving with KServe
 
