@@ -4,7 +4,7 @@ A local-first, GPU-aware, hands-on tutorial for learning Kubeflow, Kubernetes-na
 
 The tutorial is written for readers who already know Python, PyTorch, and basic deep learning, but who want to move from ML code to reproducible, containerized, Kubernetes-native MLOps workflows.
 
-The core path starts with `kind` for the first Kubernetes basics and then treats `MicroK8s` on WSL2 as the default local ML platform. Cloud, STACKIT, full Kubeflow, production serving, and CI/CD are introduced later as expansion chapters. A final optional add-on compares the same workflow with Flyte instead of Kubeflow Pipelines.
+The core path starts with `kind` for the first Kubernetes basics and then treats `MicroK8s` on WSL2 as the default local ML platform. Cloud, STACKIT, full Kubeflow, production serving, and CI/CD are introduced later as expansion chapters. A final optional add-on compares the same workflow with Flyte instead of Kubeflow Pipelines, and the FAQ collects reset procedures for local tutorial environments.
 
 ## What You Will Build
 
@@ -132,3 +132,7 @@ The rest of the path expands that baseline into:
   - run a local Flyte workflow with `uv run flyte`
   - compare artifact, resource, secret, and backend tradeoffs
   - keep the add-on outside the required Kubeflow path
+- FAQ
+  - reset local `MicroK8s` safely
+  - reset standalone Kubeflow Pipelines
+  - choose between namespace, KFP, and full cluster resets

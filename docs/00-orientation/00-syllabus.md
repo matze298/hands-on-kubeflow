@@ -34,6 +34,7 @@ This is a build-along tutorial: the chapter pages show the files, commands, and 
 
 ```text
 12. Flyte Instead of Kubeflow Pipelines
+13. FAQ
 ```
 
 ## 0. Orientation
@@ -544,3 +545,14 @@ Explain why inline model payloads are only a teaching shortcut, then cover durab
 ### 12.4 Remote Backend and Tradeoffs
 
 Explain what changes when Flyte moves from local execution to a remote backend, including Kubernetes task pods, images, artifact storage, identity, GPU scheduling, observability, CI/CD impact, and the final Flyte-vs-KFP decision.
+
+## 13. FAQ
+
+Collect practical recovery procedures for common local tutorial problems.
+
+Focus:
+
+- resetting tutorial namespaces without rebuilding the whole cluster
+- hard-resetting the local `MicroK8s` cluster when the platform itself is unhealthy
+- restarting or reinstalling standalone Kubeflow Pipelines
+- linking back to the setup chapters instead of duplicating the full install flow
