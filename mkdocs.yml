@@ -114,5 +114,11 @@ nav:
       - Cloud Mapping: 10-capstone/06-cloud-mapping.md
   - 11. Conclusion:
       - Conclusion and Future Reading: 11-conclusion/00-overview.md
+  - 12. Optional Flyte Add-On:
+      - Overview: 12-flyte-add-on/00-overview.md
+      - Flyte Concepts vs KFP: 12-flyte-add-on/01-flyte-concepts-vs-kfp.md
+      - Local Flyte Workflow: 12-flyte-add-on/02-local-flyte-workflow.md
+      - Artifacts, Resources, and Secrets: 12-flyte-add-on/03-artifacts-resources-and-secrets.md
+      - Remote Backend and Tradeoffs: 12-flyte-add-on/04-remote-backend-and-tradeoffs.md
   - Reference:
       - References: reference/references.md

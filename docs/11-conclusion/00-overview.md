@@ -613,3 +613,7 @@ You have finished the tutorial when you can explain:
 - which advanced platform component solves which next problem
 
 The important result is not the tiny model. The important result is that the workflow is no longer hidden inside a notebook or a local script. It is visible as containers, Kubernetes resources, pipeline steps, artifacts, and deployment state.
+
+## Optional Add-On
+
+If you want to compare this Kubeflow Pipelines workflow with a different open source orchestrator, continue with the optional [Flyte Add-On](../12-flyte-add-on/00-overview.md).

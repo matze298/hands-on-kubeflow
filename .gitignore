@@ -15,6 +15,9 @@ site/
 # Outputs of training runs
 outputs/
 
+# Flyte add-on local runtime files
+.flyte/
+
 # STACKIT expansion local files
 .env.stackit
 .kube/

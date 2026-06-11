@@ -30,6 +30,12 @@ This is a build-along tutorial: the chapter pages show the files, commands, and 
 9. CI/CD Expansion
 ```
 
+## Optional Add-On
+
+```text
+12. Flyte Instead of Kubeflow Pipelines
+```
+
 ## 0. Orientation
 
 ### 0.1 Syllabus
@@ -512,3 +518,29 @@ Focus:
 - GitOps controllers
 - GenAI application-layer tooling
 - MCP and OWASP GenAI security
+
+## 12. Optional Flyte Add-On
+
+Translate the tutorial's train/evaluate workflow to Flyte after the core Kubeflow path is complete.
+
+This add-on is not part of the required Kubeflow course path. It is a focused comparison track for readers who want to evaluate Flyte as an alternative workflow orchestrator.
+
+### 12.0 Overview
+
+Explain why Flyte is included, how it fits after the conclusion, and what the optional track covers.
+
+### 12.1 Flyte Concepts vs KFP
+
+Map KFP components, pipeline functions, artifacts, and compile/run habits to Flyte tasks, `TaskEnvironment`, typed task signatures, and local task execution.
+
+### 12.2 Local Flyte Workflow
+
+Create `flyte/kbd_flyte_workflow.py`, reuse the tutorial's existing train/evaluate functions, run the workflow locally with `uv run flyte`, and inspect local runs.
+
+### 12.3 Artifacts, Resources, and Secrets
+
+Explain why inline model payloads are only a teaching shortcut, then cover durable file/directory artifacts, explicit object storage paths, CPU/GPU task environments, images, secrets, caching, and promotion records.
+
+### 12.4 Remote Backend and Tradeoffs
+
+Explain what changes when Flyte moves from local execution to a remote backend, including Kubernetes task pods, images, artifact storage, identity, GPU scheduling, observability, CI/CD impact, and the final Flyte-vs-KFP decision.

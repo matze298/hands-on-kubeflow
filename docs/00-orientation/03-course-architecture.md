@@ -2,7 +2,7 @@
 
 This tutorial is local-first and GPU-aware.
 
-The core path starts with `kind` for the first Kubernetes basics, then uses `MicroK8s` on WSL2 as the default local ML platform. Later chapters expand the same workflow to STACKIT, managed Kubernetes, CI/CD, and production-style serving.
+The core path starts with `kind` for the first Kubernetes basics, then uses `MicroK8s` on WSL2 as the default local ML platform. Later chapters expand the same workflow to STACKIT, managed Kubernetes, CI/CD, and production-style serving. A final optional add-on compares the workflow with Flyte instead of Kubeflow Pipelines.
 
 ## Core Architecture
 
@@ -36,6 +36,8 @@ GPU node pool
 CI/CD
   ↓
 production-style serving and promotion
+  ↓
+optional Flyte orchestrator comparison
 ```
 
 ## Why Local First?
@@ -53,7 +55,7 @@ A local setup lets the reader learn the core ideas first:
 
 Once that is clear, cloud is mostly a change in infrastructure boundaries.
 
-This tutorial teaches the open Kubernetes-native path so the mechanics are visible. If the goal is to ship quickly inside one cloud provider, a managed ML platform may be a better operational choice. The full tradeoff belongs at the end, after the reader has built the workflow, in [Conclusion and Future Reading](../11-conclusion/00-overview.md).
+This tutorial teaches the open Kubernetes-native path so the mechanics are visible. If the goal is to ship quickly inside one cloud provider, a managed ML platform may be a better operational choice. The full tradeoff belongs at the end, after the reader has built the workflow, in [Conclusion and Future Reading](../11-conclusion/00-overview.md). Flyte appears after that as an optional orchestrator comparison, not as a replacement for the Kubeflow course path.
 
 ## Why GPU-Aware?
 

@@ -48,6 +48,16 @@ This page collects further reading for concepts used throughout the tutorial.
 - [FastAPI documentation](https://fastapi.tiangolo.com/)
 - [KServe documentation](https://kserve.github.io/website/latest/)
 
+## Flyte
+
+- [Flyte quickstart](https://www.union.ai/docs/v2/flyte/user-guide/quickstart/)
+- [Flyte tasks](https://www.union.ai/docs/v2/flyte/user-guide/core-concepts/tasks/)
+- [Flyte key capabilities](https://www.union.ai/docs/v2/flyte/user-guide/core-concepts/key-capabilities/)
+- [Flyte files and directories](https://www.union.ai/docs/v2/flyte/user-guide/build-tasks/files-and-directories/)
+- [Flyte resources](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/resources/)
+- [Flyte secrets](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/secrets/)
+- [Flyte monorepo with uv pattern](https://www.union.ai/docs/v2/flyte/user-guide/project-patterns/monorepo-with-uv/)
+
 ## STACKIT
 
 - [STACKIT documentation](https://docs.stackit.cloud/)
