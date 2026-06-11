@@ -85,7 +85,11 @@ from kubeflow_by_doing.evaluate import evaluate
 from kubeflow_by_doing.train import train
 
 
-env = flyte.TaskEnvironment(name="kubeflow-by-doing-flyte")
+env = flyte.TaskEnvironment(
+    name="kubeflow-by-doing-flyte",
+    image=flyte.Image.from_ref_name("kbd-flyte"),
+    resources=flyte.Resources(cpu="1", memory="2Gi"),
+)
 
 
 @env.task
@@ -171,6 +175,8 @@ def flyte_image_classification_pipeline(
 
 This is intentionally a CPU example. GPU execution belongs in the resources page, after the local shape works.
 
+The `image=flyte.Image.from_ref_name("kbd-flyte")` setting is harmless for local execution, but important for the MicroK8s backend page. It gives the remote run a stable image slot that you can map to a concrete image in the MicroK8s registry without changing workflow code.
+
 ## Understand the Teaching Shortcut
 
 The example encodes `model.pt` as a base64 string:
@@ -246,6 +252,8 @@ uv run python pipelines/image_classification_pipeline.py
 
 The KFP command compiles pipeline YAML. The Flyte command executes the top-level task locally.
 
+The next pages move from this local feedback loop to a Kubernetes-backed run. Keep this local command working; it remains the fastest way to check task logic before submitting to the MicroK8s Flyte backend.
+
 ## Debug Common Failures
 
 ### `ModuleNotFoundError: kubeflow_by_doing`
@@ -314,6 +322,7 @@ You are done when:
 - the local Flyte workflow runs from the repository root
 - you can explain why `PYTHONPATH="$PWD/src"` is used
 - you can explain why the base64 model handoff is not production-ready
+- you can explain why the task environment uses the `kbd-flyte` image reference name
 
 ## References
 

@@ -42,19 +42,20 @@ src/kubeflow_by_doing/train.py
 src/kubeflow_by_doing/evaluate.py
 ```
 
-The first version will use a small local teaching shortcut for the model handoff. A later page explains how to think about durable Flyte files and directories for a remote backend.
+The first version will use a small local teaching shortcut for the model handoff. Later pages explain durable Flyte files, object storage, backend tradeoffs, and a MicroK8s-backed Flyte run.
 
 ## Add-On Structure
 
-This add-on is split into five pages:
+This add-on is split into six pages:
 
 1. [Overview](00-overview.md)
 2. [Flyte Concepts vs KFP](01-flyte-concepts-vs-kfp.md)
 3. [Local Flyte Workflow](02-local-flyte-workflow.md)
 4. [Artifacts, Resources, and Secrets](03-artifacts-resources-and-secrets.md)
 5. [Remote Backend and Tradeoffs](04-remote-backend-and-tradeoffs.md)
+6. [Run Flyte on MicroK8s](05-microk8s-flyte-backend.md)
 
-The order matters. Start with the concept mapping, then run the local workflow, then study what must change for remote execution.
+The order matters. Start with the concept mapping, run the local workflow, study what must change for remote execution, then run the same workflow against a MicroK8s-hosted Flyte backend.
 
 ## What Flyte Changes
 
@@ -93,6 +94,7 @@ Flyte is worth evaluating when these benefits matter:
 - A team can use a workflow orchestrator without adopting the entire Kubeflow platform.
 - The programming model is often approachable for Python-heavy ML teams.
 - Remote Flyte runs still map to containerized execution on a backend, so the workflow is not trapped on one laptop.
+- A MicroK8s backend lets you evaluate Flyte with the same Kubernetes mental model used by the Kubeflow path.
 
 For this tutorial, the strongest Flyte benefit is the local developer loop. You can express a workflow as normal Python tasks and run the top-level task from the repository root.
 
@@ -106,6 +108,7 @@ Flyte also adds real costs:
 - A remote Flyte backend is another platform to operate, secure, upgrade, and explain to users.
 - Artifact handling still needs durable storage once tasks run in different containers.
 - GPU scheduling, registry access, object storage, and secrets still need platform decisions.
+- A local MicroK8s backend is more realistic than local execution, but it is also more operational work.
 - If the organization already standardized on Kubeflow, Flyte can become another workflow dialect to support.
 
 Flyte can make workflow code cleaner. It does not remove platform engineering.
@@ -119,6 +122,7 @@ Use it when you want to answer:
 - Would this workflow be easier to express in Flyte?
 - Does local Flyte execution improve iteration speed?
 - How much of the Kubeflow course knowledge still applies?
+- Can the same Flyte workflow run as Kubernetes task pods on MicroK8s?
 - What platform operations would move from KFP to Flyte?
 - Would a Flyte backend simplify or complicate our real environment?
 
@@ -151,7 +155,7 @@ You are done with the overview when:
 
 - you understand that Flyte is optional in this tutorial
 - you can state why Flyte is being compared with KFP
-- you can name the five add-on pages and the order to read them
+- you can name the six add-on pages and the order to read them
 - you can explain one benefit and one cost of introducing Flyte
 
 ## References

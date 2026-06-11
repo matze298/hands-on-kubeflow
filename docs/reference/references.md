@@ -57,6 +57,8 @@ This page collects further reading for concepts used throughout the tutorial.
 - [Flyte resources](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/resources/)
 - [Flyte secrets](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/secrets/)
 - [Flyte monorepo with uv pattern](https://www.union.ai/docs/v2/flyte/user-guide/project-patterns/monorepo-with-uv/)
+- [Flyte platform deployment](https://www.union.ai/docs/v2/flyte/deployment/)
+- [Flyte GPU access configuration](https://www.union.ai/docs/v2/flyte/deployment/flyte-configuration/configuring-access-to-gpus/)
 
 ## Workflow Orchestration Alternatives
 

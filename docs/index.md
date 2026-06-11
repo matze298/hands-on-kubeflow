@@ -130,6 +130,7 @@ The rest of the path expands that baseline into:
   - translate the train/evaluate workflow to Flyte tasks
   - map Flyte concepts against KFP concepts
   - run a local Flyte workflow with `uv run flyte`
+  - deploy a Flyte backend into MicroK8s for a Kubernetes-backed comparison
   - compare artifact, resource, secret, and backend tradeoffs
   - keep the add-on outside the required Kubeflow path
 - FAQ

@@ -69,6 +69,8 @@ Remote Flyte backend
 
 Do not install Flyte into the core local path just because the dependency exists. The dependency lets readers run local Flyte commands. A backend deployment is a separate decision.
 
+The next page makes that backend decision concrete for a local evaluation by installing Flyte into the tutorial's MicroK8s cluster.
+
 ## Images
 
 Remote tasks need images that the backend can run.
@@ -305,10 +307,11 @@ You are done when:
 ## References
 
 - [Flyte quickstart](https://www.union.ai/docs/v2/flyte/user-guide/quickstart/)
+- [Flyte platform deployment](https://www.union.ai/docs/v2/flyte/deployment/)
 - [Flyte key capabilities](https://www.union.ai/docs/v2/flyte/user-guide/core-concepts/key-capabilities/)
 - [Flyte resources](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/resources/)
 - [Flyte secrets](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/secrets/)
 
-## End of Add-On
+## Next Step
 
-You have reached the end of the optional Flyte track. Return to [Conclusion and Future Reading](../11-conclusion/00-overview.md) when you want the broader Kubeflow and MLOps reading list.
+Continue with [Run Flyte on MicroK8s](05-microk8s-flyte-backend.md) when you want the Flyte comparison to run on Kubernetes instead of only in the local Python process.

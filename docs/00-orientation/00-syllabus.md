@@ -536,7 +536,7 @@ Map KFP components, pipeline functions, artifacts, and compile/run habits to Fly
 
 ### 12.2 Local Flyte Workflow
 
-Create `flyte/kbd_flyte_workflow.py`, reuse the tutorial's existing train/evaluate functions, run the workflow locally with `uv run flyte`, and inspect local runs.
+Create `flyte/kbd_flyte_workflow.py`, reuse the tutorial's existing train/evaluate functions, run the workflow locally with `uv run flyte`, and prepare the task environment for a later MicroK8s backend run.
 
 ### 12.3 Artifacts, Resources, and Secrets
 
@@ -545,6 +545,10 @@ Explain why inline model payloads are only a teaching shortcut, then cover durab
 ### 12.4 Remote Backend and Tradeoffs
 
 Explain what changes when Flyte moves from local execution to a remote backend, including Kubernetes task pods, images, artifact storage, identity, GPU scheduling, observability, CI/CD impact, and the final Flyte-vs-KFP decision.
+
+### 12.5 Run Flyte on MicroK8s
+
+Install a local Flyte backend into the tutorial's `MicroK8s` cluster, build a Flyte task image, push it to the MicroK8s registry, deploy the Flyte environment, and submit the workflow so it runs as Kubernetes task pods.
 
 ## 13. FAQ
 
