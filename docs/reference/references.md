@@ -2,7 +2,7 @@
 
 This page collects further reading for concepts used throughout the tutorial.
 
-For executable tutorial checks, use the [Verification Matrix](verification-matrix.md).
+For executable tutorial checks, use the [Verification Matrix](verification-matrix.md). For operational state, use the [Local Platform Inventory](local-platform-inventory.md). For pinned tools and upgrade checks, use [Version Compatibility](version-compatibility.md).
 
 ## Kubeflow
 

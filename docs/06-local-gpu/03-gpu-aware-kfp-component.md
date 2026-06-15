@@ -102,7 +102,7 @@ The training image still defines `ENTRYPOINT ["uv", "run", "kbd"]` for local `do
 
 !!! note
 
-    Codex should verify the installed KFP SDK accepts parameterized container images and non-string arguments in `dsl.ContainerSpec`. If not, adapt to the SDK-supported pattern and keep the same public tutorial behavior.
+    Verify this pattern against the installed KFP SDK before relying on it in a longer run. The important behavior is that the image remains a pipeline parameter and the compiled component receives normal command arguments. If your SDK version rejects parameterized container images or non-string arguments in `ContainerSpec`, use the closest SDK-supported helper while keeping the same pipeline parameters.
 
 ## Add a Helper for GPU Resources
 

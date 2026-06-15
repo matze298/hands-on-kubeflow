@@ -50,7 +50,7 @@ ENTRYPOINT ["uv", "run", "kbd"]
 
 !!! note
 
-    The exact PyTorch/CUDA image tag should be kept aligned with the local NVIDIA driver and the PyTorch version in `uv.lock`. Codex should verify and pin the final image tag used by the repository.
+    Keep the PyTorch/CUDA image tag aligned with the local NVIDIA driver and the PyTorch version in `uv.lock`. When upgrading PyTorch, CUDA, or the NVIDIA driver, update this tag intentionally and rerun the Docker and Kubernetes GPU smoke tests before continuing.
 
 `# syntax=docker/dockerfile:1.7` enables the Dockerfile features used below, including the `RUN --mount=type=cache` cache mount.
 

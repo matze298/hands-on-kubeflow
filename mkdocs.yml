@@ -124,5 +124,7 @@ nav:
   - 13. FAQ:
       - FAQ: 13-faq/00-overview.md
   - Reference:
+      - Local Platform Inventory: reference/local-platform-inventory.md
+      - Version Compatibility: reference/version-compatibility.md
       - Verification Matrix: reference/verification-matrix.md
       - References: reference/references.md

@@ -243,7 +243,7 @@ deploy_task = deploy_model(model_uri=model_uri, serve_image=serve_image)
 kubernetes.set_service_account_name(deploy_task, "pipeline-deployer")
 ```
 
-If the helper differs in your KFP version, Codex should adapt this.
+If the helper differs in your KFP version, use the SDK-supported service-account helper for the same task. The deployment task needs the `pipeline-deployer` service account so it can apply the local serving manifests.
 
 ## Update the Pipeline
 

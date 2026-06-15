@@ -2,7 +2,7 @@
 
 This tutorial is local-first and GPU-aware.
 
-The core path starts with `kind` for the first Kubernetes basics, then uses `MicroK8s` on WSL2 as the default local ML platform. Later chapters expand the same workflow to STACKIT, managed Kubernetes, CI/CD, and production-style serving. A final optional add-on compares the workflow with Flyte instead of Kubeflow Pipelines.
+The core path starts with `kind` for the first Kubernetes basics, then uses `MicroK8s` on WSL2 as the default local ML platform. Later chapters expand the same workflow to STACKIT, managed Kubernetes patterns, and CI/CD. Production-style serving and full Kubeflow platform operations are next-step topics once the core workflow is working. A final optional add-on compares the workflow with Flyte instead of Kubeflow Pipelines.
 
 ## Core Architecture
 
@@ -35,7 +35,7 @@ GPU node pool
   ↓
 CI/CD
   ↓
-production-style serving and promotion
+next-step production serving and platform operations
   ↓
 optional Flyte orchestrator comparison
 ```

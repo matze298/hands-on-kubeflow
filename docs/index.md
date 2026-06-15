@@ -4,7 +4,7 @@ A local-first, GPU-aware, hands-on tutorial for learning Kubeflow, Kubernetes-na
 
 The tutorial is written for readers who already know Python, PyTorch, and basic deep learning, but who want to move from ML code to reproducible, containerized, Kubernetes-native MLOps workflows.
 
-The core path starts with `kind` for the first Kubernetes basics and then treats `MicroK8s` on WSL2 as the default local ML platform. Cloud, STACKIT, full Kubeflow, production serving, and CI/CD are introduced later as expansion chapters. A final optional add-on compares the same workflow with Flyte instead of Kubeflow Pipelines, and the FAQ collects reset procedures for local tutorial environments.
+The core path starts with `kind` for the first Kubernetes basics and then treats `MicroK8s` on WSL2 as the default local ML platform. Later chapters expand the workflow to STACKIT, provider-neutral cloud patterns, and CI/CD. Full Kubeflow platform operations and production serving are framed as next-step topics after the hands-on core path. A final optional add-on compares the same workflow with Flyte instead of Kubeflow Pipelines, and the FAQ collects reset procedures for local tutorial environments.
 
 ## What You Will Build
 
@@ -39,7 +39,7 @@ The ML workload is intentionally simple. The point is not to teach deep learning
 uv run mkdocs serve
 ```
 
-Use the [Verification Matrix](reference/verification-matrix.md) when you want a chapter-by-chapter checklist of local, Kubernetes, GPU, cloud, and optional add-on checks.
+Use the [Verification Matrix](reference/verification-matrix.md) when you want a chapter-by-chapter checklist of local, Kubernetes, GPU, cloud, and optional add-on checks. The [Local Platform Inventory](reference/local-platform-inventory.md) lists the namespaces, services, ports, secrets, and images the tutorial creates.
 
 ## Tutorial Style
 

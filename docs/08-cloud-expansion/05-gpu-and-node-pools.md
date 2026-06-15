@@ -111,7 +111,7 @@ kubernetes.add_toleration(
 )
 ```
 
-Exact helper names may differ by KFP SDK version. Codex should adapt.
+Exact helper names may differ by KFP SDK version. Keep the intent the same: add a toleration to the GPU training task only when the provider taints GPU nodes.
 
 ## Node Selectors
 

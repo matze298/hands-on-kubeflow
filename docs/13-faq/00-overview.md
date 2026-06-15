@@ -4,6 +4,8 @@ This page collects recovery procedures that are useful when a local tutorial env
 
 Use the smallest reset that solves the problem. A namespace reset is usually enough for a broken tutorial service. A full `MicroK8s` reset is a local-cluster rebuild.
 
+For a compact map of what the tutorial creates, see the [Local Platform Inventory](../reference/local-platform-inventory.md). For version pins and upgrade checks, see [Version Compatibility](../reference/version-compatibility.md).
+
 ## How Do I Reset `MicroK8s`?
 
 Start by confirming that you are looking at the tutorial cluster:
