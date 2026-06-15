@@ -121,7 +121,7 @@ Create `Dockerfile.kserve`:
 ```dockerfile
 # syntax=docker/dockerfile:1.7
 
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
@@ -140,7 +140,7 @@ COPY src/ ./src/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
-CMD ["uv", "run", "python", "-m", "kubeflow_by_doing.kserve_model", "--model_name=tiny-image-classifier", "--http_port=8080"]
+CMD ["uv", "run", "python", "-m", "kubeflow_by_doing.kserve_model", "--model_name=tutorial-image-classifier", "--http_port=8080"]
 ```
 
 Build:
