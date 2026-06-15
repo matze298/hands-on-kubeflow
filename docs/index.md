@@ -39,7 +39,7 @@ The ML workload is intentionally simple. The point is not to teach deep learning
 uv run mkdocs serve
 ```
 
-Use the [Verification Matrix](reference/verification-matrix.md) when you want a chapter-by-chapter checklist of local, Kubernetes, GPU, cloud, and optional add-on checks. The [Local Platform Inventory](reference/local-platform-inventory.md) lists the namespaces, services, ports, secrets, and images the tutorial creates.
+Use the [Glossary and Concept Map](reference/glossary.md) when terms get dense. Use [Chapter Checkpoints](reference/chapter-checkpoints.md) for expected outcomes after each chapter, and the [Verification Matrix](reference/verification-matrix.md) for executable checks. The [Local Platform Inventory](reference/local-platform-inventory.md) lists the namespaces, services, ports, secrets, and images the tutorial creates.
 
 ## Tutorial Style
 

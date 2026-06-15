@@ -2,7 +2,7 @@
 
 This page collects further reading for concepts used throughout the tutorial.
 
-For executable tutorial checks, use the [Verification Matrix](verification-matrix.md). For operational state, use the [Local Platform Inventory](local-platform-inventory.md). For pinned tools and upgrade checks, use [Version Compatibility](version-compatibility.md).
+For terminology, use the [Glossary and Concept Map](glossary.md). For chapter-by-chapter outcomes, use [Chapter Checkpoints](chapter-checkpoints.md). For executable tutorial checks, use the [Verification Matrix](verification-matrix.md). For operational state, use the [Local Platform Inventory](local-platform-inventory.md). For pinned tools and upgrade checks, use [Version Compatibility](version-compatibility.md). For larger ideas that are not part of the current core path, use [Upcoming Extensions](upcoming-extensions.md).
 
 ## Kubeflow
 

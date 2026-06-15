@@ -132,7 +132,10 @@ nav:
       - Verify and Debug: 14-kserve-add-on/05-verify-and-debug.md
       - Cleanup and Tradeoffs: 14-kserve-add-on/06-cleanup-and-tradeoffs.md
   - Reference:
+      - Glossary and Concept Map: reference/glossary.md
+      - Chapter Checkpoints: reference/chapter-checkpoints.md
       - Local Platform Inventory: reference/local-platform-inventory.md
       - Version Compatibility: reference/version-compatibility.md
       - Verification Matrix: reference/verification-matrix.md
+      - Upcoming Extensions: reference/upcoming-extensions.md
       - References: reference/references.md
