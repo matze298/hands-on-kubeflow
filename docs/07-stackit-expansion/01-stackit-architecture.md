@@ -31,8 +31,8 @@ This page turns those assumptions into explicit configuration.
 
 | Concern | Local | STACKIT |
 |---|---|---|
-| Kubernetes | MicroK8s / kind | STACKIT Kubernetes Engine |
-| Image distribution | local image import | STACKIT Container Registry or another OCI registry |
+| Kubernetes | minikube / kind | STACKIT Kubernetes Engine |
+| Image distribution | local image loading | STACKIT Container Registry or another OCI registry |
 | Object storage | MinIO | STACKIT Object Storage |
 | Artifact URI | `s3://kubeflow-by-doing/...` | same layout, different endpoint/credentials |
 | GPU | local NVIDIA GPU | GPU node pool |
@@ -49,7 +49,7 @@ This folder contains the STACKIT-specific configuration for the Kubeflow by Doin
 
 The local workflow remains the source architecture. STACKIT replaces the infrastructure boundaries:
 
-- MicroK8s/kind -> STACKIT Kubernetes Engine
+- minikube/kind -> STACKIT Kubernetes Engine
 - local image loading -> container registry
 - MinIO -> STACKIT Object Storage
 - local GPU -> SKE GPU node pool

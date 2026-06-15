@@ -13,7 +13,7 @@ infra/stackit/container-registry-secret.yaml
 
 ## Why This Matters
 
-In local kind or MicroK8s, we can import images directly.
+In local kind or minikube, we can load images directly.
 
 In SKE, worker nodes need to pull images from a registry.
 
@@ -226,7 +226,7 @@ You are done when:
 - SKE can pull the training image
 - image pull secret exists if needed
 - pipeline image parameters use registry-hosted image names
-- no cloud manifest depends on local-only image imports
+- no cloud manifest depends on local-only image loading
 
 ## References
 

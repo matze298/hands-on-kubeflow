@@ -2,11 +2,11 @@
 
 This page collects recovery procedures that are useful when a local tutorial environment gets into a confusing state.
 
-Use the smallest reset that solves the problem. A namespace reset is usually enough for a broken tutorial service. A full `MicroK8s` reset is a local-cluster rebuild.
+Use the smallest reset that solves the problem. A namespace reset is usually enough for a broken tutorial service. A full `minikube` reset is a local-cluster rebuild.
 
 For a compact map of what the tutorial creates, see the [Local Platform Inventory](../reference/local-platform-inventory.md). For version pins and upgrade checks, see [Version Compatibility](../reference/version-compatibility.md).
 
-## How Do I Reset `MicroK8s`?
+## How Do I Reset `minikube`?
 
 Start by confirming that you are looking at the tutorial cluster:
 
@@ -19,17 +19,17 @@ kubectl get namespaces
 For the default local ML path, the current context should be:
 
 ```text
-microk8s
+kubeflow-gpu
 ```
 
-If you are still setting up the cluster, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the `MicroK8s` bootstrap and namespace sections.
+If you are still setting up the cluster, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the `minikube` bootstrap and namespace sections.
 
 ### Soft Reset Tutorial Workloads
 
 Use this when Kubernetes itself is healthy but the tutorial workloads are stale, partially installed, or no longer match the chapter you are following.
 
 ```bash
-kubectl config use-context microk8s
+kubectl config use-context kubeflow-gpu
 kubectl delete namespace kubeflow-by-doing --ignore-not-found
 kubectl delete namespace kubeflow --ignore-not-found
 kubectl delete namespace minio --ignore-not-found
@@ -48,41 +48,24 @@ After this reset, reinstall only the pieces needed by your current chapter:
 - [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md)
 - [Add Experiment Tracking](../04-artifacts-and-tracking/03-add-mlflow.md)
 
-### Hard Reset the `MicroK8s` Cluster
+### Hard Reset the `minikube` Cluster
 
 Use this when core cluster pods are unhealthy, GPU addon state is broken, storage is inconsistent, or you want a clean local cluster.
 
 !!! warning
 
-    This deletes workloads and cluster state from the local `MicroK8s` cluster. Do not run it against a shared or non-tutorial cluster.
+    This deletes workloads and cluster state from the local `minikube` cluster. Do not run it against a shared or non-tutorial cluster.
 
 Stop local port forwards first, then run:
 
 ```bash
-sudo microk8s status --wait-ready
-sudo microk8s reset
+minikube delete -p kubeflow-gpu
 ```
 
 Rebuild the tutorial cluster setup from Chapter 1:
 
 ```bash
-sudo microk8s status --wait-ready
-sudo microk8s enable dns storage registry
-sudo microk8s enable gpu --gpu-operator-set-as-default-runtime
-
-mkdir -p "$HOME/.kube"
-sudo microk8s config > "$HOME/.kube/microk8s-config"
-
-if [ -f "$HOME/.kube/config" ]; then
-  KUBECONFIG="$HOME/.kube/config:$HOME/.kube/microk8s-config" kubectl config view --flatten > "$HOME/.kube/config.merged"
-  mv "$HOME/.kube/config.merged" "$HOME/.kube/config"
-else
-  cp "$HOME/.kube/microk8s-config" "$HOME/.kube/config"
-fi
-
-kubectl config use-context microk8s
-kubectl create namespace kubeflow-by-doing --dry-run=client -o yaml | kubectl apply -f -
-kubectl config set-context --current --namespace=kubeflow-by-doing
+bash infra/minikube/bootstrap-gpu-cluster.sh
 ```
 
 Verify the cluster before reinstalling Kubeflow components:
@@ -90,11 +73,12 @@ Verify the cluster before reinstalling Kubeflow components:
 ```bash
 kubectl get nodes -o wide
 kubectl get pods -n kube-system
-kubectl get pods -n gpu-operator-resources
-kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
+kubectl get pods -A | grep -i nvidia || true
+minikube addons list -p kubeflow-gpu | grep -i nvidia
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 ```
 
-If GPU allocatable is empty, stay in Chapter 1 and fix the `MicroK8s` GPU path before continuing to Kubeflow Pipelines.
+If GPU allocatable is empty, stay in Chapter 1 and fix the `minikube` GPU path before continuing to Kubeflow Pipelines.
 
 ## How Do I Reset Kubeflow?
 
@@ -108,10 +92,10 @@ kubectl get pods -n kubeflow
 kubectl get events -n kubeflow --sort-by=.lastTimestamp
 ```
 
-If the current context is not `microk8s`, switch back before resetting local KFP:
+If the current context is not `kubeflow-gpu`, switch back before resetting local KFP:
 
 ```bash
-kubectl config use-context microk8s
+kubectl config use-context kubeflow-gpu
 ```
 
 ### Restart KFP Pods
@@ -170,14 +154,14 @@ Do not delete object storage just to fix the KFP UI. Delete MinIO only when you 
 | KFP manifest install failed halfway | reinstall standalone KFP |
 | `kubeflow-by-doing` workloads are stale | soft reset tutorial workloads |
 | MinIO or MLflow data is wrong | reset that chapter's namespace or manifests deliberately |
-| `kube-system` pods are broken | hard reset `MicroK8s` |
-| GPU resources disappeared | verify Chapter 1 GPU setup, then hard reset `MicroK8s` if needed |
+| `kube-system` pods are broken | hard reset `minikube` |
+| GPU resources disappeared | verify Chapter 1 GPU setup, then hard reset `minikube` if needed |
 
 ## Acceptance Criteria
 
 You are done when:
 
-- `kubectl config current-context` is `microk8s`
+- `kubectl config current-context` is `kubeflow-gpu`
 - `kubectl get nodes` shows ready nodes
 - `kubectl get pods -n kube-system` has no unexpected `CrashLoopBackOff` pods
 - `kubectl get namespace kubeflow-by-doing` succeeds

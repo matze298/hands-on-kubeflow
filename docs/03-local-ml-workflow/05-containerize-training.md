@@ -15,7 +15,7 @@ kbd evaluate-model ...
 
 inside a container.
 
-Then import the image into the default GPU-capable `MicroK8s` cluster from Chapter 1. If you are staying on the `kind` fallback path, load the image into that cluster instead.
+Then import the image into the default GPU-capable `minikube` cluster from Chapter 1. If you are staying on the `kind` fallback path, load the image into that cluster instead.
 
 ## Why This Matters
 
@@ -145,7 +145,7 @@ cat outputs/container-train/metrics.json
 ```bash
 mkdir -p build
 docker save kubeflow-by-doing/train:local > build/train-image.tar
-sudo microk8s ctr image import build/train-image.tar
+minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
 ```
 
 If you are using the `kind` fallback path instead, load the image with:
@@ -178,7 +178,7 @@ kubectl delete pod train-image-smoke-test --ignore-not-found
 
 ## GPU Image Note
 
-Chapter 3 assumes the GPU-capable `MicroK8s` path is available for meaningful PyTorch-on-Kubernetes work.
+Chapter 3 assumes the GPU-capable `minikube` path is available for meaningful PyTorch-on-Kubernetes work.
 
 The image shown here still uses a CPU-oriented Python base image because it is the smallest packaging step that proves the CLI, dependencies, and entrypoint are wired correctly.
 
@@ -210,7 +210,7 @@ The image probably was not imported into the active cluster:
 
 ```bash
 docker save kubeflow-by-doing/train:local > build/train-image.tar
-sudo microk8s ctr image import build/train-image.tar
+minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
 ```
 
 Then inspect pod events:
@@ -247,7 +247,7 @@ You are done when:
 
 - [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
 - [uv Docker integration guide](https://docs.astral.sh/uv/guides/integration/docker/)
-- [MicroK8s local image import](https://microk8s.io/docs/registry-images)
+- [minikube image loading](https://minikube.sigs.k8s.io/docs/commands/image/)
 - [PyTorch Docker images](https://hub.docker.com/r/pytorch/pytorch)
 
 ## Next Step

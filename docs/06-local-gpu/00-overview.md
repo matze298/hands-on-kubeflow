@@ -12,16 +12,16 @@ The point is not to re-teach host GPU setup. The point is to close the loop from
 
 ## Updated Cluster Story
 
-For later chapters, this tutorial treats **MicroK8s** as the default local ML/Kubeflow platform.
+For later chapters, this tutorial treats **minikube** as the default local ML/Kubeflow platform.
 
 Use:
 
 ```text
-MicroK8s = default local GPU-capable platform
+minikube = default local GPU-capable platform
 kind      = fallback for readers without the GPU-capable local setup
 ```
 
-Chapter 1 used `kind` for the initial Kubernetes starter path because it is lightweight and easy to reset. For GPU-aware Kubeflow workflows, MicroK8s is the better local default because it more closely resembles a real single-node ML platform and has a dedicated GPU add-on.
+Chapter 1 used `kind` for the initial Kubernetes starter path because it is lightweight and easy to reset. For GPU-aware Kubeflow workflows, minikube is the better local default because it more closely resembles a real single-node ML platform and has a dedicated GPU add-on.
 
 ## What You Will Build
 
@@ -80,7 +80,7 @@ docs/06-local-gpu/
 
 You are done with Chapter 6 when:
 
-- MicroK8s reports GPU capacity through `nvidia.com/gpu`
+- minikube reports GPU capacity through `nvidia.com/gpu`
 - the training component can request `nvidia.com/gpu`
 - a KFP run succeeds on the GPU path
 - the CPU fallback still works when the GPU path is unavailable

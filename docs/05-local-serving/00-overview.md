@@ -73,7 +73,7 @@ This chapter uses a deliberately simple serving setup:
 
 KServe is introduced only as a preview. The core path stays transparent and debuggable.
 
-This chapter assumes the default `MicroK8s` local Kubernetes path. If you are still on the starter `kind` cluster, keep the serving workflow but use the `kind` image-loading commands where noted.
+This chapter assumes the default `minikube` local Kubernetes path. If you are still on the starter `kind` cluster, keep the serving workflow but use the `kind` image-loading commands where noted.
 
 ## Serving Architecture
 
@@ -126,7 +126,7 @@ You are done with Chapter 5 when:
 - `/healthz` returns a healthy response
 - `/predict` returns a class prediction
 - the serving image can be built locally
-- the serving image can be loaded into the default `MicroK8s` cluster, or into `kind` as the fallback path
+- the serving image can be loaded into the default `minikube` cluster, or into `kind` as the fallback path
 - the model server runs inside Kubernetes
 - the service can be reached through port forwarding
 - a pipeline promotion path can update or smoke-test the served model

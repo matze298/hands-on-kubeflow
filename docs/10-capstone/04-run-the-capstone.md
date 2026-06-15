@@ -80,17 +80,17 @@ docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
 
 ## Make Images Available to the Cluster
 
-### MicroK8s
+### minikube
 
 ```bash
-docker save kubeflow-by-doing/train:local | sudo microk8s ctr image import -
-docker save kubeflow-by-doing/serve:local | sudo microk8s ctr image import -
+minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+minikube image load kubeflow-by-doing/serve:local -p kubeflow-gpu
 ```
 
 For the optional GPU capstone path:
 
 ```bash
-docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
+minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu
 ```
 
 ### kind fallback

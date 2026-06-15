@@ -23,7 +23,7 @@ For terminology, use the [Glossary and Concept Map](glossary.md). For chapter-by
 ## Local Kubernetes
 
 - [kind documentation](https://kind.sigs.k8s.io/)
-- [MicroK8s documentation](https://microk8s.io/docs)
+- [minikube documentation](https://minikube.sigs.k8s.io/docs/)
 
 ## NVIDIA GPU Containers
 

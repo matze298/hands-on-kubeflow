@@ -204,7 +204,7 @@ If you rebuilt the image, reload it:
 ```bash
 mkdir -p build
 docker save kubeflow-by-doing/train:local > build/train-image.tar
-sudo microk8s ctr image import build/train-image.tar
+minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
 ```
 
 If you are using the `kind` fallback path instead, load the image with:
@@ -258,7 +258,7 @@ The image exists locally in Docker but not inside the active cluster.
 
 ```bash
 docker save kubeflow-by-doing/train:local > build/train-image.tar
-sudo microk8s ctr image import build/train-image.tar
+minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
 ```
 
 ### Component cannot find `kbd`
@@ -297,7 +297,7 @@ You are done when:
 - [KFP SDK reference](https://www.kubeflow.org/docs/components/pipelines/reference/sdk/)
 - [KFP container components](https://www.kubeflow.org/docs/components/pipelines/user-guides/components/container-components/)
 - [Compile a pipeline](https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/compile-a-pipeline/)
-- [MicroK8s local image import](https://microk8s.io/docs/registry-images)
+- [minikube image loading](https://minikube.sigs.k8s.io/docs/commands/image/)
 
 ## Next Step
 

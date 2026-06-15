@@ -5,7 +5,7 @@ The capstone combines the core tutorial into one end-to-end local ML platform.
 By this point, you have built the pieces separately:
 
 ```text
-local Kubernetes / MicroK8s
+local Kubernetes / minikube
 Kubeflow Pipelines
 local ML workflow
 object storage
@@ -120,7 +120,7 @@ The final workflow should prove:
 Default local target:
 
 ```text
-MicroK8s
+minikube
 ```
 
 Fallback target:

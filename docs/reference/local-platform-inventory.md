@@ -2,14 +2,14 @@
 
 Use this page when you want to understand what the tutorial creates in the local Kubernetes environment.
 
-The inventory reflects the default local path: `MicroK8s` for the ML/Kubeflow chapters and `kind` as the starter or CPU fallback path. Cloud chapters replace local image import and local MinIO with provider-specific registry and object-storage services.
+The inventory reflects the default local path: `minikube` for the ML/Kubeflow chapters and `kind` as the starter or CPU fallback path. Cloud chapters replace local image loading and local MinIO with provider-specific registry and object-storage services.
 
 ## Kubernetes Contexts
 
 | Context | Role | Used in |
 |---|---|---|
 | `kind-kubeflow-by-doing` | disposable starter cluster and CPU fallback | Chapter 1 starter path |
-| `microk8s` | default local ML/Kubeflow cluster | Chapters 2 onward |
+| `kubeflow-gpu` | default local ML/Kubeflow cluster | Chapters 2 onward |
 
 Check the current context before applying manifests:
 
@@ -27,7 +27,7 @@ kubectl get nodes -o wide
 | `minio` | local S3-compatible object storage | Chapter 4 |
 | `flyte` | optional Flyte backend | Chapter 12 |
 | `kserve` | optional KServe controller and serving platform resources | Chapter 14 |
-| `gpu-operator-resources` | MicroK8s GPU operator resources | Chapter 1 GPU path |
+| `kube-system` | core cluster pods and the NVIDIA device plugin add-on | Chapter 1 GPU path |
 
 Inspect local state:
 
@@ -84,20 +84,17 @@ kubectl -n kubeflow-by-doing get secret artifact-store-credentials
 
 | Image | Purpose | Local cluster path |
 |---|---|---|
-| `kubeflow-by-doing/train:local` | CPU training component image | import into `MicroK8s` or load into `kind` |
-| `kubeflow-by-doing/train:gpu-local` | GPU training component image | import into `MicroK8s` |
-| `kubeflow-by-doing/serve:local` | FastAPI serving image | import into `MicroK8s` or load into `kind` |
-| `localhost:32000/kubeflow-by-doing/flyte-cpu:local` | optional Flyte task image | push to the MicroK8s local registry |
-| `kubeflow-by-doing/kserve:local` | optional KServe custom predictor image | import into `MicroK8s` |
+| `kubeflow-by-doing/train:local` | CPU training component image | load into `minikube` or `kind` |
+| `kubeflow-by-doing/train:gpu-local` | GPU training component image | load into `minikube` |
+| `kubeflow-by-doing/serve:local` | FastAPI serving image | load into `minikube` or `kind` |
+| `kubeflow-by-doing/flyte-cpu:local` | optional Flyte task image | load into `minikube` |
+| `kubeflow-by-doing/kserve:local` | optional KServe custom predictor image | load into `minikube` |
 
-MicroK8s image import examples:
+minikube image load examples:
 
 ```bash
-mkdir -p build
-docker save kubeflow-by-doing/train:local > build/train-image.tar
-docker save kubeflow-by-doing/serve:local > build/serve-image.tar
-sudo microk8s ctr image import build/train-image.tar
-sudo microk8s ctr image import build/serve-image.tar
+minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+minikube image load kubeflow-by-doing/serve:local -p kubeflow-gpu
 ```
 
 Kind fallback example:
@@ -138,7 +135,7 @@ These values are intentionally simple for a disposable local tutorial cluster.
 
 Use the FAQ when local state needs cleanup:
 
-- [How to reset MicroK8s](../13-faq/00-overview.md#how-do-i-reset-microk8s)
+- [How to reset minikube](../13-faq/00-overview.md#how-do-i-reset-minikube)
 - [How to reset Kubeflow](../13-faq/00-overview.md#how-do-i-reset-kubeflow)
 
 Use the [Verification Matrix](verification-matrix.md) after a reset to decide which checks to rerun.

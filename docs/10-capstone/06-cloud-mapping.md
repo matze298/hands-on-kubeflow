@@ -24,8 +24,8 @@ cleanup plan
 
 | Capstone concern | Local | STACKIT |
 |---|---|---|
-| Kubernetes | MicroK8s / kind | SKE |
-| Images | local import | container registry |
+| Kubernetes | minikube / kind | SKE |
+| Images | local loading | container registry |
 | Object storage | MinIO | STACKIT Object Storage |
 | KFP | local install | SKE install |
 | MLflow | local in-cluster | SKE in-cluster or managed alternative |

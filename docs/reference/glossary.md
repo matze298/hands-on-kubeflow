@@ -21,12 +21,12 @@ The tutorial keeps these layers visible so you can debug the system from either 
 
 | Term | Meaning in this tutorial |
 |---|---|
-| Cluster | The Kubernetes environment running tutorial workloads. `MicroK8s` is the default local ML cluster, while `kind` is the starter and CPU fallback. |
+| Cluster | The Kubernetes environment running tutorial workloads. `minikube` is the default local ML cluster, while `kind` is the starter and CPU fallback. |
 | Context | The kubeconfig target selected by `kubectl`. Check it before applying manifests. |
 | Namespace | A logical boundary for related Kubernetes resources. The tutorial mainly uses `kubeflow-by-doing`, `kubeflow`, `minio`, `kserve`, and `flyte`. |
 | Pod | The smallest runnable unit in Kubernetes. Pipeline steps, serving containers, MinIO, MLflow, and KServe predictors all run in pods. |
 | Container | A process and filesystem packaged from an image. The tutorial builds training, serving, GPU, Flyte, and KServe images. |
-| Image | The packaged runtime used by Kubernetes to start containers. Local images must be imported into `MicroK8s` or loaded into `kind`. |
+| Image | The packaged runtime used by Kubernetes to start containers. Local images must be loaded into `minikube` or `kind`. |
 | Job | A Kubernetes workload that runs to completion. It is the closest raw Kubernetes shape to a training run. |
 | Deployment | A Kubernetes workload that keeps long-running pods available. The Chapter 5 model server uses a Deployment. |
 | Service | A stable in-cluster network endpoint for pods. Port-forwarding usually targets Services. |
@@ -87,7 +87,7 @@ The tutorial keeps these layers visible so you can debug the system from either 
 | Term | Meaning in this tutorial |
 |---|---|
 | NVIDIA Container Toolkit | Host/runtime support that lets containers use NVIDIA GPUs. |
-| GPU Operator | Kubernetes operator used by MicroK8s to configure GPU support. |
+| GPU Operator | Kubernetes operator that can configure NVIDIA GPU support on clusters that use the operator. The local minikube path in this tutorial uses the NVIDIA device plugin add-on instead. |
 | Device plugin | Kubernetes integration that advertises GPU resources such as `nvidia.com/gpu`. |
 | `nvidia.com/gpu` | The Kubernetes extended resource requested by GPU pods. |
 | CUDA image | A container image with CUDA runtime libraries. |
@@ -97,7 +97,7 @@ The tutorial keeps these layers visible so you can debug the system from either 
 
 | Term | Meaning in this tutorial |
 |---|---|
-| Registry | A container image store reachable by the cluster. Local chapters use image import; cloud chapters use a registry. |
+| Registry | A container image store reachable by the cluster. Local chapters use image loading; cloud chapters use a registry. |
 | Overlay | Provider-specific configuration layered over provider-neutral pipeline code. |
 | Image pull secret | Kubernetes Secret that lets the cluster pull private images. |
 | Workload identity | Cloud-native identity for pods. It can replace static object-storage credentials in mature setups. |

@@ -149,12 +149,12 @@ Build:
 docker build -f Dockerfile.kserve -t kubeflow-by-doing/kserve:local .
 ```
 
-Import into MicroK8s:
+Import into minikube:
 
 ```bash
 mkdir -p build
 docker save kubeflow-by-doing/kserve:local > build/kserve-image.tar
-sudo microk8s ctr image import build/kserve-image.tar
+minikube image load kubeflow-by-doing/kserve:local -p kubeflow-gpu
 ```
 
 ## Prepare a Model Artifact
@@ -319,7 +319,7 @@ The exact class and confidence are not important for this tutorial model. The pl
 You are done when:
 
 - `Dockerfile.kserve` builds
-- `kubeflow-by-doing/kserve:local` is available to MicroK8s
+- `kubeflow-by-doing/kserve:local` is available to minikube
 - `tutorial-image-classifier` reaches `READY=True`
 - the predictor reads model files from MinIO
 - a prediction request returns `class_id` and `confidence`

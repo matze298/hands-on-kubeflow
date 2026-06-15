@@ -61,7 +61,7 @@ The capstone is still local-first.
 Default target:
 
 ```text
-MicroK8s
+minikube
 ```
 
 Fallback:
@@ -174,7 +174,7 @@ Create `reports/capstone-runbook.md` yourself. It should capture the goal, the f
 
     ## Required Services
 
-    - Kubernetes cluster: MicroK8s preferred, kind fallback
+    - Kubernetes cluster: minikube preferred, kind fallback
     - Kubeflow Pipelines
     - object storage: MinIO locally
     - optional MLflow

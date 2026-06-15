@@ -57,7 +57,7 @@ These are not Flyte-specific annoyances. They are the same platform boundaries y
 For this repo, the mental model becomes:
 
 ```text
-MicroK8s
+minikube
   local Kubeflow learning platform
 
 STACKIT SKE or another managed Kubernetes provider
@@ -69,7 +69,7 @@ Remote Flyte backend
 
 Do not install Flyte into the core local path just because the dependency exists. The dependency lets readers run local Flyte commands. A backend deployment is a separate decision.
 
-The next page makes that backend decision concrete for a local evaluation by installing Flyte into the tutorial's MicroK8s cluster.
+The next page makes that backend decision concrete for a local evaluation by installing Flyte into the tutorial's minikube cluster.
 
 ## Images
 
@@ -314,4 +314,4 @@ You are done when:
 
 ## Next Step
 
-Continue with [Run Flyte on MicroK8s](05-microk8s-flyte-backend.md) when you want the Flyte comparison to run on Kubernetes instead of only in the local Python process.
+Continue with [Run Flyte on minikube](05-minikube-flyte-backend.md) when you want the Flyte comparison to run on Kubernetes instead of only in the local Python process.

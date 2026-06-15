@@ -44,21 +44,21 @@ docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
 
 ## Make Images Available to the Cluster
 
-### MicroK8s
+### minikube
 
-Use the repo's chosen MicroK8s image workflow.
+Use the repo's chosen minikube image workflow.
 
 A direct local import option is:
 
 ```bash
-docker save kubeflow-by-doing/train:local | sudo microk8s ctr image import -
-docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
+minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu
 ```
 
 Verify:
 
 ```bash
-sudo microk8s ctr images ls | grep kubeflow-by-doing || true
+minikube image ls -p kubeflow-gpu | grep kubeflow-by-doing || true
 ```
 
 ### kind fallback
@@ -67,7 +67,7 @@ sudo microk8s ctr images ls | grep kubeflow-by-doing || true
 kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 ```
 
-The GPU image path in this chapter is MicroK8s-only in the default tutorial flow. If you stay on `kind`, keep using the CPU fallback run and do not expect the GPU run to work unless you have separately configured a GPU-capable `kind` cluster.
+The GPU image path in this chapter is minikube-only in the default tutorial flow. If you stay on `kind`, keep using the CPU fallback run and do not expect the GPU run to work unless you have separately configured a GPU-capable `kind` cluster.
 
 ## Compile the Pipeline
 
@@ -104,7 +104,7 @@ pipeline succeeds
 
 ## Run GPU Path
 
-This run assumes the MicroK8s GPU-capable path from the earlier chapters.
+This run assumes the minikube GPU-capable path from the earlier chapters.
 
 Run with:
 
@@ -197,7 +197,7 @@ This is a scheduling failure. Continue to the next page.
 You are done when:
 
 - CPU fallback run succeeds
-- GPU run succeeds on MicroK8s GPU path
+- GPU run succeeds on minikube GPU path
 - training pod for GPU run requests `nvidia.com/gpu`
 - training logs show CUDA usage
 - artifacts are still produced
@@ -207,7 +207,7 @@ You are done when:
 
 - [KFP run a pipeline](https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/run-a-pipeline/)
 - [Kubernetes GPU scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
-- [MicroK8s GPU add-on](https://canonical.com/microk8s/docs/addon-gpu)
+- [minikube GPU add-on](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
 
 ## Next Step
 

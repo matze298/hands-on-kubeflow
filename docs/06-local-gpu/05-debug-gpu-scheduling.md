@@ -43,7 +43,7 @@ KFP requested a GPU, but Kubernetes cannot find an allocatable GPU.
 
 Fix:
 
-- use MicroK8s GPU path
+- use minikube GPU path
 - enable GPU add-on
 - check node capacity
 - reduce `gpu_count`
@@ -70,13 +70,13 @@ Meaning:
 Kubernetes cannot access the GPU training image.
 ```
 
-Fix for MicroK8s:
+Fix for minikube:
 
 ```bash
-docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
+minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu
 ```
 
-On `kind`, this failure is expected in the default tutorial flow because the GPU path is not the supported path there. Switch to the CPU fallback run or move to the MicroK8s GPU path before debugging the GPU image itself.
+On `kind`, this failure is expected in the default tutorial flow because the GPU path is not the supported path there. Switch to the CPU fallback run or move to the minikube GPU path before debugging the GPU image itself.
 
 If you have separately configured a GPU-capable `kind` environment, you can still fix the image load the same way as the CPU image path, then rerun the GPU job.
 
@@ -217,7 +217,7 @@ You are done when:
 - [Kubernetes GPU scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
 - [Kubernetes events](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/)
 - [Kubernetes debugging applications](https://kubernetes.io/docs/tasks/debug/debug-application/)
-- [MicroK8s GPU add-on](https://canonical.com/microk8s/docs/addon-gpu/)
+- [minikube GPU add-on](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
 
 ## Next Step
 

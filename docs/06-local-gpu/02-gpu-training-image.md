@@ -127,25 +127,25 @@ docker run --rm --gpus all kubeflow-by-doing/train:gpu-local \
 
 ## Make the Image Available to the Cluster
 
-### MicroK8s
+### minikube
 
-Use the repo's chosen MicroK8s image workflow. A direct local import option is:
+Use the repo's chosen minikube image workflow. A direct local import option is:
 
 ```bash
-docker save kubeflow-by-doing/train:gpu-local | sudo microk8s ctr image import -
+minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu
 ```
 
 Verify:
 
 ```bash
-sudo microk8s ctr images ls | grep kubeflow-by-doing || true
+minikube image ls -p kubeflow-gpu | grep kubeflow-by-doing || true
 ```
 
 ### kind fallback
 
 `kind` remains the CPU fallback cluster in this tutorial. Do not expect the GPU image to validate there unless you have separately set up a GPU-capable `kind` environment outside this tutorial.
 
-Keep using the CPU image path from the earlier chapters on `kind`, and move the GPU image validation to the MicroK8s path.
+Keep using the CPU image path from the earlier chapters on `kind`, and move the GPU image validation to the minikube path.
 
 ## Kubernetes GPU Image Smoke Test
 
@@ -201,7 +201,7 @@ You are done when:
 - `Dockerfile.gpu` exists
 - `kubeflow-by-doing/train:gpu-local` builds
 - `docker run --gpus all ... cuda-check` reports CUDA available
-- the image is available to MicroK8s
+- the image is available to minikube
 - a Kubernetes pod can run `cuda-check` with `nvidia.com/gpu: 1`
 - the CPU image still exists and still works
 
@@ -209,7 +209,7 @@ You are done when:
 
 - [PyTorch Docker images](https://hub.docker.com/r/pytorch/pytorch)
 - [NVIDIA CUDA container images](https://hub.docker.com/r/nvidia/cuda)
-- [MicroK8s registry and images](https://microk8s.io/docs/registry-images)
+- [minikube image loading](https://minikube.sigs.k8s.io/docs/commands/image/)
 - [kind loading images](https://kind.sigs.k8s.io/docs/user/quick-start/#loading-an-image-into-your-cluster)
 
 ## Next Step

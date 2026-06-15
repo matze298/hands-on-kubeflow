@@ -11,7 +11,7 @@ KServe adds a higher-level serving API on top of those Kubernetes primitives.
 You will add an optional KServe path that:
 
 ```text
-install KServe Standard mode on MicroK8s
+install KServe Standard mode on minikube
   ↓
 deploy a first built-in sklearn InferenceService
   ↓
@@ -116,7 +116,7 @@ The model is still the same small image classifier. The platform boundary change
 
 You are done with this add-on when:
 
-- KServe is installed in the local `MicroK8s` cluster
+- KServe is installed in the local `minikube` cluster
 - a built-in `InferenceService` reaches `READY=True`
 - KServe can read model artifacts from local MinIO
 - the tutorial model is served through a KServe-managed predictor

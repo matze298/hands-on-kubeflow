@@ -5,7 +5,7 @@ Chapter 7 moves the local workflow to STACKIT.
 The local core path taught the concepts:
 
 ```text
-local Kubernetes / MicroK8s
+local Kubernetes / minikube
   ↓
 Kubeflow Pipelines
   ↓
@@ -64,8 +64,8 @@ It is a change in infrastructure boundaries:
 
 | Local | STACKIT |
 |---|---|
-| MicroK8s / kind | STACKIT Kubernetes Engine |
-| local image import | container registry |
+| minikube / kind | STACKIT Kubernetes Engine |
+| local image loading | container registry |
 | MinIO | STACKIT Object Storage |
 | local GPU | GPU node pool |
 | port-forward only | port-forward first, ingress/load balancer later |
@@ -117,7 +117,7 @@ Those are later expansion topics.
 For this repo:
 
 ```text
-MicroK8s = default local ML/Kubeflow platform
+minikube = default local ML/Kubeflow platform
 kind      = fallback and starter path
 SKE       = cloud expansion path
 ```

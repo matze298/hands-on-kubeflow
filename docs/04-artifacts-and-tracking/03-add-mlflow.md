@@ -33,7 +33,7 @@ experiment name
 
 Kubeflow gives workflow-level visibility. MLflow gives experiment-level visibility familiar to many ML engineers.
 
-This chapter assumes the default `MicroK8s` local Kubernetes path from here on. If you are still on the starter `kind` cluster, switch before continuing so the MLflow service and secret wiring match the rest of the tutorial.
+This chapter assumes the default `minikube` local Kubernetes path from here on. If you are still on the starter `kind` cluster, switch before continuing so the MLflow service and secret wiring match the rest of the tutorial.
 
 ## Add MLflow Dependency
 

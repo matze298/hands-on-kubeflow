@@ -4,7 +4,7 @@ In this chapter, we turn the toy Kubeflow Pipeline from Chapter 2 into a small b
 
 The focus is not the model architecture. The reader already knows PyTorch and deep learning basics. The focus is the transition from local ML code to a testable, containerized, Kubeflow-orchestrated workflow.
 
-From this chapter onward, the default local Kubernetes path is `MicroK8s` on WSL2. The `kind` cluster remains available as the starter and fallback path, but the ML workflow assumes the GPU-capable `MicroK8s` setup when possible.
+From this chapter onward, the default local Kubernetes path is `minikube` on WSL2. The `kind` cluster remains available as the starter and fallback path, but the ML workflow assumes the GPU-capable `minikube` setup when possible.
 
 ```text
 local ML script

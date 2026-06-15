@@ -9,7 +9,7 @@ The [Verification Matrix](verification-matrix.md) focuses on commands. This page
 Expected outcome:
 
 - you understand the local-first course path
-- you know that `MicroK8s` is the default local ML/Kubeflow platform
+- you know that `minikube` is the default local ML/Kubeflow platform
 - you know that `kind` is the starter and CPU fallback path
 - you can run the docs locally with `uv run mkdocs serve`
 
@@ -25,7 +25,7 @@ Expected outcome:
 
 - local tooling is installed
 - `kind` starter cluster can run a simple workload
-- `MicroK8s` is available for the ML chapters
+- `minikube` is available for the ML chapters
 - `kubeflow-by-doing` namespace exists
 - GPU smoke tests either pass or the CPU fallback status is clear
 
@@ -34,7 +34,7 @@ Expected paths:
 ```text
 infra/k8s/
 infra/kind/
-infra/microk8s/
+infra/minikube/
 ```
 
 Useful checks:
@@ -164,7 +164,7 @@ uv run kbd-client predict --endpoint http://localhost:8000/predict --image-size 
 
 Expected outcome:
 
-- `MicroK8s` advertises GPU capacity if your machine has a supported NVIDIA GPU
+- `minikube` advertises GPU capacity if your machine has a supported NVIDIA GPU
 - GPU training image builds
 - GPU-aware KFP component requests `nvidia.com/gpu`
 - CPU path remains usable
@@ -311,7 +311,7 @@ Expected outcome:
 
 - local Flyte workflow runs
 - Flyte task boundaries are compared with KFP component boundaries
-- optional MicroK8s-backed Flyte run is documented
+- optional minikube-backed Flyte run is documented
 - Flyte remains outside the required Kubeflow path
 
 Expected paths:
@@ -333,7 +333,7 @@ uv run python -m py_compile flyte/kbd_flyte_workflow.py
 
 Expected outcome:
 
-- you can choose between namespace reset, KFP reset, and full `MicroK8s` reset
+- you can choose between namespace reset, KFP reset, and full `minikube` reset
 - reset procedures link back to the setup chapters
 - local state can be rebuilt intentionally
 

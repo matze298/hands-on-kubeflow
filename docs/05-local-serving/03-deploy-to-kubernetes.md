@@ -43,7 +43,7 @@ You need:
 
 - MinIO running
 - a trained model uploaded to MinIO
-- the serving image loaded into the default `MicroK8s` cluster, or into `kind` if you are using the fallback path
+- the serving image loaded into the default `minikube` cluster, or into `kind` if you are using the fallback path
 - the `artifact-store-credentials` Secret from Chapter 4
 
 Use a known run ID:
@@ -251,7 +251,7 @@ spec:
 ```bash
 mkdir -p build
 docker save kubeflow-by-doing/serve:local > build/serve-image.tar
-sudo microk8s ctr image import build/serve-image.tar
+minikube image load kubeflow-by-doing/serve:local -p kubeflow-gpu
 ```
 
 If you are using the `kind` fallback path, load it with:

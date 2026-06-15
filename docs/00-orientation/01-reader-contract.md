@@ -117,7 +117,7 @@ Prefer:
 - Docker or a compatible container runtime
 - `kubectl`, `helm`, and `kustomize` for Kubernetes work
 - `kind` for the starter and CPU fallback Kubernetes path
-- `MicroK8s` for the default GPU-capable local ML path
+- `minikube` for the default GPU-capable local ML path
 - Kubeflow Pipelines v2 style APIs
 - containerized components
 - reproducible CLI entry points

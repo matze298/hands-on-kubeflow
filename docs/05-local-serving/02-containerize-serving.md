@@ -124,12 +124,12 @@ uv run kbd-client predict --endpoint http://localhost:8000/predict --image-size 
 
 ## Load the Image into the Default Cluster
 
-If you are on the default `MicroK8s` path, load the image with:
+If you are on the default `minikube` path, load the image with:
 
 ```bash
 mkdir -p build
 docker save kubeflow-by-doing/serve:local > build/serve-image.tar
-sudo microk8s ctr image import build/serve-image.tar
+minikube image load kubeflow-by-doing/serve:local -p kubeflow-gpu
 ```
 
 If you are on the `kind` fallback path, load the image with:
@@ -209,7 +209,7 @@ You are done when:
 - the serving container starts locally
 - `/healthz` succeeds
 - `/predict` succeeds
-- the serving image is loaded into `MicroK8s`, or into `kind` if that is your fallback path
+- the serving image is loaded into `minikube`, or into `kind` if that is your fallback path
 
 ## References
 

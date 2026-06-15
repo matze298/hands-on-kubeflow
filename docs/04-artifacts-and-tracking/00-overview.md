@@ -65,7 +65,7 @@ lineage records
 
 Kubeflow tracks pipeline structure and artifacts. Object storage gives us durable files. MLflow gives us familiar experiment tracking. A lineage record connects the pieces.
 
-From this chapter onward, the tutorial assumes the default `MicroK8s` local Kubernetes path. The `kind` starter cluster remains available for the early Kubernetes chapters, but the artifact and tracking workflow is written for the GPU-capable `MicroK8s` setup.
+From this chapter onward, the tutorial assumes the default `minikube` local Kubernetes path. The `kind` starter cluster remains available for the early Kubernetes chapters, but the artifact and tracking workflow is written for the GPU-capable `minikube` setup.
 
 ## Target Architecture
 

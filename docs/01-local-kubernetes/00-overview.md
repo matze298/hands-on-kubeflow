@@ -19,7 +19,7 @@ You will create a local Kubernetes environment on a Linux or WSL2 Linux developm
 
 This chapter starts with `kind` as the starter cluster backend.
 
-This chapter also sets up `MicroK8s` on WSL2 as the default local ML platform for the later chapters. Use `kind` as the starter and fallback cluster.
+This chapter also sets up a `minikube` Docker-driver cluster on WSL2 as the GPU-capable local ML platform for the later chapters. Use `kind` as the starter and CPU fallback cluster.
 
 By the end of this chapter, you will have:
 
@@ -30,7 +30,7 @@ By the end of this chapter, you will have:
 - debugged common workload failures
 - verified local GPU visibility in containers
 - prepared the starter cluster for the first Kubernetes exercises
-- prepared the `MicroK8s` cluster that the later Kubeflow and ML chapters assume
+- prepared the `minikube` GPU cluster that the later Kubeflow and ML chapters assume
 
 ## Why This Matters
 
@@ -85,7 +85,7 @@ You are done with Chapter 1 when:
 - you can inspect job logs
 - you can debug a deliberately broken pod
 - `docker run --gpus all ... nvidia-smi` works
-- the `MicroK8s` GPU path is available and a Kubernetes pod can request the GPU
+- the `minikube` GPU path is available and a Kubernetes pod can request the GPU
 
 ## Next Step
 

@@ -10,7 +10,7 @@ The tutorial is build-along content. Some checks only become available after you
 |---|---|
 | Local | runs on the development machine without Kubernetes |
 | Kubernetes | requires the current `kubectl` context to point at the tutorial cluster |
-| MicroK8s | assumes the default local ML platform from Chapter 1 |
+| minikube | assumes the default local ML platform from Chapter 1 |
 | GPU | requires a working NVIDIA GPU path |
 | Cloud | may require provider credentials or billable resources |
 | Optional | outside the required Kubeflow path |
@@ -20,13 +20,13 @@ The tutorial is build-along content. Some checks only become available after you
 | Chapter | Scope | Type | Primary checks |
 |---|---|---|---|
 | 0. Orientation | course map and expectations | Local | `uv run mkdocs build --strict` |
-| 1. Local Kubernetes | toolchain, `kind`, `MicroK8s`, GPU smoke tests | Local, Kubernetes, MicroK8s, GPU | `kubectl get nodes`, `kubectl get pods -A`, `docker run --rm --gpus all ...`, GPU smoke-test pod logs |
+| 1. Local Kubernetes | toolchain, `kind`, `minikube`, GPU smoke tests | Local, Kubernetes, minikube, GPU | `kubectl get nodes`, `kubectl get pods -A`, `docker run --rm --gpus all ...`, GPU smoke-test pod logs |
 | 2. Kubeflow Pipelines | standalone KFP install and starter pipelines | Local, Kubernetes | `kubectl get pods -n kubeflow`, `uv run python pipelines/hello_pipeline.py`, `uv run python pipelines/tiny_ml_pipeline.py`, KFP UI port-forward |
 | 3. Local ML Workflow | package code, tests, container, KFP training pipeline | Local, Kubernetes | `uv run pytest`, `uv run ruff check .`, `uv run ty check`, `docker build -t kubeflow-by-doing/train:local .`, `uv run python pipelines/image_classification_pipeline.py` |
 | 4. Artifacts and Tracking | MinIO, artifact layout, MLflow, lineage | Local, Kubernetes | `kubectl -n minio get pods`, MinIO bucket smoke test, `kubectl -n kubeflow-by-doing get secret artifact-store-credentials`, MLflow port-forward, object-storage artifact listing |
 | 5. Local Serving | FastAPI server, serving image, Kubernetes deployment | Local, Kubernetes | local API smoke test, `docker build -f Dockerfile.serve -t kubeflow-by-doing/serve:local .`, `kubectl -n kubeflow-by-doing rollout status deployment/model-server`, prediction smoke test |
-| 6. Local GPU | GPU image, GPU-aware KFP components, scheduling debugging | MicroK8s, GPU | GPU allocatable JSONPath check, PyTorch GPU pod logs, GPU image smoke test, KFP GPU run pod events |
-| 10. Capstone | full local end-to-end workflow | Local, Kubernetes, MicroK8s | capstone pipeline compile, required services ready, final run artifacts exist, smoke test passes if serving is enabled, capstone report generated |
+| 6. Local GPU | GPU image, GPU-aware KFP components, scheduling debugging | minikube, GPU | GPU allocatable JSONPath check, PyTorch GPU pod logs, GPU image smoke test, KFP GPU run pod events |
+| 10. Capstone | full local end-to-end workflow | Local, Kubernetes, minikube | capstone pipeline compile, required services ready, final run artifacts exist, smoke test passes if serving is enabled, capstone report generated |
 
 ## Expansion Tracks
 
@@ -41,9 +41,9 @@ The tutorial is build-along content. Some checks only become available after you
 | Chapter | Scope | Type | Primary checks |
 |---|---|---|---|
 | 11. Conclusion | next-topic decision points and alternatives | Local | link/navigation review, `uv run mkdocs build --strict` |
-| 12. Flyte Add-On | local Flyte workflow and MicroK8s-backed Flyte run | Optional, Local, MicroK8s | `uv run flyte --version`, local Flyte run, Helm render for Flyte backend values, Flyte config check, MicroK8s task pod inspection |
-| 13. FAQ | reset procedures | Local, Kubernetes, MicroK8s | commands are reviewed against the current setup chapters, `uv run mkdocs build --strict` |
-| 14. KServe Add-On | KServe Standard mode and optional `InferenceService` serving | Optional, Kubernetes, MicroK8s | `kubectl get pods -n kserve`, `kubectl get inferenceservice -n kubeflow-by-doing`, first sklearn prediction, tutorial model prediction |
+| 12. Flyte Add-On | local Flyte workflow and minikube-backed Flyte run | Optional, Local, minikube | `uv run flyte --version`, local Flyte run, Helm render for Flyte backend values, Flyte config check, minikube task pod inspection |
+| 13. FAQ | reset procedures | Local, Kubernetes, minikube | commands are reviewed against the current setup chapters, `uv run mkdocs build --strict` |
+| 14. KServe Add-On | KServe Standard mode and optional `InferenceService` serving | Optional, Kubernetes, minikube | `kubectl get pods -n kserve`, `kubectl get inferenceservice -n kubeflow-by-doing`, first sklearn prediction, tutorial model prediction |
 
 ## Repo-Level Checks
 
@@ -78,7 +78,7 @@ Use the narrowest failing layer:
 | local Python tests | the relevant `src/` module and test file |
 | pipeline compilation | KFP imports, component annotations, and generated YAML |
 | image build | Dockerfile, dependency lockfile, and build context |
-| image pull in Kubernetes | registry tag, image import/push, and pull secret |
+| image pull in Kubernetes | registry tag, image load/push, and pull secret |
 | pod pending | `kubectl describe pod` and namespace events |
 | pod crash | container logs, command arguments, mounted paths, and secrets |
 | artifact upload | MinIO/service endpoint, bucket existence, and credentials |
