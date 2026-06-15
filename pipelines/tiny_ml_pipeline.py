@@ -1,11 +1,7 @@
 """Refactored TinyML pipeline."""
 
-from typing import TYPE_CHECKING
-
 from kfp import compiler
-
-if TYPE_CHECKING:
-    from kfp.dsl import Dataset, Input, Metrics, Model, Output
+from kfp.dsl import Dataset, Input, Metrics, Model, Output  # noqa: TC002
 from kfp.dsl.component_decorator import component
 from kfp.dsl.pipeline_context import pipeline
 

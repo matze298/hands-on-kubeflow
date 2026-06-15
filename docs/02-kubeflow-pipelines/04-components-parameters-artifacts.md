@@ -43,7 +43,7 @@ Create `pipelines/tiny_ml_pipeline.py`:
 
 ```python
 from kfp import compiler, dsl
-from kfp.dsl import Dataset, Input, Metrics, Model, Output
+from kfp.dsl import Dataset, Input, Metrics, Model, Output  # noqa: TC002
 
 
 @dsl.component(base_image="python:3.12-slim")

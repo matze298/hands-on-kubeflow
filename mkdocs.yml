@@ -124,4 +124,5 @@ nav:
   - 13. FAQ:
       - FAQ: 13-faq/00-overview.md
   - Reference:
+      - Verification Matrix: reference/verification-matrix.md
       - References: reference/references.md

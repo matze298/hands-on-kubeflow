@@ -138,11 +138,16 @@ def evaluate_model(  # noqa: PLR0913, PLR0917
 Create `pipelines/image_classification_pipeline.py`:
 
 ```python
+import sys
+from pathlib import Path
+
 from kfp.compiler.compiler import Compiler
 from kfp.dsl.pipeline_context import pipeline
 
-from components.evaluate_model import evaluate_model
-from components.train_model import train_model
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from components.evaluate_model import evaluate_model  # noqa: E402
+from components.train_model import train_model  # noqa: E402
 
 
 @pipeline(name="image-classification-local")

@@ -48,8 +48,9 @@ deploymentSpec:
 
           '
         - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
-          \ *\n\ndef create_message(name: str) -> str:\n    \"\"\"Create a message.\"\
-          \"\"\n    return f\"hello, {name}\"\n\n"
+          \ *\n\ndef create_message(name: str) -> str:\n    \"\"\"Create a message.\n\
+          \n    Returns:\n        The message.\n    \"\"\"\n    return f\"hello, {name}\"\
+          \n\n"
         image: python:3.12-slim
     exec-print-message:
       container:
@@ -78,7 +79,7 @@ deploymentSpec:
           '
         - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
           \ *\n\ndef print_message(message: str) -> None:\n    \"\"\"Prints a message.\"\
-          \"\"\n    print(message)\n\n"
+          \"\"\n    print(message)  # noqa:T201\n\n"
         image: python:3.12-slim
 pipelineInfo:
   description: Defines the pipeline.

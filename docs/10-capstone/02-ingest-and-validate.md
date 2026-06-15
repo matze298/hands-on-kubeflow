@@ -441,16 +441,14 @@ Required coverage:
         manifest_path = tmp_path / "dataset_manifest.json"
         report_path = tmp_path / "validation_report.json"
         manifest_path.write_text(
-            json.dumps(
-                {
-                    "dataset_uri": "",
-                    "run_id": "test-run",
-                    "n_train": 0,
-                    "n_val": 0,
-                    "image_size": 0,
-                    "n_classes": 1,
-                }
-            ),
+            json.dumps({
+                "dataset_uri": "",
+                "run_id": "test-run",
+                "n_train": 0,
+                "n_val": 0,
+                "image_size": 0,
+                "n_classes": 1,
+            }),
             encoding="utf-8",
         )
 

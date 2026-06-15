@@ -81,12 +81,13 @@ deploymentSpec:
           '
         - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
           \ *\n\ndef evaluate_model(\n    model: Input[Model],\n    metrics: Output[Metrics],\n\
-          ) -> None:\n    \"\"\"Evaluates the model.\"\"\"\n    from pathlib import\
-          \ Path\n    import json\n\n    model_path = Path(model.path) / \"model.json\"\
-          \n    model_data = json.loads(model_path.read_text(encoding=\"utf-8\"))\n\
-          \n    # Fake metric for now.\n    accuracy = 0.90 if model_data[\"n_samples\"\
-          ] >= 50 else 0.70\n\n    metrics.log_metric(\"accuracy\", accuracy)\n  \
-          \  metrics.log_metric(\"n_samples\", model_data[\"n_samples\"])\n\n"
+          ) -> None:\n    \"\"\"Evaluates the model.\"\"\"\n    import json  # noqa:\
+          \ PLC0415\n    from pathlib import Path  # noqa: PLC0415\n\n    model_path\
+          \ = Path(model.path) / \"model.json\"\n    model_data = json.loads(model_path.read_text(encoding=\"\
+          utf-8\"))\n\n    # Fake metric for now.\n    accuracy = 0.90 if model_data[\"\
+          n_samples\"] >= 50 else 0.70  # noqa: PLR2004\n\n    metrics.log_metric(\"\
+          accuracy\", accuracy)\n    metrics.log_metric(\"n_samples\", model_data[\"\
+          n_samples\"])\n\n"
         image: python:3.12-slim
     exec-generate-dataset:
       container:
@@ -115,12 +116,12 @@ deploymentSpec:
           '
         - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
           \ *\n\ndef generate_dataset(dataset: Output[Dataset], n_samples: int = 100)\
-          \ -> None:\n    \"\"\"Generates a dataset.\"\"\"\n    from pathlib import\
-          \ Path\n    import json\n    import random\n\n    path = Path(dataset.path)\n\
-          \    path.mkdir(parents=True, exist_ok=True)\n\n    samples = [\n      \
-          \  {\"x\": random.random(), \"y\": random.randint(0, 1)}\n        for _\
-          \ in range(n_samples)\n    ]\n\n    (path / \"data.json\").write_text(json.dumps(samples),\
-          \ encoding=\"utf-8\")\n\n"
+          \ -> None:\n    \"\"\"Generates a dataset.\"\"\"\n    import json  # noqa:\
+          \ PLC0415\n    import random  # noqa: PLC0415\n    from pathlib import Path\
+          \  # noqa: PLC0415\n\n    path = Path(dataset.path)\n    path.mkdir(parents=True,\
+          \ exist_ok=True)\n\n    samples = [{\"x\": random.random(), \"y\": random.randint(0,\
+          \ 1)} for _ in range(n_samples)]  # noqa:S311\n\n    (path / \"data.json\"\
+          ).write_text(json.dumps(samples), encoding=\"utf-8\")\n\n"
         image: python:3.12-slim
     exec-train-model:
       container:
@@ -150,15 +151,15 @@ deploymentSpec:
         - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
           \ *\n\ndef train_model(\n    dataset: Input[Dataset],\n    model: Output[Model],\n\
           \    learning_rate: float = 0.01,\n) -> None:\n    \"\"\"Trains a model.\"\
-          \"\"\n    from pathlib import Path\n    import json\n\n    data_path = Path(dataset.path)\
-          \ / \"data.json\"\n    samples = json.loads(data_path.read_text(encoding=\"\
-          utf-8\"))\n\n    model_path = Path(model.path)\n    model_path.mkdir(parents=True,\
-          \ exist_ok=True)\n\n    # This is intentionally not real ML yet.\n    #\
-          \ The point is to create a model artifact.\n    artifact = {\n        \"\
-          kind\": \"tiny-threshold-model\",\n        \"learning_rate\": learning_rate,\n\
-          \        \"n_samples\": len(samples),\n        \"threshold\": 0.5,\n   \
-          \ }\n\n    (model_path / \"model.json\").write_text(json.dumps(artifact),\
-          \ encoding=\"utf-8\")\n\n"
+          \"\"\n    import json  # noqa: PLC0415\n    from pathlib import Path  #\
+          \ noqa: PLC0415\n\n    data_path = Path(dataset.path) / \"data.json\"\n\
+          \    samples = json.loads(data_path.read_text(encoding=\"utf-8\"))\n\n \
+          \   model_path = Path(model.path)\n    model_path.mkdir(parents=True, exist_ok=True)\n\
+          \n    # This is intentionally not real ML yet.\n    # The point is to create\
+          \ a model artifact.\n    artifact = {\n        \"kind\": \"tiny-threshold-model\"\
+          ,\n        \"learning_rate\": learning_rate,\n        \"n_samples\": len(samples),\n\
+          \        \"threshold\": 0.5,\n    }\n\n    (model_path / \"model.json\"\
+          ).write_text(json.dumps(artifact), encoding=\"utf-8\")\n\n"
         image: python:3.12-slim
 pipelineInfo:
   description: Defines the TinyML pipeline.

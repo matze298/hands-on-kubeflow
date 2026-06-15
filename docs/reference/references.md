@@ -2,6 +2,8 @@
 
 This page collects further reading for concepts used throughout the tutorial.
 
+For executable tutorial checks, use the [Verification Matrix](verification-matrix.md).
+
 ## Kubeflow
 
 - [Kubeflow documentation](https://www.kubeflow.org/docs/)

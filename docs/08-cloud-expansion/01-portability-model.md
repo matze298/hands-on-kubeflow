@@ -217,13 +217,13 @@ endpoint_url = os.environ["KBD_S3_ENDPOINT_URL"]
 Avoid:
 
 ```python
-image="kubeflow-by-doing/train:local"
+image = "kubeflow-by-doing/train:local"
 ```
 
 Prefer:
 
 ```python
-image=training_image
+image = training_image
 ```
 
 ## Acceptance Criteria

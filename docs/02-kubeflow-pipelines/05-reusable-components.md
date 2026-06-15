@@ -128,12 +128,17 @@ def evaluate_model(
 Create `pipelines/tiny_ml_pipeline_refactored.py`:
 
 ```python
+import sys
+from pathlib import Path
+
 from kfp.compiler.compiler import Compiler
 from kfp.dsl.pipeline_context import pipeline
 
-from components.evaluate_model_tiny import evaluate_model
-from components.generate_dataset import generate_dataset
-from components.train_model_tiny import train_model
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from components.evaluate_model_tiny import evaluate_model  # noqa: E402
+from components.generate_dataset import generate_dataset  # noqa: E402
+from components.train_model_tiny import train_model  # noqa: E402
 
 
 @pipeline(name="tiny-ml-pipeline")

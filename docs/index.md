@@ -39,6 +39,8 @@ The ML workload is intentionally simple. The point is not to teach deep learning
 uv run mkdocs serve
 ```
 
+Use the [Verification Matrix](reference/verification-matrix.md) when you want a chapter-by-chapter checklist of local, Kubernetes, GPU, cloud, and optional add-on checks.
+
 ## Tutorial Style
 
 Each chapter should be concise, practical, and reproducible.

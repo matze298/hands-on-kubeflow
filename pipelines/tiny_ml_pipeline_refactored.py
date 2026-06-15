@@ -1,7 +1,12 @@
 """Refactored TinyML pipeline."""
 
+import sys
+from pathlib import Path
+
 from kfp import compiler
 from kfp.dsl.pipeline_context import pipeline
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from components.evaluate_model_tiny import evaluate_model
 from components.generate_dataset import generate_dataset

@@ -1,7 +1,12 @@
 """Image classification training pipeline."""
 
+import sys
+from pathlib import Path
+
 from kfp.compiler.compiler import Compiler
 from kfp.dsl.pipeline_context import pipeline
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from components.evaluate_model import evaluate_model
 from components.train_model import train_model
