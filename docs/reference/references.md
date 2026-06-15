@@ -49,6 +49,10 @@ For executable tutorial checks, use the [Verification Matrix](verification-matri
 - [MLflow documentation](https://mlflow.org/docs/latest/)
 - [FastAPI documentation](https://fastapi.tiangolo.com/)
 - [KServe documentation](https://kserve.github.io/website/latest/)
+- [KServe quickstart guide](https://kserve.github.io/website/docs/getting-started/quickstart-guide)
+- [KServe Kubernetes deployment installation](https://kserve.github.io/website/docs/admin-guide/kubernetes-deployment)
+- [KServe custom predictor guide](https://kserve.github.io/website/docs/model-serving/predictive-inference/frameworks/custom-predictor)
+- [KServe S3 storage provider](https://kserve.github.io/website/docs/model-serving/storage/providers/s3)
 
 ## Flyte
 

@@ -104,9 +104,9 @@ Local KServe can be more complex than the simple FastAPI Deployment because it m
 
 That complexity is valuable later, but it distracts from the first serving milestone.
 
-## Suggested Future Chapter
+## Optional Hands-On Chapter
 
-A later KServe chapter should follow this sequence:
+The optional [KServe Add-On](../14-kserve-add-on/00-overview.md) follows this sequence:
 
 ```text
 install KServe locally
@@ -139,3 +139,5 @@ You are done when:
 ## Next Step
 
 Continue with Chapter 6: Local GPU Integration.
+
+After the core path and capstone, return to the optional [KServe Add-On](../14-kserve-add-on/00-overview.md) if you want a hands-on `InferenceService` workflow.

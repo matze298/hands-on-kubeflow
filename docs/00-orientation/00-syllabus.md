@@ -35,6 +35,7 @@ This is a build-along tutorial: the chapter pages show the files, commands, and 
 ```text
 12. Flyte Instead of Kubeflow Pipelines
 13. FAQ
+14. KServe Add-On
 ```
 
 ## 0. Orientation
@@ -346,6 +347,8 @@ Focus:
 Introduce KServe conceptually and optionally.
 
 KServe is not required for the core path, but the reader should understand where it fits.
+
+The hands-on KServe work appears later as an optional add-on, after the core serving and capstone path are complete.
 
 ## 6. Local GPU
 

@@ -26,6 +26,7 @@ kubectl get nodes -o wide
 | `kubeflow` | standalone Kubeflow Pipelines installation | Chapter 2 |
 | `minio` | local S3-compatible object storage | Chapter 4 |
 | `flyte` | optional Flyte backend | Chapter 12 |
+| `kserve` | optional KServe controller and serving platform resources | Chapter 14 |
 | `gpu-operator-resources` | MicroK8s GPU operator resources | Chapter 1 GPU path |
 
 Inspect local state:
@@ -49,6 +50,7 @@ kubectl get pods -n minio
 | `model-server` | `kubeflow-by-doing` | `8000` | `8000` | FastAPI model server |
 | `flyte-flyte-binary-http` | `flyte` | `8090` | `8090` | optional Flyte API |
 | `flyte-flyte-binary-console` | `flyte` | `80` | `8088` | optional Flyte console |
+| generated predictor service | `kubeflow-by-doing` | `80` | `8081` or `8082` | optional KServe predictor access |
 
 Common port-forwards:
 
@@ -86,6 +88,7 @@ kubectl -n kubeflow-by-doing get secret artifact-store-credentials
 | `kubeflow-by-doing/train:gpu-local` | GPU training component image | import into `MicroK8s` |
 | `kubeflow-by-doing/serve:local` | FastAPI serving image | import into `MicroK8s` or load into `kind` |
 | `localhost:32000/kubeflow-by-doing/flyte-cpu:local` | optional Flyte task image | push to the MicroK8s local registry |
+| `kubeflow-by-doing/kserve:local` | optional KServe custom predictor image | import into `MicroK8s` |
 
 MicroK8s image import examples:
 
@@ -110,6 +113,7 @@ kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 | `infra/k8s/` | starter Kubernetes manifests |
 | `infra/minio/` | local object-storage manifests |
 | `infra/mlflow/` | local MLflow manifests |
+| `infra/kserve/` | optional KServe manifests |
 | `manifests/model-server/` | local serving manifests |
 | `compiled/` | compiled KFP YAML artifacts |
 | `outputs/` | local training, evaluation, and smoke-test outputs |

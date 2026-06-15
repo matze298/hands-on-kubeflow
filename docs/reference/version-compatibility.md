@@ -49,6 +49,7 @@ uv run mkdocs build --strict
 | MinIO image | local S3-compatible object storage | Recreate bucket and rerun object-storage smoke tests. |
 | MLflow image | tracking server | Check tracking UI, experiment creation, and artifact logging. |
 | Flyte Helm chart | optional MicroK8s-backed Flyte run | Render values, deploy, check projects, then inspect task pods. |
+| KServe | optional `InferenceService` serving layer | Check Kubernetes version, CRDs, controller pods, serving runtimes, and predictor pods. |
 
 ## Container Images
 
@@ -59,6 +60,7 @@ uv run mkdocs build --strict
 | `ghcr.io/mlflow/mlflow:*` | Match server behavior to the local `mlflow` client package where practical. |
 | `quay.io/minio/minio:*` | Keep S3 API behavior compatible with `boto3` smoke tests. |
 | `nvidia/cuda:*base*` | Use a CUDA version supported by the host driver and MicroK8s GPU setup. |
+| KServe predictor image | Keep the custom predictor image aligned with the tutorial package, `kserve` SDK, and the model checkpoint format. |
 
 When changing image tags, rerun the narrow smoke test first, then rerun the affected chapter checks.
 
