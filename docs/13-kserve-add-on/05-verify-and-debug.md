@@ -132,11 +132,10 @@ ImagePullBackOff
 ErrImagePull
 ```
 
-For local minikube, re-import the image:
+For local minikube, rebuild and load the image:
 
 ```bash
 docker build -f Dockerfile.kserve -t kubeflow-by-doing/kserve:local .
-docker save kubeflow-by-doing/kserve:local > build/kserve-image.tar
 minikube image load kubeflow-by-doing/kserve:local -p kubeflow-gpu
 ```
 

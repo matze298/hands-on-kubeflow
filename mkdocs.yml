@@ -121,16 +121,16 @@ nav:
       - Artifacts, Resources, and Secrets: 12-flyte-add-on/03-artifacts-resources-and-secrets.md
       - Remote Backend and Tradeoffs: 12-flyte-add-on/04-remote-backend-and-tradeoffs.md
       - Run Flyte on minikube: 12-flyte-add-on/05-minikube-flyte-backend.md
-  - 13. FAQ:
-      - FAQ: 13-faq/00-overview.md
-  - 14. Optional KServe Add-On:
-      - Overview: 14-kserve-add-on/00-overview.md
-      - Install KServe: 14-kserve-add-on/01-install-kserve.md
-      - First InferenceService: 14-kserve-add-on/02-first-inferenceservice.md
-      - Storage and MinIO: 14-kserve-add-on/03-storage-and-minio.md
-      - Serve the Tutorial Model: 14-kserve-add-on/04-serve-the-tutorial-model.md
-      - Verify and Debug: 14-kserve-add-on/05-verify-and-debug.md
-      - Cleanup and Tradeoffs: 14-kserve-add-on/06-cleanup-and-tradeoffs.md
+  - 13. Optional KServe Add-On:
+      - Overview: 13-kserve-add-on/00-overview.md
+      - Install KServe: 13-kserve-add-on/01-install-kserve.md
+      - First InferenceService: 13-kserve-add-on/02-first-inferenceservice.md
+      - Storage and MinIO: 13-kserve-add-on/03-storage-and-minio.md
+      - Serve the Tutorial Model: 13-kserve-add-on/04-serve-the-tutorial-model.md
+      - Verify and Debug: 13-kserve-add-on/05-verify-and-debug.md
+      - Cleanup and Tradeoffs: 13-kserve-add-on/06-cleanup-and-tradeoffs.md
+  - 14. FAQ:
+      - FAQ: 14-faq/00-overview.md
   - Reference:
       - Glossary and Concept Map: reference/glossary.md
       - Chapter Checkpoints: reference/chapter-checkpoints.md

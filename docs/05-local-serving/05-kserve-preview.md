@@ -106,7 +106,7 @@ That complexity is valuable later, but it distracts from the first serving miles
 
 ## Optional Hands-On Chapter
 
-The optional [KServe Add-On](../14-kserve-add-on/00-overview.md) follows this sequence:
+The optional [KServe Add-On](../13-kserve-add-on/00-overview.md) follows this sequence:
 
 ```text
 install KServe locally
@@ -140,4 +140,4 @@ You are done when:
 
 Continue with Chapter 6: Local GPU Integration.
 
-After the core path and capstone, return to the optional [KServe Add-On](../14-kserve-add-on/00-overview.md) if you want a hands-on `InferenceService` workflow.
+After the core path and capstone, return to the optional [KServe Add-On](../13-kserve-add-on/00-overview.md) if you want a hands-on `InferenceService` workflow.

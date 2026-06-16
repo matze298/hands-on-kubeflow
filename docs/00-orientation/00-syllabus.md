@@ -30,12 +30,12 @@ This is a build-along tutorial: the chapter pages show the files, commands, and 
 9. CI/CD Expansion
 ```
 
-## Optional Add-On
+## Optional Add-Ons
 
 ```text
 12. Flyte Instead of Kubeflow Pipelines
-13. FAQ
-14. KServe Add-On
+13. KServe Add-On
+14. FAQ
 ```
 
 ## 0. Orientation
@@ -553,7 +553,22 @@ Explain what changes when Flyte moves from local execution to a remote backend, 
 
 Install a local Flyte backend into the tutorial's `minikube` cluster, build a Flyte task image, load it into the minikube profile, deploy the Flyte environment, and submit the workflow so it runs as Kubernetes task pods.
 
-## 13. FAQ
+## 13. KServe Add-On
+
+Turn the earlier KServe preview into a hands-on optional serving path after the core tutorial is complete.
+
+This add-on is not part of the required Kubeflow course path. It is for readers who want to compare the simple FastAPI deployment with a Kubernetes-native `InferenceService` workflow.
+
+Focus:
+
+- installing KServe Standard mode locally
+- deploying a first built-in `InferenceService`
+- connecting KServe storage initialization to MinIO
+- serving the tutorial model through a custom predictor
+- debugging KServe resources with Kubernetes tools
+- comparing KServe against the simple FastAPI deployment
+
+## 14. FAQ
 
 Collect practical recovery procedures for common local tutorial problems.
 

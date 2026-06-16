@@ -46,9 +46,7 @@ docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
 
 ### minikube
 
-Use the repo's chosen minikube image workflow.
-
-A direct local import option is:
+Use the repo's chosen minikube image workflow:
 
 ```bash
 minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu

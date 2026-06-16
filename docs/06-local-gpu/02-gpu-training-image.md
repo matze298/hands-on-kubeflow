@@ -129,7 +129,7 @@ docker run --rm --gpus all kubeflow-by-doing/train:gpu-local \
 
 ### minikube
 
-Use the repo's chosen minikube image workflow. A direct local import option is:
+Use the repo's chosen minikube image workflow:
 
 ```bash
 minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu

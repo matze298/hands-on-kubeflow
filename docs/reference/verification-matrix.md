@@ -42,8 +42,8 @@ The tutorial is build-along content. Some checks only become available after you
 |---|---|---|---|
 | 11. Conclusion | next-topic decision points and alternatives | Local | link/navigation review, `uv run mkdocs build --strict` |
 | 12. Flyte Add-On | local Flyte workflow and minikube-backed Flyte run | Optional, Local, minikube | `uv run flyte --version`, local Flyte run, Helm render for Flyte backend values, Flyte config check, minikube task pod inspection |
-| 13. FAQ | reset procedures | Local, Kubernetes, minikube | commands are reviewed against the current setup chapters, `uv run mkdocs build --strict` |
-| 14. KServe Add-On | KServe Standard mode and optional `InferenceService` serving | Optional, Kubernetes, minikube | `kubectl get pods -n kserve`, `kubectl get inferenceservice -n kubeflow-by-doing`, first sklearn prediction, tutorial model prediction |
+| 13. KServe Add-On | KServe Standard mode and optional `InferenceService` serving | Optional, Kubernetes, minikube | `kubectl get pods -n kserve`, `kubectl get inferenceservice -n kubeflow-by-doing`, first sklearn prediction, tutorial model prediction |
+| 14. FAQ | reset procedures | Local, Kubernetes, minikube | commands are reviewed against the current setup chapters, `uv run mkdocs build --strict` |
 
 ## Repo-Level Checks
 

@@ -149,11 +149,9 @@ Build:
 docker build -f Dockerfile.kserve -t kubeflow-by-doing/kserve:local .
 ```
 
-Import into minikube:
+Load into minikube:
 
 ```bash
-mkdir -p build
-docker save kubeflow-by-doing/kserve:local > build/kserve-image.tar
 minikube image load kubeflow-by-doing/kserve:local -p kubeflow-gpu
 ```
 

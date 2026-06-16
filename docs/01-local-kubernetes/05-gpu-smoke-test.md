@@ -368,7 +368,7 @@ You are done when:
 - `nvidia-smi` works on the host
 - `docker run --gpus all ... nvidia-smi` works
 - a PyTorch CUDA container reports `cuda_available=True`
-- either a Kubernetes GPU pod succeeds, or you have documented that your local kind setup does not expose the GPU yet
+- either a Kubernetes GPU pod succeeds on the minikube GPU path, or you have explicitly deferred the Kubernetes GPU path for this machine
 - you understand that Kubeflow GPU training depends on Kubernetes GPU scheduling, not only PyTorch CUDA support
 
 ## Next Step

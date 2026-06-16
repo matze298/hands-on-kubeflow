@@ -135,7 +135,7 @@ These values are intentionally simple for a disposable local tutorial cluster.
 
 Use the FAQ when local state needs cleanup:
 
-- [How to reset minikube](../13-faq/00-overview.md#how-do-i-reset-minikube)
-- [How to reset Kubeflow](../13-faq/00-overview.md#how-do-i-reset-kubeflow)
+- [How to reset minikube](../14-faq/00-overview.md#how-do-i-reset-minikube)
+- [How to reset Kubeflow](../14-faq/00-overview.md#how-do-i-reset-kubeflow)
 
 Use the [Verification Matrix](verification-matrix.md) after a reset to decide which checks to rerun.

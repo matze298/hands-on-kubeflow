@@ -329,22 +329,7 @@ uv run flyte --version
 uv run python -m py_compile flyte/kbd_flyte_workflow.py
 ```
 
-## 13. FAQ
-
-Expected outcome:
-
-- you can choose between namespace reset, KFP reset, and full `minikube` reset
-- reset procedures link back to the setup chapters
-- local state can be rebuilt intentionally
-
-Useful checks:
-
-```bash
-kubectl config current-context
-kubectl get namespaces
-```
-
-## 14. KServe Add-On
+## 13. KServe Add-On
 
 Expected outcome:
 
@@ -368,6 +353,21 @@ Useful checks:
 kubectl get pods -n kserve
 kubectl -n kubeflow-by-doing get inferenceservice
 docker build -f Dockerfile.kserve -t kubeflow-by-doing/kserve:local .
+```
+
+## 14. FAQ
+
+Expected outcome:
+
+- you can choose between namespace reset, KFP reset, and full `minikube` reset
+- reset procedures link back to the setup chapters
+- local state can be rebuilt intentionally
+
+Useful checks:
+
+```bash
+kubectl config current-context
+kubectl get namespaces
 ```
 
 ## When Something Is Missing

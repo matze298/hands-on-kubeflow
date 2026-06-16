@@ -135,10 +135,6 @@ The rest of the path expands that baseline into:
   - deploy a Flyte backend into minikube for a Kubernetes-backed comparison
   - compare artifact, resource, secret, and backend tradeoffs
   - keep the add-on outside the required Kubeflow path
-- FAQ
-  - reset local `minikube` safely
-  - reset standalone Kubeflow Pipelines
-  - choose between namespace, KFP, and full cluster resets
 - optional KServe add-on
   - install KServe Standard mode locally
   - deploy a first built-in `InferenceService`
@@ -146,3 +142,7 @@ The rest of the path expands that baseline into:
   - serve the tutorial model through a custom predictor
   - debug KServe resources through Kubernetes tools
   - compare KServe against the simple FastAPI deployment
+- FAQ
+  - reset local `minikube` safely
+  - reset standalone Kubeflow Pipelines
+  - choose between namespace, KFP, and full cluster resets
