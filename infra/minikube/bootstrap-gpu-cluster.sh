@@ -11,7 +11,7 @@ minikube start \
   --container-runtime=docker \
   --gpus all \
   --cpus=8 \
-  --memory=16384 \
+  --memory=8192 \
   --disk-size=80g
 
 kubectl config use-context kubeflow-gpu

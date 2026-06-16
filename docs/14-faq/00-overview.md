@@ -24,6 +24,63 @@ kubeflow-gpu
 
 If you are still setting up the cluster, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the `minikube` bootstrap and namespace sections.
 
+### `kubectl` Says the Server Refused the Connection
+
+This error means `kubectl` is using a kubeconfig entry for a local API server port, but the `minikube` control plane behind that port is not running:
+
+```text
+Get "https://127.0.0.1:32771/api?timeout=32s": dial tcp 127.0.0.1:32771: connect: connection refused
+The connection to the server 127.0.0.1:32771 was refused - did you specify the right host or port?
+```
+
+First confirm that `kubectl` is pointing at the tutorial profile and check `minikube` itself:
+
+```bash
+kubectl config current-context
+minikube status -p kubeflow-gpu
+```
+
+If the context is `kubeflow-gpu` but `minikube status` reports `host: Stopped`, `kubelet: Stopped`, or `apiserver: Stopped`, restart the profile:
+
+```bash
+minikube start \
+  -p kubeflow-gpu \
+  --driver=docker \
+  --container-runtime=docker \
+  --gpus all \
+  --cpus=8 \
+  --memory=8192 \
+  --disk-size=80g
+```
+
+If `minikube` still reports that the requested memory is above your system limit, use the largest value your WSL2/Docker environment can actually allocate, for example:
+
+```bash
+minikube start \
+  -p kubeflow-gpu \
+  --driver=docker \
+  --container-runtime=docker \
+  --gpus all \
+  --cpus=8 \
+  --memory=6144 \
+  --disk-size=80g
+```
+
+After the profile starts, restore the tutorial namespace on the current context:
+
+```bash
+kubectl create namespace kubeflow-by-doing --dry-run=client -o yaml | kubectl apply -f -
+kubectl config set-context --current --namespace=kubeflow-by-doing
+```
+
+Then check that the API server and GPU device plugin are visible:
+
+```bash
+kubectl get pods
+kubectl get pods -n kube-system
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
+```
+
 ### Soft Reset Tutorial Workloads
 
 Use this when Kubernetes itself is healthy but the tutorial workloads are stale, partially installed, or no longer match the chapter you are following.

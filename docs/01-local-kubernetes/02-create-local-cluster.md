@@ -120,7 +120,7 @@ minikube start \
   --container-runtime=docker \
   --gpus all \
   --cpus=8 \
-  --memory=16384 \
+  --memory=8192 \
   --disk-size=80g
 
 kubectl config use-context kubeflow-gpu
@@ -327,7 +327,7 @@ As a practical default, reserve at least:
 
 ```text
 CPU: 8 cores if possible
-Memory: 16 GiB minimum, 24–32 GiB better
+Memory: 8 GiB minimum for the local minikube path, 16–32 GiB better for heavier Kubeflow workloads
 Disk: 50+ GiB free
 ```
 
