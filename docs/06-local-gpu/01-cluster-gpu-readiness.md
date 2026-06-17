@@ -9,14 +9,14 @@ It does not re-teach GPU setup. It only checks the assumptions needed by the res
 You will verify:
 
 - which cluster context is active
-- whether the cluster is minikube or kind
+- whether the cluster is k3s or kind
 - whether nodes advertise `nvidia.com/gpu`
 - whether a small GPU pod can run
 - what to do if the GPU path is unavailable
 
-## Preferred Path: minikube
+## Preferred Path: k3s
 
-For GPU-capable local Kubeflow work, minikube is the preferred local platform in this tutorial.
+For GPU-capable local Kubeflow work on WSL2, k3s is the preferred local platform in this tutorial.
 
 Check the current context:
 
@@ -24,11 +24,11 @@ Check the current context:
 kubectl config current-context
 ```
 
-If you use minikube directly:
+If you use the default k3s path:
 
 ```bash
-minikube status -p kubeflow-gpu
 kubectl get nodes
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 ```
 
 ## Verify GPU Capacity
@@ -76,7 +76,7 @@ If you are using `kind`, the CPU path remains valid.
 For this chapter:
 
 ```text
-minikube GPU path = expected GPU integration path
+k3s GPU path      = expected GPU integration path
 kind fallback     = CPU-only validation path unless you have explicitly configured GPU support
 ```
 
@@ -96,7 +96,7 @@ kubectl describe nodes
 kubectl get pods -A | grep -i nvidia || true
 ```
 
-If you have not completed the GPU-capable minikube bootstrap yet, return to Chapter 1 and finish the cluster setup there before continuing this chapter.
+If you have not completed the GPU-capable k3s bootstrap yet, return to Chapter 1 and finish the cluster setup there before continuing this chapter.
 
 ### GPU pod stays `Pending`
 
@@ -116,15 +116,16 @@ Insufficient nvidia.com/gpu
 
 You are done when:
 
-- you know whether your active cluster is minikube or kind
-- minikube nodes advertise `nvidia.com/gpu`, or you explicitly choose the CPU fallback path
-- the GPU smoke pod succeeds on GPU-capable minikube
+- you know whether your active cluster is k3s or kind
+- k3s nodes advertise `nvidia.com/gpu`, or you explicitly choose the CPU fallback path
+- the GPU smoke pod succeeds on GPU-capable k3s
 - you can identify `Insufficient nvidia.com/gpu` in pod events
 - if the GPU path is unavailable, you know to stop and revisit the cluster bootstrap instead of debugging KFP first
 
 ## References
 
-- [minikube GPU add-on](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
+- [k3s documentation](https://docs.k3s.io/)
+- [NVIDIA Kubernetes device plugin](https://github.com/NVIDIA/k8s-device-plugin)
 - [Kubernetes GPU scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
 - [Kubernetes device plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/)
 

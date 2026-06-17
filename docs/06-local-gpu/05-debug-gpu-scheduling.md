@@ -43,8 +43,8 @@ KFP requested a GPU, but Kubernetes cannot find an allocatable GPU.
 
 Fix:
 
-- use minikube GPU path
-- enable GPU add-on
+- use the k3s GPU path
+- verify the NVIDIA device plugin is running
 - check node capacity
 - reduce `gpu_count`
 - switch to CPU fallback
@@ -70,13 +70,13 @@ Meaning:
 Kubernetes cannot access the GPU training image.
 ```
 
-Fix for minikube:
+Fix for k3s:
 
 ```bash
-minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:gpu-local
 ```
 
-On `kind`, this failure is expected in the default tutorial flow because the GPU path is not the supported path there. Switch to the CPU fallback run or move to the minikube GPU path before debugging the GPU image itself.
+On `kind`, this failure is expected in the default tutorial flow because the GPU path is not the supported path there. Switch to the CPU fallback run or move to the k3s GPU path before debugging the GPU image itself.
 
 If you have separately configured a GPU-capable `kind` environment, you can still fix the image load the same way as the CPU image path, then rerun the GPU job.
 
@@ -217,7 +217,8 @@ You are done when:
 - [Kubernetes GPU scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
 - [Kubernetes events](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/)
 - [Kubernetes debugging applications](https://kubernetes.io/docs/tasks/debug/debug-application/)
-- [minikube GPU add-on](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
+- [k3s documentation](https://docs.k3s.io/)
+- [NVIDIA Kubernetes device plugin](https://github.com/NVIDIA/k8s-device-plugin)
 
 ## Next Step
 

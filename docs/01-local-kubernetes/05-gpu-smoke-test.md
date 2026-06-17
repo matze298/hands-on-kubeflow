@@ -13,7 +13,7 @@ You will run two smoke tests:
 
 The first test is required for GPU readiness.
 
-The second test depends on your local Kubernetes backend. In this tutorial, the `kind` cluster is the CPU-safe starter baseline and the `minikube` Docker-driver profile on WSL2 is the GPU-capable path for Kubernetes GPU scheduling.
+The second test depends on your local Kubernetes backend. In this tutorial, the `kind` cluster is the CPU-safe starter baseline and `k3s` with Docker runtime on WSL2 is the GPU-capable path for Kubernetes GPU scheduling.
 
 ## Why This Matters
 
@@ -103,7 +103,7 @@ cuda_available=True
 
 ## Step 4: Switch to the GPU-Capable Local Cluster
 
-Before continuing, make sure you are on the GPU-capable `minikube` profile from the cluster setup chapter:
+Before continuing, make sure you are on the GPU-capable `k3s` context from the cluster setup chapter:
 
 ```bash
 kubectl config current-context
@@ -112,13 +112,13 @@ kubectl config current-context
 Expected:
 
 ```text
-kubeflow-gpu
+k3s-kubeflow
 ```
 
 If this still points at `kind-kubeflow-by-doing`, switch now:
 
 ```bash
-kubectl config use-context kubeflow-gpu
+kubectl config use-context k3s-kubeflow
 kubectl create namespace kubeflow-by-doing --dry-run=client -o yaml | kubectl apply -f -
 kubectl config set-context --current --namespace=kubeflow-by-doing
 ```
@@ -126,7 +126,6 @@ kubectl config set-context --current --namespace=kubeflow-by-doing
 Check:
 
 ```bash
-minikube addons list -p kubeflow-gpu | grep -i nvidia
 kubectl get pods -A | grep -i nvidia
 ```
 
@@ -155,12 +154,11 @@ The next two pod-based steps depend on `nvidia.com/gpu` being visible on the nod
 
 ### If `nvidia.com/gpu` Does Not Appear
 
-The GPU-capable `minikube` cluster is not ready yet. Before debugging pod specs, re-check the cluster setup itself:
+The GPU-capable `k3s` cluster is not ready yet. Before debugging pod specs, re-check the cluster setup itself:
 
 ```bash
 kubectl get pods -n kube-system
 kubectl get pods -A | grep -i nvidia || true
-minikube addons list -p kubeflow-gpu | grep -i nvidia
 kubectl get nodes -o json | rg "nvidia.com/gpu"
 ```
 
@@ -168,10 +166,10 @@ If that still shows nothing:
 
 - verify that `nvidia-smi` works on the host
 - verify that `docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi` works
-- verify that `minikube status -p kubeflow-gpu` succeeds
-- try `minikube addons enable nvidia-device-plugin -p kubeflow-gpu`
-- rerun `bash infra/minikube/bootstrap-gpu-cluster.sh`
-- if the `minikube` GPU path still cannot expose GPUs on this machine, stop the Kubernetes GPU path instead of continuing to debug pod specs
+- verify that `sudo k3s kubectl get nodes` succeeds
+- verify that the NVIDIA device plugin is running in `kube-system`
+- rerun `bash infra/k3s/bootstrap-gpu-cluster.sh`
+- if the `k3s` GPU path still cannot expose GPUs on this machine, stop the Kubernetes GPU path instead of continuing to debug pod specs
 
 Only continue once `kubectl describe nodes | grep -A5 -B5 "nvidia.com/gpu"` shows GPU capacity.
 
@@ -277,21 +275,20 @@ cuda_available=True
 
 ### Docker sees the GPU, Kubernetes does not
 
-This means container-level GPU support works, but the minikube NVIDIA device plugin path is missing or not healthy.
+This means container-level GPU support works, but the k3s NVIDIA device plugin path is missing or not healthy.
 
 Check:
 
 ```bash
 kubectl -n kube-system get pods
 kubectl get pods -A | grep -i nvidia || true
-minikube addons list -p kubeflow-gpu | grep -i nvidia
 kubectl describe nodes | grep nvidia.com/gpu
 ```
 
 If `kubectl describe nodes | grep nvidia.com/gpu` shows nothing, Kubernetes is not advertising a GPU resource. In that state, the pod examples in Steps 6 and 7 are expected to stay pending or fail scheduling.
 
-If the NVIDIA device plugin logs an initialization or runtime mismatch, the node runtime itself is the problem. Recreate or fix the `minikube` GPU setup before spending more time on pod specs.
-If the NVIDIA device plugin pod is crashing, fix the `minikube` GPU add-on before spending more time on pod specs.
+If the NVIDIA device plugin logs an initialization or runtime mismatch, the node runtime itself is the problem. Recreate or fix the `k3s` GPU setup before spending more time on pod specs.
+If the NVIDIA device plugin pod is crashing, fix the `k3s` GPU setup before spending more time on pod specs.
 
 ### GPU pod stays `Pending`
 
@@ -343,8 +340,8 @@ If you are continuing through the tutorial, leave the cluster in the state that 
 To reset the GPU-specific cluster state:
 
 ```bash
-minikube delete -p kubeflow-gpu
-bash infra/minikube/bootstrap-gpu-cluster.sh
+sudo k3s-uninstall.sh
+bash infra/k3s/bootstrap-gpu-cluster.sh
 ```
 
 ## What You Learned
@@ -357,7 +354,8 @@ This is the foundation for GPU-enabled Kubeflow training components later.
 
 - [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 - [CUDA on WSL user guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
-- [minikube NVIDIA GPU tutorial](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
+- [k3s documentation](https://docs.k3s.io/)
+- [NVIDIA Kubernetes device plugin](https://github.com/NVIDIA/k8s-device-plugin)
 - [Kubernetes device plugins](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/)
 - [Kubernetes GPU scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
 
@@ -368,7 +366,7 @@ You are done when:
 - `nvidia-smi` works on the host
 - `docker run --gpus all ... nvidia-smi` works
 - a PyTorch CUDA container reports `cuda_available=True`
-- either a Kubernetes GPU pod succeeds on the minikube GPU path, or you have explicitly deferred the Kubernetes GPU path for this machine
+- either a Kubernetes GPU pod succeeds on the k3s GPU path, or you have explicitly deferred the Kubernetes GPU path for this machine
 - you understand that Kubeflow GPU training depends on Kubernetes GPU scheduling, not only PyTorch CUDA support
 
 ## Next Step

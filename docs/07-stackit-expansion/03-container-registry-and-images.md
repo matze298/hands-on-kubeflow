@@ -13,7 +13,7 @@ infra/stackit/container-registry-secret.yaml
 
 ## Why This Matters
 
-In local kind or minikube, we can load images directly.
+In local kind or k3s, we can load images directly.
 
 In SKE, worker nodes need to pull images from a registry.
 

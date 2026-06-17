@@ -197,14 +197,12 @@ Verify:
 ls -lh compiled/image_classification_pipeline.yaml
 ```
 
-## Import the Image into the Active Local Cluster
+## Make the Image Available to the Active Local Cluster
 
-If you rebuilt the image, reload it:
+If you rebuilt the image on the default k3s path, verify that Docker has it. k3s uses Docker as its runtime in this tutorial, so no separate load command is needed:
 
 ```bash
-mkdir -p build
-docker save kubeflow-by-doing/train:local > build/train-image.tar
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
 ```
 
 If you are using the `kind` fallback path instead, load the image with:
@@ -254,11 +252,16 @@ In the KFP UI:
 
 ### `ImagePullBackOff`
 
-The image exists locally in Docker but not inside the active cluster.
+On the default k3s path, verify that Docker has the image:
 
 ```bash
-docker save kubeflow-by-doing/train:local > build/train-image.tar
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
+```
+
+On the `kind` fallback path, load the image into the kind nodes:
+
+```bash
+kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 ```
 
 ### Component cannot find `kbd`
@@ -286,7 +289,7 @@ You are done when:
 - training and evaluation component files exist
 - the pipeline file exists
 - `compiled/image_classification_pipeline.yaml` is generated
-- the image is imported into the active local cluster
+- the image is available to the active local cluster
 - the pipeline runs in KFP
 - the training step produces a model artifact
 - the evaluation step produces metrics or a metrics artifact
@@ -297,7 +300,6 @@ You are done when:
 - [KFP SDK reference](https://www.kubeflow.org/docs/components/pipelines/reference/sdk/)
 - [KFP container components](https://www.kubeflow.org/docs/components/pipelines/user-guides/components/container-components/)
 - [Compile a pipeline](https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/compile-a-pipeline/)
-- [minikube image loading](https://minikube.sigs.k8s.io/docs/commands/image/)
 
 ## Next Step
 

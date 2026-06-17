@@ -10,7 +10,7 @@ KServe adds a higher-level serving API on top of those Kubernetes primitives.
 
 Before starting or resuming this add-on, make sure:
 
-- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- the `k3s-kubeflow` `k3s` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
 - the Chapter 5 serving path works from [Local Serving](../05-local-serving/00-overview.md)
 - MinIO is running and contains a tutorial model artifact from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md) and [Trace Lineage](../04-artifacts-and-tracking/04-trace-lineage.md)
 - the serving image can be built from [Containerize Serving](../05-local-serving/02-containerize-serving.md)
@@ -21,7 +21,7 @@ Before starting or resuming this add-on, make sure:
 You will add an optional KServe path that:
 
 ```text
-install KServe Standard mode on minikube
+install KServe Standard mode on k3s
   ↓
 deploy a first built-in sklearn InferenceService
   ↓
@@ -126,7 +126,7 @@ The model is still the same small image classifier. The platform boundary change
 
 You are done with this add-on when:
 
-- KServe is installed in the local `minikube` cluster
+- KServe is installed in the local `k3s` cluster
 - a built-in `InferenceService` reaches `READY=True`
 - KServe can read model artifacts from local MinIO
 - the tutorial model is served through a KServe-managed predictor

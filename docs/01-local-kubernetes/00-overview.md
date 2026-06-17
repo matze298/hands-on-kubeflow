@@ -19,16 +19,16 @@ You will create a local Kubernetes environment on a Linux or WSL2 Linux developm
 
 This chapter starts with `kind` as the starter cluster backend.
 
-This chapter also sets up a `minikube` Docker-driver cluster on WSL2 as the GPU-capable local ML platform for the later chapters. Use `kind` as the starter and CPU fallback cluster.
+This chapter also sets up a `k3s` cluster on WSL2 as the GPU-capable local ML platform for the later chapters. Use `kind` as the starter and CPU fallback cluster.
 
 ## Prerequisites
 
 Before starting or resuming this chapter, make sure:
 
 - you are on a Linux or WSL2 Linux development machine with Docker available
-- you have access to an NVIDIA GPU if you want to follow the GPU-capable `minikube` path
+- you have access to an NVIDIA GPU if you want to follow the GPU-capable `k3s` path
 - the local toolchain is installed or ready to install in [Install the Local Toolchain](01-install-toolchain.md)
-- no local Kubernetes cluster needs to be running yet; this chapter creates both the `kind` starter cluster and the `kubeflow-gpu` `minikube` profile
+- no local Kubernetes cluster needs to be running yet; this chapter creates both the `kind` starter cluster and the local `k3s` GPU cluster
 
 By the end of this chapter, you will have:
 
@@ -39,7 +39,7 @@ By the end of this chapter, you will have:
 - debugged common workload failures
 - verified local GPU visibility in containers
 - prepared the starter cluster for the first Kubernetes exercises
-- prepared the `minikube` GPU cluster that the later Kubeflow and ML chapters assume
+- prepared the `k3s` GPU cluster that the later Kubeflow and ML chapters assume
 
 ## Why This Matters
 
@@ -94,7 +94,7 @@ You are done with Chapter 1 when:
 - you can inspect job logs
 - you can debug a deliberately broken pod
 - `docker run --gpus all ... nvidia-smi` works
-- the `minikube` GPU path is available and a Kubernetes pod can request the GPU
+- the `k3s` GPU path is available and a Kubernetes pod can request the GPU
 
 ## Next Step
 

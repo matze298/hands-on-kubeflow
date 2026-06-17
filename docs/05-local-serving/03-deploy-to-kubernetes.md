@@ -43,7 +43,7 @@ You need:
 
 - MinIO running
 - a trained model uploaded to MinIO
-- the serving image loaded into the default `minikube` cluster, or into `kind` if you are using the fallback path
+- the serving image available to the default `k3s` cluster, or loaded into `kind` if you are using the fallback path
 - the `artifact-store-credentials` Secret from Chapter 4
 
 Use a known run ID:
@@ -251,7 +251,7 @@ spec:
 ```bash
 mkdir -p build
 docker save kubeflow-by-doing/serve:local > build/serve-image.tar
-minikube image load kubeflow-by-doing/serve:local -p kubeflow-gpu
+docker images kubeflow-by-doing/serve:local
 ```
 
 If you are using the `kind` fallback path, load it with:
@@ -321,7 +321,7 @@ Check:
 
 ### `ImagePullBackOff`
 
-The serving image may not be loaded into the active local cluster. Re-run the image load step above, then retry the deployment.
+The serving image may not be available to the active local cluster. On k3s, confirm the Docker tag exists locally. On `kind`, re-run the image load step above, then retry the deployment.
 
 ### Readiness probe fails
 

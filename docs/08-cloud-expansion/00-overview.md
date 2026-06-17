@@ -60,7 +60,7 @@ infra/cloud/
 The pipeline should not know whether it runs on:
 
 ```text
-minikube
+k3s
 STACKIT SKE
 AWS EKS
 Azure AKS

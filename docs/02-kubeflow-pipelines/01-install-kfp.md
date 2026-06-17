@@ -51,25 +51,25 @@ kubectl config current-context
 Expected:
 
 ```text
-kubeflow-gpu
+k3s-kubeflow
 ```
 
-That is the GPU-capable `minikube` context created in Chapter 1.
+That is the GPU-capable `k3s` context created in Chapter 1.
 
 If you still see `kind-kubeflow-by-doing`, switch now:
 
 ```bash
-kubectl config use-context kubeflow-gpu
+kubectl config use-context k3s-kubeflow
 kubectl config set-context --current --namespace=kubeflow-by-doing
 ```
 
 If either command fails, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and complete the GPU-cluster and namespace setup there first.
 
-Before installing KFP on the `minikube` path, verify that the cluster itself is healthy:
+Before installing KFP on the `k3s` path, verify that the cluster itself is healthy:
 
 ```bash
 kubectl get pods -n kube-system
-kubectl get pods -n kube-system
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 ```
 
 Do not continue if core `kube-system` pods are in `CrashLoopBackOff`. Fix the cluster first, then come back to KFP.
@@ -323,7 +323,7 @@ kubectl delete -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-sco
 If the local cluster is disposable, the simpler cleanup is to delete the cluster backend you used in Chapter 1.
 
 ```bash
-minikube delete -p kubeflow-gpu
+sudo k3s-uninstall.sh
 ```
 
 If you intentionally stayed on the CPU-only baseline instead, use:

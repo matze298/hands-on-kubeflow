@@ -1,4 +1,4 @@
-# Run Flyte on minikube
+# Run Flyte on k3s
 
 The earlier Flyte pages run the workflow locally. That is useful for comparing authoring style, but it does not prove the workflow is Kubernetes-compatible.
 
@@ -7,13 +7,13 @@ This page turns the add-on into a real local platform path:
 ```text
 repository checkout
   ->
-minikube
+k3s
   ->
 Flyte backend in Kubernetes
   ->
 Flyte task pods
   ->
-minikube-loaded image
+local image
   ->
 MinIO-backed artifact storage
 ```
@@ -27,7 +27,7 @@ You will create target files while following this page:
 ```text
 infra/flyte/
 ├── postgres.yaml
-└── minikube-values.yaml
+└── k3s-values.yaml
 
 flyte/
 ├── Dockerfile
@@ -40,7 +40,7 @@ The `kbd_flyte_workflow.py` file already exists from the local Flyte page. This 
 
 You should already have:
 
-- the `kubeflow-gpu` context from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- the `k3s-kubeflow` context from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
 - the tutorial MinIO service from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md)
 - the local Flyte workflow from [Local Flyte Workflow](02-local-flyte-workflow.md)
 - `helm`, `kubectl`, `docker`, and `uv`
@@ -48,7 +48,7 @@ You should already have:
 Verify the cluster:
 
 ```bash
-kubectl config use-context kubeflow-gpu
+kubectl config use-context k3s-kubeflow
 kubectl get nodes
 kubectl get pods -n kube-system
 kubectl get pods -n minio
@@ -174,7 +174,7 @@ kubectl -n flyte rollout status deployment/flyte-postgres --timeout=120s
 
 This is a local tutorial database, not a production database design.
 
-## Configure Flyte for minikube
+## Configure Flyte for k3s
 
 Flyte's platform deployment documentation presents Helm charts as the Kubernetes deployment path. For this local tutorial, use the small `flyte-binary` chart and point it at:
 
@@ -183,7 +183,7 @@ Flyte's platform deployment documentation presents Helm charts as the Kubernetes
 - the tutorial bucket `kubeflow-by-doing`
 - unauthenticated local access through port forwarding
 
-Create `infra/flyte/minikube-values.yaml`:
+Create `infra/flyte/k3s-values.yaml`:
 
 ```yaml
 flyte-core-components:
@@ -258,7 +258,7 @@ helm repo update
 helm upgrade --install flyte flyteorg/flyte-binary \
   --namespace flyte \
   --create-namespace \
-  -f infra/flyte/minikube-values.yaml
+  -f infra/flyte/k3s-values.yaml
 ```
 
 Wait for the backend:
@@ -303,13 +303,13 @@ http://localhost:8088/v2
 In another terminal, create a remote Flyte config:
 
 ```bash
-mkdir -p .flyte/kubeflow-gpu
+mkdir -p .flyte/k3s-kubeflow
 uv run flyte create config \
   --endpoint localhost:8090 \
   --insecure \
   --project kubeflow-by-doing \
   --domain development \
-  --output .flyte/kubeflow-gpu/config.yaml \
+  --output .flyte/k3s-kubeflow/config.yaml \
   --force
 ```
 
@@ -318,16 +318,16 @@ The `.flyte/` directory remains machine-local and ignored by the repository.
 Check connectivity:
 
 ```bash
-uv run flyte --config .flyte/kubeflow-gpu/config.yaml get project
+uv run flyte --config .flyte/k3s-kubeflow/config.yaml get project
 ```
 
 If the `kubeflow-by-doing` project does not exist, create it:
 
 ```bash
-uv run flyte --config .flyte/kubeflow-gpu/config.yaml create project \
+uv run flyte --config .flyte/k3s-kubeflow/config.yaml create project \
   --id kubeflow-by-doing \
   --name "Kubeflow by Doing" \
-  --description "Local minikube Flyte project for the optional add-on."
+  --description "Local k3s Flyte project for the optional add-on."
 ```
 
 ## Build a Flyte Task Image
@@ -352,13 +352,13 @@ RUN pip install --no-cache-dir uv \
     && uv sync --frozen --no-dev
 ```
 
-Build the image and load it into the minikube profile:
+Build the image. Because the tutorial k3s cluster uses the host Docker runtime, the local image is available to k3s pods after the build:
 
 ```bash
 export KBD_FLYTE_IMAGE=kubeflow-by-doing/flyte-cpu:local
 
 docker build -f flyte/Dockerfile -t "$KBD_FLYTE_IMAGE" .
-minikube image load "$KBD_FLYTE_IMAGE" -p kubeflow-gpu
+docker images "$KBD_FLYTE_IMAGE"
 ```
 
 Verify that the cluster can pull the image:
@@ -373,7 +373,7 @@ kubectl -n kubeflow-by-doing logs pod/flyte-image-smoke
 kubectl -n kubeflow-by-doing delete pod flyte-image-smoke --ignore-not-found
 ```
 
-If the image pull fails, reload it with `minikube image load "$KBD_FLYTE_IMAGE" -p kubeflow-gpu` and confirm `minikube image ls -p kubeflow-gpu | grep kubeflow-by-doing`.
+If the image pull fails, confirm k3s was installed with the Docker runtime from Chapter 1 and that `docker images "$KBD_FLYTE_IMAGE"` shows the tag.
 
 ## Deploy the Flyte Environment
 
@@ -387,13 +387,13 @@ env = flyte.TaskEnvironment(
 )
 ```
 
-Deploy that environment to the minikube Flyte backend:
+Deploy that environment to the k3s Flyte backend:
 
 ```bash
 export PYTHONPATH="$PWD/src"
 export KBD_FLYTE_IMAGE=kubeflow-by-doing/flyte-cpu:local
 
-uv run flyte --config .flyte/kubeflow-gpu/config.yaml deploy \
+uv run flyte --config .flyte/k3s-kubeflow/config.yaml deploy \
   --project kubeflow-by-doing \
   --domain development \
   --image kbd-flyte="$KBD_FLYTE_IMAGE" \
@@ -413,7 +413,7 @@ That keeps the workflow source portable. Local execution can ignore the mapping;
 Submit a remote run:
 
 ```bash
-uv run flyte --config .flyte/kubeflow-gpu/config.yaml run \
+uv run flyte --config .flyte/k3s-kubeflow/config.yaml run \
   --project kubeflow-by-doing \
   --domain development \
   --image kbd-flyte="$KBD_FLYTE_IMAGE" \
@@ -446,7 +446,7 @@ kubectl logs <task-pod-name> -n <task-namespace>
 
 ## Add a GPU Task Later
 
-Do not make the first minikube backend run require a GPU. First prove that:
+Do not make the first k3s backend run require a GPU. First prove that:
 
 - the backend starts
 - the image pulls
@@ -470,7 +470,7 @@ Then verify the cluster still advertises GPU capacity:
 kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 ```
 
-If that output is empty, fix the Chapter 1 minikube GPU path before debugging Flyte task code.
+If that output is empty, fix the Chapter 1 k3s GPU path before debugging Flyte task code.
 
 ## Debug Common Failures
 
@@ -509,7 +509,7 @@ uv run flyte create config \
   --insecure \
   --project kubeflow-by-doing \
   --domain development \
-  --output .flyte/kubeflow-gpu/config.yaml \
+  --output .flyte/k3s-kubeflow/config.yaml \
   --force
 ```
 
@@ -527,11 +527,11 @@ It should be:
 kubeflow-by-doing/flyte-cpu:local
 ```
 
-Then rebuild and load it into minikube:
+Then rebuild it and confirm Docker can see the tag:
 
 ```bash
 docker build -f flyte/Dockerfile -t "$KBD_FLYTE_IMAGE" .
-minikube image load "$KBD_FLYTE_IMAGE" -p kubeflow-gpu
+docker images "$KBD_FLYTE_IMAGE"
 ```
 
 ### Task pods cannot write artifacts
@@ -585,11 +585,11 @@ docker rmi kubeflow-by-doing/flyte-cpu:local
 You are done when:
 
 - `kubectl get pods -n flyte` shows the Flyte backend running
-- `.flyte/kubeflow-gpu/config.yaml` points at the local Flyte backend
-- `uv run flyte --config .flyte/kubeflow-gpu/config.yaml get project` works
-- `minikube image load kubeflow-by-doing/flyte-cpu:local -p kubeflow-gpu` succeeds
+- `.flyte/k3s-kubeflow/config.yaml` points at the local Flyte backend
+- `uv run flyte --config .flyte/k3s-kubeflow/config.yaml get project` works
+- `docker images kubeflow-by-doing/flyte-cpu:local` shows the local task image
 - `flyte/kbd_flyte_workflow.py` deploys with the `kbd-flyte` image mapping
-- the workflow can be submitted to the minikube Flyte backend
+- the workflow can be submitted to the k3s Flyte backend
 - you can find the resulting Flyte task pods with `kubectl`
 - you can explain how this differs from `uv run flyte run --local`
 
@@ -599,7 +599,7 @@ You are done when:
 - [Flyte GPU access configuration](https://www.union.ai/docs/v2/flyte/deployment/flyte-configuration/configuring-access-to-gpus/)
 - [Flyte resources](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/resources/)
 - [Flyte secrets](https://www.union.ai/docs/v2/flyte/user-guide/configure-tasks/secrets/)
-- [minikube image command](https://minikube.sigs.k8s.io/docs/commands/image/)
+- [k3s documentation](https://docs.k3s.io/)
 
 ## End of Add-On
 

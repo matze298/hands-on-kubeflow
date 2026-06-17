@@ -4,14 +4,14 @@ In this chapter, we turn the toy Kubeflow Pipeline from Chapter 2 into a small b
 
 The focus is not the model architecture. The reader already knows PyTorch and deep learning basics. The focus is the transition from local ML code to a testable, containerized, Kubeflow-orchestrated workflow.
 
-From this chapter onward, the default local Kubernetes path is `minikube` on WSL2. The `kind` cluster remains available as the starter and fallback path, but the ML workflow assumes the GPU-capable `minikube` setup when possible.
+From this chapter onward, the default local Kubernetes path is `k3s` on WSL2. The `kind` cluster remains available as the starter and fallback path, but the ML workflow assumes the GPU-capable `k3s` setup when possible.
 
 ## Prerequisites
 
 Before starting or resuming this chapter, make sure:
 
-- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
-- `kubectl config current-context` reports `kubeflow-gpu`
+- the GPU-capable `k3s` cluster is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- `kubectl config current-context` reports `k3s-kubeflow`
 - standalone Kubeflow Pipelines is installed in the `kubeflow` namespace from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md)
 - the KFP UI can be reached through the port-forward in [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md#access-the-ui)
 - Chapter 2 pipeline concepts are familiar from [Kubeflow Pipelines](../02-kubeflow-pipelines/00-overview.md)
@@ -119,7 +119,7 @@ You are done with Chapter 3 when:
 - formatting passes with `uv run ruff format --check`
 - type checking passes with `uv run ty check`
 - a training image can be built locally
-- the image can be loaded into the GPU-capable local cluster
+- the image is available to the GPU-capable local cluster
 - the training component can run inside Kubeflow
 - the pipeline can make a simple metric-based promotion decision
 

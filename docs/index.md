@@ -4,7 +4,7 @@ A local-first, GPU-aware, hands-on tutorial for learning Kubeflow, Kubernetes-na
 
 The tutorial is written for readers who already know Python, PyTorch, and basic deep learning, but who want to move from ML code to reproducible, containerized, Kubernetes-native MLOps workflows.
 
-The core path starts with `kind` for the first Kubernetes basics and then treats `minikube` on WSL2 as the default local ML platform. Later chapters expand the workflow to STACKIT, provider-neutral cloud patterns, and CI/CD. Full Kubeflow platform operations and production serving are framed as next-step topics after the hands-on core path. Optional add-ons compare the workflow with Flyte and turn the KServe preview into a hands-on `InferenceService` workflow, while the FAQ collects reset procedures for local tutorial environments.
+The core path starts with `kind` for the first Kubernetes basics and then treats `k3s` on WSL2 as the default local ML platform. Later chapters expand the workflow to STACKIT, provider-neutral cloud patterns, and CI/CD. Full Kubeflow platform operations and production serving are framed as next-step topics after the hands-on core path. Optional add-ons compare the workflow with Flyte and turn the KServe preview into a hands-on `InferenceService` workflow, while the FAQ collects reset procedures for local tutorial environments.
 
 ## What You Will Build
 
@@ -132,7 +132,7 @@ The rest of the path expands that baseline into:
   - translate the train/evaluate workflow to Flyte tasks
   - map Flyte concepts against KFP concepts
   - run a local Flyte workflow with `uv run flyte`
-  - deploy a Flyte backend into minikube for a Kubernetes-backed comparison
+  - deploy a Flyte backend into k3s for a Kubernetes-backed comparison
   - compare artifact, resource, secret, and backend tradeoffs
   - keep the add-on outside the required Kubeflow path
 - optional KServe add-on
@@ -143,6 +143,6 @@ The rest of the path expands that baseline into:
   - debug KServe resources through Kubernetes tools
   - compare KServe against the simple FastAPI deployment
 - FAQ
-  - reset local `minikube` safely
+  - reset local `k3s` safely
   - reset standalone Kubeflow Pipelines
   - choose between namespace, KFP, and full cluster resets

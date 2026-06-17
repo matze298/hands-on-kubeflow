@@ -13,10 +13,10 @@ Chapter 4 makes the workflow more platform-like by adding:
 
 Before starting or resuming this chapter, make sure:
 
-- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- the GPU-capable `k3s` cluster is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
 - standalone Kubeflow Pipelines is installed and reachable from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md)
 - the Chapter 3 training image and KFP components exist from [Containerize Training](../03-local-ml-workflow/05-containerize-training.md) and [Train in Kubeflow](../03-local-ml-workflow/06-train-in-kubeflow.md)
-- the training image has been loaded into the active local cluster as shown in [Containerize Training](../03-local-ml-workflow/05-containerize-training.md#import-the-image-into-the-gpu-capable-local-cluster)
+- the training image is available to the active local cluster as shown in [Containerize Training](../03-local-ml-workflow/05-containerize-training.md#make-the-image-available-to-the-gpu-capable-local-cluster)
 
 The goal is to answer the question:
 
@@ -74,7 +74,7 @@ lineage records
 
 Kubeflow tracks pipeline structure and artifacts. Object storage gives us durable files. MLflow gives us familiar experiment tracking. A lineage record connects the pieces.
 
-From this chapter onward, the tutorial assumes the default `minikube` local Kubernetes path. The `kind` starter cluster remains available for the early Kubernetes chapters, but the artifact and tracking workflow is written for the GPU-capable `minikube` setup.
+From this chapter onward, the tutorial assumes the default `k3s` local Kubernetes path. The `kind` starter cluster remains available for the early Kubernetes chapters, but the artifact and tracking workflow is written for the GPU-capable `k3s` setup.
 
 ## Target Architecture
 

@@ -15,7 +15,7 @@ kbd evaluate-model ...
 
 inside a container.
 
-Then import the image into the default GPU-capable `minikube` cluster from Chapter 1. If you are staying on the `kind` fallback path, load the image into that cluster instead.
+Then make the image available to the default GPU-capable `k3s` cluster from Chapter 1. If you are staying on the `kind` fallback path, load the image into that cluster instead.
 
 ## Why This Matters
 
@@ -140,17 +140,17 @@ Verify:
 cat outputs/container-train/metrics.json
 ```
 
-## Import the Image into the GPU-Capable Local Cluster
+## Make the Image Available to the GPU-Capable Local Cluster
 
-Building the image makes it available to your host Docker daemon, but Kubeflow starts pods inside the Kubernetes cluster. The `minikube` node has its own container runtime and image store, so you must load the image there before a pipeline step can use it. Without this import, Kubernetes may report `ImagePullBackOff` even though `docker images` shows `kubeflow-by-doing/train:local` on your machine.
+Building the image makes it available to your host Docker daemon. The default `k3s` path in this tutorial also uses Docker as its runtime, so locally built images are available to k3s pods without a separate image-load command.
+
+Verify that Docker has the image:
 
 ```bash
-mkdir -p build
-docker save kubeflow-by-doing/train:local > build/train-image.tar
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
 ```
 
-If you are using the `kind` fallback path instead, load the image with:
+If you are using the `kind` fallback path instead, `kind` has its own node image store. Load the image with:
 
 ```bash
 kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
@@ -180,7 +180,7 @@ kubectl delete pod train-image-smoke-test --ignore-not-found
 
 ## GPU Image Note
 
-Chapter 3 assumes the GPU-capable `minikube` path is available for meaningful PyTorch-on-Kubernetes work.
+Chapter 3 assumes the GPU-capable `k3s` path is available for meaningful PyTorch-on-Kubernetes work.
 
 The image shown here still uses a CPU-oriented Python base image because it is the smallest packaging step that proves the CLI, dependencies, and entrypoint are wired correctly.
 
@@ -208,11 +208,16 @@ Check that:
 
 ### Container works locally but pod fails
 
-The image probably was not imported into the active cluster:
+On the default k3s path, verify that the image exists in Docker and that the pod uses `--image-pull-policy=Never` or a non-remote local tag:
 
 ```bash
-docker save kubeflow-by-doing/train:local > build/train-image.tar
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
+```
+
+On the `kind` fallback path, the image probably was not imported into the active cluster. Run:
+
+```bash
+kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 ```
 
 Then inspect pod events:
@@ -242,14 +247,13 @@ You are done when:
 - `docker build -t kubeflow-by-doing/train:local .` succeeds
 - containerized training writes `model.pt`
 - containerized evaluation writes `metrics.json`
-- the image is imported into the GPU-capable local cluster
+- the image is available to the GPU-capable local cluster
 - a Kubernetes pod can run `kbd --help` from the image
 
 ## References
 
 - [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
 - [uv Docker integration guide](https://docs.astral.sh/uv/guides/integration/docker/)
-- [minikube image loading](https://minikube.sigs.k8s.io/docs/commands/image/)
 - [PyTorch Docker images](https://hub.docker.com/r/pytorch/pytorch)
 
 ## Next Step

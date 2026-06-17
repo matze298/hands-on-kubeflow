@@ -175,7 +175,7 @@ def flyte_image_classification_pipeline(
 
 This is intentionally a CPU example. GPU execution belongs in the resources page, after the local shape works.
 
-The `image=flyte.Image.from_ref_name("kbd-flyte")` setting is harmless for local execution, but important for the minikube backend page. It gives the remote run a stable image slot that you can map to a concrete image loaded into the minikube profile without changing workflow code.
+The `image=flyte.Image.from_ref_name("kbd-flyte")` setting is harmless for local execution, but important for the k3s backend page. It gives the remote run a stable image slot that you can map to a concrete image available to the k3s cluster without changing workflow code.
 
 ## Understand the Teaching Shortcut
 
@@ -252,7 +252,7 @@ uv run python pipelines/image_classification_pipeline.py
 
 The KFP command compiles pipeline YAML. The Flyte command executes the top-level task locally.
 
-The next pages move from this local feedback loop to a Kubernetes-backed run. Keep this local command working; it remains the fastest way to check task logic before submitting to the minikube Flyte backend.
+The next pages move from this local feedback loop to a Kubernetes-backed run. Keep this local command working; it remains the fastest way to check task logic before submitting to the k3s Flyte backend.
 
 ## Debug Common Failures
 

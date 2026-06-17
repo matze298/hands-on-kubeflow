@@ -183,7 +183,7 @@ kubectl describe pod -n <namespace> <pod-name>
 Typical causes:
 
 - wrong image tag
-- image only exists locally but was not loaded into the active local cluster
+- image only exists locally but is not available to the active cluster
 - private registry credentials missing
 - network or registry issue
 

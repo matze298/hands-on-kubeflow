@@ -132,11 +132,11 @@ ImagePullBackOff
 ErrImagePull
 ```
 
-For local minikube, rebuild and load the image:
+For local k3s, rebuild the image and confirm Docker can see it:
 
 ```bash
 docker build -f Dockerfile.kserve -t kubeflow-by-doing/kserve:local .
-minikube image load kubeflow-by-doing/kserve:local -p kubeflow-gpu
+docker images kubeflow-by-doing/kserve:local
 ```
 
 Keep:
