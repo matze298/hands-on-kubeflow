@@ -210,13 +210,19 @@ docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
 
 If this fails, fix Docker GPU support before creating the k3s cluster. Kubernetes GPU scheduling depends on the same runtime path.
 
-You do not need to create the k3s cluster yet. The next page installs k3s with Docker runtime and verifies `nvidia.com/gpu`.
-
-If you already have k3s installed from a previous run, a quick check is:
+Install k3s with Docker runtime:
 
 ```bash
-sudo k3s kubectl get nodes || true
+curl -sfL https://get.k3s.io | sudo env INSTALL_K3S_EXEC="--docker --write-kubeconfig-mode 644" sh -
 ```
+
+Check that k3s is running:
+
+```bash
+sudo k3s kubectl get nodes
+```
+
+The next page prepares the tutorial namespace, installs the NVIDIA device plugin, and verifies `nvidia.com/gpu`.
 
 ## Install `helm`
 

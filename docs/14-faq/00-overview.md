@@ -52,13 +52,15 @@ sudo systemctl status k3s --no-pager
 If the context is `k3s-kubeflow` but the service is stopped or the API server refuses connections, restart the tutorial cluster setup:
 
 ```bash
-bash infra/k3s/bootstrap-gpu-cluster.sh
+bash infra/k3s/deploy_cluster.sh
 ```
 
-If the service still fails early with `too many open files` or inotify errors, raise the WSL2 inotify limits and rebuild:
+If the service still fails early with `too many open files` or inotify errors, return to [Install the Local Toolchain](../01-local-kubernetes/01-install-toolchain.md) and reapply the inotify setup before starting k3s again:
 
 ```bash
-./infra/k3s/test-gpu-k3s.sh --raise-limits --configure-docker --reinstall
+sudo sysctl -w fs.inotify.max_user_instances=1024
+sudo sysctl -w fs.inotify.max_user_watches=1048576
+sudo systemctl restart k3s
 ```
 
 After the profile starts, restore the tutorial namespace on the current context:
@@ -117,10 +119,11 @@ sudo k3s-uninstall.sh
 Rebuild the tutorial cluster setup from Chapter 1:
 
 ```bash
-bash infra/k3s/bootstrap-gpu-cluster.sh
+curl -sfL https://get.k3s.io | sudo env INSTALL_K3S_EXEC="--docker --write-kubeconfig-mode 644" sh -
+bash infra/k3s/deploy_cluster.sh
 ```
 
-Refresh the user kubeconfig after every k3s reinstall. The old copied kubeconfig can contain stale certificates or server data from the deleted cluster:
+`deploy_cluster.sh` refreshes the user kubeconfig after every k3s reinstall. If you need to do that step manually, copy the new k3s kubeconfig before using `kubectl`:
 
 ```bash
 mkdir -p ~/.kube
@@ -148,10 +151,10 @@ These are the local WSL2/k3s failure modes this tutorial path is designed around
 
 | Symptom | What it usually means | Fix |
 |---|---|---|
-| `inotify_init: too many open files` or `Failed to start cAdvisor` | WSL/Linux inotify limits are too low for local Kubernetes. | Run `./infra/k3s/test-gpu-k3s.sh --raise-limits --configure-docker --reinstall`. |
-| `failed to load flannel 'subnet.env'` | k3s networking is not fully initialized yet. | Wait for `kube-system` and `/run/flannel/subnet.env`; the k3s test script does this before running the GPU pod. |
-| NVIDIA device plugin logs `Failed to initialize NVML: ERROR_LIBRARY_NOT_FOUND` | Docker can see the GPU, but Kubernetes pods are not getting the NVIDIA runtime. | Configure Docker's default runtime with `--configure-docker`, then reinstall or restart k3s. |
-| Node shows no `nvidia.com/gpu`, but the device plugin pod is running | Device-plugin registration may still be settling, or the plugin cannot see NVML. | Check `kubectl logs -n kube-system -l name=nvidia-device-plugin-ds --tail=120` and `kubectl describe node ...`; rerun the bootstrap if it never registers. |
+| `inotify_init: too many open files` or `Failed to start cAdvisor` | WSL/Linux inotify limits are too low for local Kubernetes. | Reapply the inotify `sysctl` commands from the toolchain page, then restart k3s. |
+| `failed to load flannel 'subnet.env'` | k3s networking is not fully initialized yet. | Wait for `kube-system` and `/run/flannel/subnet.env`; `deploy_cluster.sh` waits for this before continuing. |
+| NVIDIA device plugin logs `Failed to initialize NVML: ERROR_LIBRARY_NOT_FOUND` | Docker can see the GPU, but Kubernetes pods are not getting the NVIDIA runtime. | Reapply the Docker NVIDIA default-runtime commands from the toolchain page, then restart Docker and k3s. |
+| Node shows no `nvidia.com/gpu`, but the device plugin pod is running | Device-plugin registration may still be settling, or the plugin cannot see NVML. | Check `kubectl logs -n kube-system -l name=nvidia-device-plugin-ds --tail=120` and `kubectl describe node ...`; rerun `deploy_cluster.sh` if it never registers. |
 | GPU pod event says `RuntimeHandler "nvidia" not supported` | The Docker-backed k3s path is not using a Kubernetes `RuntimeClass` handler. | Omit `runtimeClassName`; rely on Docker's default NVIDIA runtime. |
 | Kubeflow storage pods stay `Pending` with unbound PVCs on the old local setup | The previous local cluster path could fail before Kubeflow had working storage. | Use the k3s path and verify the default `local-path` storage class before installing KFP. |
 

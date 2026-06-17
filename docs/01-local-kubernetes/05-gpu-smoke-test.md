@@ -168,7 +168,7 @@ If that still shows nothing:
 - verify that `docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi` works
 - verify that `sudo k3s kubectl get nodes` succeeds
 - verify that the NVIDIA device plugin is running in `kube-system`
-- rerun `bash infra/k3s/bootstrap-gpu-cluster.sh`
+- rerun `bash infra/k3s/deploy_cluster.sh`
 - if the `k3s` GPU path still cannot expose GPUs on this machine, stop the Kubernetes GPU path instead of continuing to debug pod specs
 
 Only continue once `kubectl describe nodes | grep -A5 -B5 "nvidia.com/gpu"` shows GPU capacity.
@@ -341,7 +341,8 @@ To reset the GPU-specific cluster state:
 
 ```bash
 sudo k3s-uninstall.sh
-bash infra/k3s/bootstrap-gpu-cluster.sh
+curl -sfL https://get.k3s.io | sudo env INSTALL_K3S_EXEC="--docker --write-kubeconfig-mode 644" sh -
+bash infra/k3s/deploy_cluster.sh
 ```
 
 ## What You Learned
