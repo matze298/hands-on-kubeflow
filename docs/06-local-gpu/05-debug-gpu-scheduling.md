@@ -46,8 +46,7 @@ Fix:
 - use the k3s GPU path
 - verify the NVIDIA device plugin is running
 - check node capacity
-- reduce `gpu_count`
-- switch to CPU fallback
+- upload the CPU pipeline YAML if you need a CPU fallback run
 
 ## Failure Type 2: Image Pull Failure
 
@@ -73,7 +72,7 @@ Kubernetes cannot access the GPU training image.
 Fix for k3s:
 
 ```bash
-docker images kubeflow-by-doing/train:gpu-local
+docker images kubeflow-by-doing/train-gpu:local
 ```
 
 On `kind`, this failure is expected in the default tutorial flow because the GPU path is not the supported path there. Switch to the CPU fallback run or move to the k3s GPU path before debugging the GPU image itself.
@@ -108,30 +107,30 @@ Likely causes:
 - node runtime does not expose GPU devices
 - CUDA/PyTorch image mismatch
 
-## Failure Type 4: Wrong Accelerator Branch
+## Failure Type 4: Wrong Pipeline YAML
 
 Symptom:
 
 ```text
-accelerator=gpu run uses CPU image
+GPU run uses CPU image
 ```
 
 or:
 
 ```text
-accelerator=cpu run requests GPU
+CPU run requests GPU
 ```
 
 Meaning:
 
 ```text
-Pipeline parameter wiring is wrong.
+The uploaded compiled pipeline does not match the run you intended.
 ```
 
 Check compiled pipeline:
 
 ```bash
-grep -n "kubeflow-by-doing/train\\|nvidia.com/gpu\\|accelerator" compiled/image_classification_pipeline.yaml || true
+grep -n "kubeflow-by-doing/train\\|nvidia.com/gpu" compiled/image_classification_pipeline.yaml compiled/image_classification_gpu_pipeline.yaml || true
 ```
 
 Then inspect the actual pod:
@@ -159,11 +158,13 @@ kubectl get events -A --sort-by=.lastTimestamp
 
 ## Intentional Failure Exercise
 
-Run the GPU path with:
+Patch `pipelines/image_classification_gpu_pipeline.py` temporarily so it requests more GPUs than your node has:
 
-```text
-gpu_count: 99
+```python
+train_task.set_accelerator_limit(99)
 ```
+
+Then recompile and run the GPU pipeline.
 
 Expected:
 
@@ -177,17 +178,13 @@ Find the event:
 Insufficient nvidia.com/gpu
 ```
 
-Then rerun with:
+Then change the limit back to:
 
-```text
-gpu_count: 1
+```python
+train_task.set_accelerator_limit(1)
 ```
 
-or switch to:
-
-```text
-accelerator: cpu
-```
+or upload `compiled/image_classification_pipeline.yaml` for the CPU fallback path.
 
 ## What Good Looks Like
 

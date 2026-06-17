@@ -34,7 +34,7 @@ def train_model(  # noqa: PLR0913, PLR0917
             "--seed",
             seed,
             "--device",
-            "cuda",
+            "cpu",
             "--n-train",
             n_train,
             "--n-val",

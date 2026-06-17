@@ -124,9 +124,9 @@ Prefer:
 
 ```text
 tests/      → src/
-components/ → src/
-pipelines/  → components/
-Dockerfile  → src/
+components/          → src/
+pipelines/           → components/
+Dockerfile → src/
 ```
 
 Avoid:

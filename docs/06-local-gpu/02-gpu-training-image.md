@@ -16,7 +16,7 @@ src/kubeflow_by_doing/gpu.py
 and build:
 
 ```text
-kubeflow-by-doing/train:gpu-local
+kubeflow-by-doing/train-gpu:local
 ```
 
 ## Create `Dockerfile.gpu`
@@ -59,12 +59,13 @@ ENTRYPOINT ["uv", "run", "kbd"]
 Create `src/kubeflow_by_doing/gpu.py`:
 
 ```python
-from __future__ import annotations
+"""GPU runtime helpers."""
 
 import torch
 
 
 def cuda_summary() -> dict[str, str | int | bool]:
+    """Return a compact CUDA availability summary."""
     available = torch.cuda.is_available()
     summary: dict[str, str | int | bool] = {
         "cuda_available": available,
@@ -81,23 +82,24 @@ def cuda_summary() -> dict[str, str | int | bool]:
 Update `src/kubeflow_by_doing/cli.py`:
 
 ```python
+from kubeflow_by_doing.gpu import cuda_summary
+
+
 @app.command()
 def cuda_check() -> None:
-    from kubeflow_by_doing.gpu import cuda_summary
-
     rprint(cuda_summary())
 ```
 
 ## Build the GPU Image
 
 ```bash
-docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
+docker build -f Dockerfile.gpu -t kubeflow-by-doing/train-gpu:local .
 ```
 
 ## Test with Docker
 
 ```bash
-docker run --rm --gpus all kubeflow-by-doing/train:gpu-local cuda-check
+docker run --rm --gpus all kubeflow-by-doing/train-gpu:local cuda-check
 ```
 
 Expected shape:
@@ -113,7 +115,7 @@ Expected shape:
 Run a tiny training smoke test:
 
 ```bash
-docker run --rm --gpus all kubeflow-by-doing/train:gpu-local \
+docker run --rm --gpus all kubeflow-by-doing/train-gpu:local \
   train-model \
   --output-dir /tmp/kbd-gpu-test \
   --epochs 1 \
@@ -132,7 +134,7 @@ docker run --rm --gpus all kubeflow-by-doing/train:gpu-local \
 Use the repo's chosen k3s image workflow. Because k3s uses Docker as its runtime in this tutorial, the image is available after `docker build`:
 
 ```bash
-docker images kubeflow-by-doing/train:gpu-local
+docker images kubeflow-by-doing/train-gpu:local
 ```
 
 ### kind fallback
@@ -155,7 +157,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: cuda-check
-      image: kubeflow-by-doing/train:gpu-local
+      image: kubeflow-by-doing/train-gpu:local
       imagePullPolicy: IfNotPresent
       command: ["uv", "run", "kbd", "cuda-check"]
       resources:
@@ -179,13 +181,14 @@ Keep both:
 
 ```text
 kubeflow-by-doing/train:local      # CPU/default
-kubeflow-by-doing/train:gpu-local  # GPU
+kubeflow-by-doing/train-gpu:local  # GPU
 ```
 
-This lets the pipeline expose a clear parameter:
+This lets the CPU and GPU pipelines keep separate runtime contracts:
 
 ```text
-accelerator: cpu | gpu
+CPU image: Python base image, device=cpu
+GPU image: PyTorch CUDA base image, device=cuda
 ```
 
 ## Acceptance Criteria
@@ -193,7 +196,7 @@ accelerator: cpu | gpu
 You are done when:
 
 - `Dockerfile.gpu` exists
-- `kubeflow-by-doing/train:gpu-local` builds
+- `kubeflow-by-doing/train-gpu:local` builds
 - `docker run --gpus all ... cuda-check` reports CUDA available
 - the image is available to k3s
 - a Kubernetes pod can run `cuda-check` with `nvidia.com/gpu: 1`

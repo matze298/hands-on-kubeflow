@@ -1,40 +1,36 @@
 # GPU-Aware KFP Component
 
-This page updates the KFP training component so it can request a GPU.
+This page adds a separate GPU KFP pipeline instead of overwriting the Chapter 3 CPU pipeline.
 
 ## What You Will Build
 
-You will update:
+You will create:
 
 ```text
-components/train_model.py
-pipelines/image_classification_pipeline.py
+components/train_model_gpu.py
+pipelines/image_classification_gpu_pipeline.py
+compiled/image_classification_gpu_pipeline.yaml
 ```
 
-The training component will support:
+The Chapter 3 CPU artifacts stay available:
 
 ```text
-accelerator = "cpu"
-accelerator = "gpu"
-```
-
-CPU mode uses:
-
-```text
+Dockerfile
 kubeflow-by-doing/train:local
+compiled/image_classification_pipeline.yaml
 ```
 
-GPU mode uses:
+The Chapter 6 GPU artifacts are separate:
 
 ```text
-kubeflow-by-doing/train:gpu-local
+Dockerfile.gpu
+kubeflow-by-doing/train-gpu:local
+compiled/image_classification_gpu_pipeline.yaml
 ```
 
-## Update the Training Component
+## Create the GPU Training Component
 
-Update `components/train_model.py` so the component can receive the image and device as parameters.
-
-Target structure:
+Create `components/train_model_gpu.py`:
 
 ```python
 from kfp.dsl import Model, Output
@@ -43,158 +39,165 @@ from kfp.dsl.structures import ContainerSpec
 
 
 @container_component
-def train_model(
+def train_model_gpu(  # noqa: PLR0913, PLR0917
     model: Output[Model],
-    image: str,
-    device: str,
     epochs: int = 2,
     learning_rate: float = 1e-3,
     seed: int = 42,
     n_train: int = 256,
     n_val: int = 64,
     batch_size: int = 32,
-    run_id: str = "manual-kfp-001",
-    upload_artifacts: bool = False,
-    tracking: bool = False,
-    image_tag: str = "unknown",
-    git_sha: str = "unknown",
 ) -> ContainerSpec:
-    args = [
-        "train-model",
-        "--output-dir",
-        model.path,
-        "--epochs",
-        epochs,
-        "--learning-rate",
-        learning_rate,
-        "--seed",
-        seed,
-        "--device",
-        device,
-        "--n-train",
-        n_train,
-        "--n-val",
-        n_val,
-        "--batch-size",
-        batch_size,
-        "--run-id",
-        run_id,
-        "--image-tag",
-        image_tag,
-        "--git-sha",
-        git_sha,
-    ]
-
-    if upload_artifacts:
-        args.append("--upload-artifacts")
-
-    if tracking:
-        args.append("--tracking")
-
     return ContainerSpec(
-        image=image,
+        image="kubeflow-by-doing/train-gpu:local",
         command=["uv", "run", "kbd"],
-        args=args,
+        args=[
+            "train-model",
+            "--output-dir",
+            model.path,
+            "--epochs",
+            epochs,
+            "--learning-rate",
+            learning_rate,
+            "--seed",
+            seed,
+            "--device",
+            "cuda",
+            "--n-train",
+            n_train,
+            "--n-val",
+            n_val,
+            "--batch-size",
+            batch_size,
+        ],
     )
 ```
 
-The training image still defines `ENTRYPOINT ["uv", "run", "kbd"]` for local `docker run` commands. Keep `command=["uv", "run", "kbd"]` in the KFP component as well, because the compiled pipeline should make the Kubernetes execution contract explicit instead of relying on the image entrypoint.
+## Reuse CPU Evaluation
 
-!!! note
-
-    Verify this pattern against the installed KFP SDK before relying on it in a longer run. The important behavior is that the image remains a pipeline parameter and the compiled component receives normal command arguments. If your SDK version rejects parameterized container images or non-string arguments in `ContainerSpec`, use the closest SDK-supported helper while keeping the same pipeline parameters.
-
-## Add a Helper for GPU Resources
-
-In `pipelines/image_classification_pipeline.py`, define:
+Keep using `components/evaluate_model.py` from Chapter 3:
 
 ```python
-from kfp import dsl
+from kfp.dsl import Input, Model, OutputPath
+from kfp.dsl.container_component_decorator import container_component
+from kfp.dsl.structures import ContainerSpec
 
 
-def configure_training_resources(
-    task: dsl.PipelineTask,
-    accelerator: str,
-    gpu_count: int,
-) -> dsl.PipelineTask:
-    if accelerator == "gpu":
-        task.set_accelerator_type("nvidia.com/gpu")
-        task.set_accelerator_limit(gpu_count)
-        task.set_cpu_request("2")
-        task.set_memory_request("4Gi")
-        task.set_memory_limit("8Gi")
-    else:
-        task.set_cpu_request("1")
-        task.set_memory_request("2Gi")
-        task.set_memory_limit("4Gi")
-
-    return task
+@container_component
+def evaluate_model(  # noqa: PLR0913, PLR0917
+    model: Input[Model],
+    metrics_artifact: OutputPath("Dataset"),
+    seed: int = 42,
+    n_train: int = 256,
+    n_val: int = 64,
+    batch_size: int = 32,
+) -> ContainerSpec:
+    return ContainerSpec(
+        image="kubeflow-by-doing/train:local",
+        command=["uv", "run", "kbd"],
+        args=[
+            "evaluate-model",
+            "--model-dir",
+            model.path,
+            "--metrics-path",
+            metrics_artifact,
+            "--seed",
+            seed,
+            "--device",
+            "cpu",
+            "--n-train",
+            n_train,
+            "--n-val",
+            n_val,
+            "--batch-size",
+            batch_size,
+        ],
+    )
 ```
 
-This is the KFP v2 accelerator API pattern the tutorial expects:
+The GPU request applies only to training. Evaluation uses the Chapter 3 CPU image.
+
+## Create the GPU Pipeline
+
+Create `pipelines/image_classification_gpu_pipeline.py`:
+
+```python
+import sys
+from pathlib import Path
+
+from kfp.compiler.compiler import Compiler
+from kfp.dsl.pipeline_context import pipeline
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from components.evaluate_model import evaluate_model  # noqa: E402
+from components.train_model_gpu import train_model_gpu  # noqa: E402
+
+
+@pipeline(name="image-classification-gpu")
+def image_classification_gpu_pipeline(  # noqa: PLR0913, PLR0917
+    epochs: int = 2,
+    learning_rate: float = 1e-3,
+    seed: int = 42,
+    n_train: int = 256,
+    n_val: int = 64,
+    batch_size: int = 32,
+) -> None:
+    train_task = train_model_gpu(
+        epochs=epochs,
+        learning_rate=learning_rate,
+        seed=seed,
+        n_train=n_train,
+        n_val=n_val,
+        batch_size=batch_size,
+    )
+    train_task.set_accelerator_type("nvidia.com/gpu")
+    train_task.set_accelerator_limit(1)
+    train_task.set_cpu_request("2")
+    train_task.set_memory_request("4Gi")
+    train_task.set_memory_limit("8Gi")
+
+    evaluate_model(
+        model=train_task.outputs["model"],
+        seed=seed,
+        n_train=n_train,
+        n_val=n_val,
+        batch_size=batch_size,
+    )
+
+
+if __name__ == "__main__":
+    Compiler().compile(
+        pipeline_func=image_classification_gpu_pipeline,
+        package_path="compiled/image_classification_gpu_pipeline.yaml",
+    )
+```
+
+## Compile
+
+```bash
+uv run python pipelines/image_classification_gpu_pipeline.py
+```
+
+Inspect the compiled pipeline:
+
+```bash
+grep -n "nvidia.com/gpu\\|train-gpu:local\\|train:local" compiled/image_classification_gpu_pipeline.yaml
+```
+
+Expected:
 
 ```text
-nvidia.com/gpu: 1
+image: kubeflow-by-doing/train-gpu:local
+resourceType: nvidia.com/gpu
+image: kubeflow-by-doing/train:local
 ```
 
-## Update Pipeline Parameters
-
-Add parameters:
-
-```python
-accelerator: str = "cpu"
-gpu_count: int = 1
-cpu_image: str = "kubeflow-by-doing/train:local"
-gpu_image: str = "kubeflow-by-doing/train:gpu-local"
-```
-
-Derive image and device:
-
-```python
-training_image = gpu_image if accelerator == "gpu" else cpu_image
-training_device = "cuda" if accelerator == "gpu" else "cpu"
-```
-
-Create and configure the training task:
-
-```python
-train_task = train_model(
-    image=training_image,
-    device=training_device,
-    epochs=epochs,
-    learning_rate=learning_rate,
-    seed=seed,
-    n_train=n_train,
-    n_val=n_val,
-    batch_size=batch_size,
-    run_id=run_id,
-    upload_artifacts=True,
-    tracking=True,
-    image_tag=training_image,
-    git_sha=git_sha,
-)
-
-configure_training_resources(
-    task=train_task,
-    accelerator=accelerator,
-    gpu_count=gpu_count,
-)
-```
-
-## Keep Evaluation on CPU
-
-Evaluation can stay on CPU for now.
-
-```text
-GPU request applies to train_model only
-evaluate_model stays CPU
-```
-
-## Why Not Always Use `device=auto`?
+## Why Not Use `device=auto`?
 
 `device=auto` is convenient locally, but it can hide platform mistakes.
 
-For a GPU KFP run, use:
+For the GPU KFP run, use:
 
 ```text
 device=cuda
@@ -202,42 +205,7 @@ device=cuda
 
 That way the component fails clearly if CUDA is not available.
 
-For CPU fallback, use:
-
-```text
-device=cpu
-```
-
-## Compile
-
-```bash
-uv run python pipelines/image_classification_pipeline.py
-```
-
-Inspect the compiled pipeline:
-
-```bash
-grep -n "nvidia.com/gpu\\|accelerator\\|gpu" compiled/image_classification_pipeline.yaml || true
-```
-
 ## Common Problems
-
-### KFP SDK method names differ
-
-GPU resource APIs have changed across KFP versions.
-
-Do not change the tutorial goal. Adapt the helper to the installed SDK.
-
-### Parameterized image does not compile
-
-If the SDK does not support parameterized images cleanly, use two explicit components or an `if` branch in the pipeline.
-
-Keep the behavior:
-
-```text
-accelerator=cpu uses CPU image
-accelerator=gpu uses GPU image
-```
 
 ### GPU request is missing from pod
 
@@ -254,16 +222,25 @@ Limits:
   nvidia.com/gpu: 1
 ```
 
+### The pod requests a GPU but PyTorch says CUDA is unavailable
+
+Check that the task uses the GPU image and that the node advertises GPU capacity:
+
+```bash
+grep -n "train-gpu:local\\|nvidia.com/gpu" compiled/image_classification_gpu_pipeline.yaml
+kubectl describe nodes | grep -A5 -B5 "nvidia.com/gpu"
+```
+
 ## Acceptance Criteria
 
 You are done when:
 
-- the training component accepts image and device parameters
-- the pipeline accepts `accelerator`, `gpu_count`, `cpu_image`, and `gpu_image`
-- GPU mode configures a GPU resource request
-- CPU mode does not request a GPU
+- `components/train_model_gpu.py` exists
+- `components/evaluate_model.py` still runs evaluation on CPU
+- `pipelines/image_classification_gpu_pipeline.py` exists
+- `compiled/image_classification_gpu_pipeline.yaml` contains `nvidia.com/gpu`
+- the Chapter 3 CPU pipeline still exists separately
 - evaluation still works on CPU
-- the compiled pipeline is ready for both CPU and GPU runs
 
 ## References
 

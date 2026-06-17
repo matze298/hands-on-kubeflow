@@ -75,7 +75,7 @@ docker build -f Dockerfile.serve -t kubeflow-by-doing/serve:local .
 Optional GPU image, only for the GPU capstone path:
 
 ```bash
-docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
+docker build -f Dockerfile.gpu -t kubeflow-by-doing/train-gpu:local .
 ```
 
 ## Make Images Available to the Cluster
@@ -90,7 +90,7 @@ docker images kubeflow-by-doing/serve:local
 For the optional GPU capstone path:
 
 ```bash
-docker images kubeflow-by-doing/train:gpu-local
+docker images kubeflow-by-doing/train-gpu:local
 ```
 
 ### kind fallback
@@ -103,7 +103,7 @@ kind load docker-image kubeflow-by-doing/serve:local --name kubeflow-by-doing
 For the optional GPU capstone path:
 
 ```bash
-kind load docker-image kubeflow-by-doing/train:gpu-local --name kubeflow-by-doing
+kind load docker-image kubeflow-by-doing/train-gpu:local --name kubeflow-by-doing
 ```
 
 ## Ensure Model Server Base Manifests Exist
@@ -155,7 +155,7 @@ dataset_uri: synthetic://tiny-image-classification
 accelerator: cpu
 gpu_count: 0
 cpu_image: kubeflow-by-doing/train:local
-gpu_image: kubeflow-by-doing/train:gpu-local
+gpu_image: kubeflow-by-doing/train-gpu:local
 serve_image: kubeflow-by-doing/serve:local
 artifact_bucket: kubeflow-by-doing
 min_accuracy: 0.5
@@ -225,7 +225,7 @@ Only run this after Chapter 6 succeeds.
 run_id: capstone-gpu-001
 accelerator: gpu
 gpu_count: 1
-gpu_image: kubeflow-by-doing/train:gpu-local
+gpu_image: kubeflow-by-doing/train-gpu:local
 artifact_bucket: kubeflow-by-doing
 min_accuracy: 0.5
 deploy_after_promotion: false

@@ -37,9 +37,11 @@ Chapter 1 used `kind` for the initial Kubernetes starter path because it is ligh
 
 You will update the training path so that:
 
-- the training component can request `nvidia.com/gpu`
-- the same pipeline still works without GPU through a CPU fallback path
-- the GPU-enabled component image remains compatible with the local cluster
+- `components/train_model_gpu.py` can run training with `device=cuda`
+- `pipelines/image_classification_gpu_pipeline.py` requests `nvidia.com/gpu`
+- `compiled/image_classification_pipeline.yaml` remains the CPU fallback path from Chapter 3
+- `compiled/image_classification_gpu_pipeline.yaml` is the GPU path for this chapter
+- the GPU-enabled image remains compatible with the local cluster
 - GPU scheduling failures are visible from KFP and Kubernetes
 
 ## Why This Matters
@@ -91,9 +93,9 @@ docs/06-local-gpu/
 You are done with Chapter 6 when:
 
 - k3s reports GPU capacity through `nvidia.com/gpu`
-- the training component can request `nvidia.com/gpu`
+- the GPU training component can request `nvidia.com/gpu`
 - a KFP run succeeds on the GPU path
-- the CPU fallback still works when the GPU path is unavailable
+- the Chapter 3 CPU pipeline still works when the GPU path is unavailable
 - GPU scheduling failures are visible in the pod or KFP logs
 - you can explain the difference between container GPU support and KFP GPU integration
 

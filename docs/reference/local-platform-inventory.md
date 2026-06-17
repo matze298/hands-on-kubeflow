@@ -85,7 +85,7 @@ kubectl -n kubeflow-by-doing get secret artifact-store-credentials
 | Image | Purpose | Local cluster path |
 |---|---|---|
 | `kubeflow-by-doing/train:local` | CPU training component image | build in Docker for `k3s`; load into `kind` fallback |
-| `kubeflow-by-doing/train:gpu-local` | GPU training component image | build in Docker for `k3s` |
+| `kubeflow-by-doing/train-gpu:local` | GPU training component image | build in Docker for `k3s` |
 | `kubeflow-by-doing/serve:local` | FastAPI serving image | build in Docker for `k3s`; load into `kind` fallback |
 | `kubeflow-by-doing/flyte-cpu:local` | optional Flyte task image | build in Docker for local Kubernetes |
 | `kubeflow-by-doing/kserve:local` | optional KServe custom predictor image | build in Docker for local Kubernetes |
@@ -94,6 +94,7 @@ Default k3s image check examples:
 
 ```bash
 docker images kubeflow-by-doing/train:local
+docker images kubeflow-by-doing/train-gpu:local
 docker images kubeflow-by-doing/serve:local
 ```
 

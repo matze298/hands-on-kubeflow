@@ -174,6 +174,9 @@ Expected paths:
 
 ```text
 Dockerfile.gpu
+components/train_model_gpu.py
+pipelines/image_classification_gpu_pipeline.py
+compiled/image_classification_gpu_pipeline.yaml
 infra/gpu/
 src/kubeflow_by_doing/gpu.py
 ```
@@ -182,7 +185,8 @@ Useful checks:
 
 ```bash
 kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
-docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
+docker build -f Dockerfile.gpu -t kubeflow-by-doing/train-gpu:local .
+uv run python pipelines/image_classification_gpu_pipeline.py
 ```
 
 ## 7. STACKIT Expansion

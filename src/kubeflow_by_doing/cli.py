@@ -6,6 +6,7 @@ import typer
 from rich import print as rprint
 
 from kubeflow_by_doing.evaluate import evaluate
+from kubeflow_by_doing.gpu import cuda_summary
 from kubeflow_by_doing.train import train
 
 app = typer.Typer(no_args_is_help=True, help="Local-first Kubeflow tutorial CLI.")
@@ -59,6 +60,12 @@ def evaluate_model(  # noqa: PLR0913, PLR0917
             batch_size=batch_size,
         )
     )
+
+
+@app.command()
+def cuda_check() -> None:
+    """Print CUDA availability for the current container."""
+    rprint(cuda_summary())
 
 
 if __name__ == "__main__":

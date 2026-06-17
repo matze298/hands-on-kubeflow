@@ -6,7 +6,7 @@ The image will later be used by Kubeflow components.
 
 ## What You Will Build
 
-Create a `Dockerfile` that can run:
+Create a chapter-specific Dockerfile that can run:
 
 ```bash
 kbd train-model ...
@@ -81,7 +81,7 @@ This keeps the image invocation model simple and keeps dependency downloads in a
 ## Build the Image
 
 ```bash
-docker build -t kubeflow-by-doing/train:local .
+docker build -f Dockerfile -t kubeflow-by-doing/train:local .
 ```
 
 If you prefer a wrapper script, put the same command into `build_docker.sh` and run that file instead. A small POSIX shell wrapper is enough:
@@ -90,7 +90,7 @@ If you prefer a wrapper script, put the same command into `build_docker.sh` and 
 #!/usr/bin/env sh
 set -eu
 
-docker build -t kubeflow-by-doing/train:local .
+docker build -f Dockerfile -t kubeflow-by-doing/train:local .
 ```
 
 Verify:
@@ -244,7 +244,7 @@ docker rmi kubeflow-by-doing/train:local
 You are done when:
 
 - `Dockerfile` exists
-- `docker build -t kubeflow-by-doing/train:local .` succeeds
+- `docker build -f Dockerfile -t kubeflow-by-doing/train:local .` succeeds
 - containerized training writes `model.pt`
 - containerized evaluation writes `metrics.json`
 - the image is available to the GPU-capable local cluster

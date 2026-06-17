@@ -334,7 +334,7 @@ Hints:
         accelerator: str = "cpu",
         gpu_count: int = 0,
         cpu_image: str = "kubeflow-by-doing/train:local",
-        gpu_image: str = "kubeflow-by-doing/train:gpu-local",
+        gpu_image: str = "kubeflow-by-doing/train-gpu:local",
         serve_image: str = "kubeflow-by-doing/serve:local",
         artifact_bucket: str = "kubeflow-by-doing",
         min_accuracy: float = 0.5,

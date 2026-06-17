@@ -1,21 +1,21 @@
 # Run GPU and CPU Pipelines
 
-This page runs the same pipeline in both CPU and GPU modes.
+This page runs the persistent Chapter 3 CPU pipeline and the Chapter 6 GPU pipeline side by side.
 
 ## What You Will Run
 
 You will run:
 
 ```text
-CPU fallback run
-GPU training run
+compiled/image_classification_pipeline.yaml
+compiled/image_classification_gpu_pipeline.yaml
 ```
 
-The point is to prove that the workflow supports both:
+The point is to prove that both workflows can coexist:
 
 ```text
-accelerator=cpu
-accelerator=gpu
+Chapter 3 CPU pipeline stays runnable
+Chapter 6 GPU pipeline requests nvidia.com/gpu
 ```
 
 ## Rebuild Images
@@ -33,13 +33,13 @@ uv run pytest
 Build CPU image:
 
 ```bash
-docker build -t kubeflow-by-doing/train:local .
+docker build -f Dockerfile -t kubeflow-by-doing/train:local .
 ```
 
 Build GPU image:
 
 ```bash
-docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
+docker build -f Dockerfile.gpu -t kubeflow-by-doing/train-gpu:local .
 ```
 
 ## Make Images Available to the Cluster
@@ -50,7 +50,7 @@ Use the repo's chosen k3s image workflow. Because k3s uses Docker as its runtime
 
 ```bash
 docker images kubeflow-by-doing/train:local
-docker images kubeflow-by-doing/train:gpu-local
+docker images kubeflow-by-doing/train-gpu:local
 ```
 
 Verify:
@@ -63,13 +63,14 @@ kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 
 The GPU image path in this chapter is k3s-only in the default tutorial flow. If you stay on `kind`, keep using the CPU fallback run and do not expect the GPU run to work unless you have separately configured a GPU-capable `kind` cluster.
 
-## Compile the Pipeline
+## Compile the Pipelines
 
 ```bash
 uv run python pipelines/image_classification_pipeline.py
+uv run python pipelines/image_classification_gpu_pipeline.py
 ```
 
-## Run CPU Fallback
+## Run the Chapter 3 CPU Pipeline
 
 Open the KFP UI:
 
@@ -77,15 +78,18 @@ Open the KFP UI:
 kubectl -n kubeflow port-forward svc/ml-pipeline-ui 8080:80
 ```
 
+Upload:
+
+```text
+compiled/image_classification_pipeline.yaml
+```
+
 Run with:
 
 ```text
-run_id: cpu-fallback-001
-accelerator: cpu
-gpu_count: 0
-cpu_image: kubeflow-by-doing/train:local
-gpu_image: kubeflow-by-doing/train:gpu-local
-min_accuracy: 0.5
+epochs: 2
+learning_rate: 0.001
+seed: 42
 ```
 
 Expected:
@@ -96,26 +100,29 @@ evaluate_model runs on CPU
 pipeline succeeds
 ```
 
-## Run GPU Path
+## Run the Chapter 6 GPU Pipeline
 
 This run assumes the k3s GPU-capable path from the earlier chapters.
+
+Upload:
+
+```text
+compiled/image_classification_gpu_pipeline.yaml
+```
 
 Run with:
 
 ```text
-run_id: gpu-local-001
-accelerator: gpu
-gpu_count: 1
-cpu_image: kubeflow-by-doing/train:local
-gpu_image: kubeflow-by-doing/train:gpu-local
-min_accuracy: 0.5
+epochs: 2
+learning_rate: 0.001
+seed: 42
 ```
 
 Expected:
 
 ```text
-train_model requests nvidia.com/gpu: 1
-train_model uses device=cuda
+train_model_gpu requests nvidia.com/gpu: 1
+train_model_gpu uses device=cuda
 evaluate_model runs on CPU
 pipeline succeeds
 ```
@@ -171,7 +178,7 @@ no nvidia.com/gpu request
 
 ### GPU run uses CPU image
 
-Check the pipeline parameter wiring.
+Check that you uploaded `compiled/image_classification_gpu_pipeline.yaml`, not the Chapter 3 YAML.
 
 ### GPU run starts but PyTorch says CUDA is unavailable
 
@@ -190,12 +197,12 @@ This is a scheduling failure. Continue to the next page.
 
 You are done when:
 
-- CPU fallback run succeeds
+- Chapter 3 CPU run succeeds
 - GPU run succeeds on k3s GPU path
 - training pod for GPU run requests `nvidia.com/gpu`
 - training logs show CUDA usage
 - artifacts are still produced
-- the same pipeline supports both accelerator modes
+- both compiled pipeline YAML files remain available
 
 ## References
 

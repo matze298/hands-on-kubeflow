@@ -1,6 +1,6 @@
 # PIPELINE DEFINITION
-# Name: image-classification-local
-# Description: Define the local image classification pipeline.
+# Name: image-classification-gpu
+# Description: Define the GPU image classification pipeline.
 # Inputs:
 #    batch_size: int [Default: 32.0]
 #    epochs: int [Default: 2.0]
@@ -40,8 +40,8 @@ components:
           artifactType:
             schemaTitle: system.Dataset
             schemaVersion: 0.0.1
-  comp-train-model:
-    executorLabel: exec-train-model
+  comp-train-model-gpu:
+    executorLabel: exec-train-model-gpu
     inputDefinitions:
       parameters:
         batch_size:
@@ -99,7 +99,7 @@ deploymentSpec:
         - run
         - kbd
         image: kubeflow-by-doing/train:local
-    exec-train-model:
+    exec-train-model-gpu:
       container:
         args:
         - train-model
@@ -112,7 +112,7 @@ deploymentSpec:
         - --seed
         - '{{$.inputs.parameters[''seed'']}}'
         - --device
-        - cpu
+        - cuda
         - --n-train
         - '{{$.inputs.parameters[''n_train'']}}'
         - --n-val
@@ -123,10 +123,22 @@ deploymentSpec:
         - uv
         - run
         - kbd
-        image: kubeflow-by-doing/train:local
+        image: kubeflow-by-doing/train-gpu:local
+        resources:
+          accelerator:
+            count: '1'
+            resourceCount: '1'
+            resourceType: nvidia.com/gpu
+            type: nvidia.com/gpu
+          cpuRequest: 2.0
+          memoryLimit: 8.589934592
+          memoryRequest: 4.294967296
+          resourceCpuRequest: '2'
+          resourceMemoryLimit: 8Gi
+          resourceMemoryRequest: 4Gi
 pipelineInfo:
-  description: Define the local image classification pipeline.
-  name: image-classification-local
+  description: Define the GPU image classification pipeline.
+  name: image-classification-gpu
 root:
   dag:
     tasks:
@@ -136,13 +148,13 @@ root:
         componentRef:
           name: comp-evaluate-model
         dependentTasks:
-        - train-model
+        - train-model-gpu
         inputs:
           artifacts:
             model:
               taskOutputArtifact:
                 outputArtifactKey: model
-                producerTask: train-model
+                producerTask: train-model-gpu
           parameters:
             batch_size:
               componentInputParameter: batch_size
@@ -154,11 +166,11 @@ root:
               componentInputParameter: seed
         taskInfo:
           name: evaluate-model
-      train-model:
+      train-model-gpu:
         cachingOptions:
           enableCache: true
         componentRef:
-          name: comp-train-model
+          name: comp-train-model-gpu
         inputs:
           parameters:
             batch_size:
@@ -174,7 +186,7 @@ root:
             seed:
               componentInputParameter: seed
         taskInfo:
-          name: train-model
+          name: train-model-gpu
   inputDefinitions:
     parameters:
       batch_size:
