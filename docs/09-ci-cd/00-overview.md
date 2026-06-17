@@ -14,6 +14,16 @@ upload run
 
 Chapter 9 moves the repeatable parts into CI/CD.
 
+## Prerequisites
+
+Before starting or resuming this chapter, make sure:
+
+- the repository checks from [Tests and Quality Checks](../03-local-ml-workflow/04-tests-and-quality-checks.md) pass locally
+- the training image can be built from [Containerize Training](../03-local-ml-workflow/05-containerize-training.md)
+- the pipeline can be compiled from [Train in Kubeflow](../03-local-ml-workflow/06-train-in-kubeflow.md)
+- artifact and serving concepts are familiar from [Artifacts and Tracking](../04-artifacts-and-tracking/00-overview.md) and [Local Serving](../05-local-serving/00-overview.md)
+- a KFP endpoint is available only for the optional pipeline-submission workflow; local-only CI checks do not require a running cluster
+
 ## What You Will Build
 
 You will create GitHub Actions workflows for:

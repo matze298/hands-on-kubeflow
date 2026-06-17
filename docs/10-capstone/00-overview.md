@@ -18,6 +18,17 @@ CI/CD expansion
 
 The capstone ties the core path together into one workflow.
 
+## Prerequisites
+
+Before starting or resuming this chapter, make sure:
+
+- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- standalone Kubeflow Pipelines is installed and reachable from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md)
+- the Chapter 3 training workflow exists and its image is loaded from [Containerize Training](../03-local-ml-workflow/05-containerize-training.md)
+- MinIO and MLflow are available from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md) and [Add Experiment Tracking](../04-artifacts-and-tracking/03-add-mlflow.md)
+- the local serving image and Kubernetes service path are available from [Containerize Serving](../05-local-serving/02-containerize-serving.md) and [Deploy to Kubernetes](../05-local-serving/03-deploy-to-kubernetes.md)
+- GPU execution is optional; use [Local GPU](../06-local-gpu/00-overview.md) if you want the capstone to request `nvidia.com/gpu`
+
 ## How to Use the Capstone
 
 Treat this chapter as the end-to-end test for the tutorial.

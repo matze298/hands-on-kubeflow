@@ -9,6 +9,15 @@ Kubernetes provider changes
 pipeline code stays mostly the same
 ```
 
+## Prerequisites
+
+Before starting or resuming this chapter, make sure:
+
+- the local architecture is familiar from [Local ML Workflow](../03-local-ml-workflow/00-overview.md), [Artifacts and Tracking](../04-artifacts-and-tracking/00-overview.md), and [Local Serving](../05-local-serving/00-overview.md)
+- you have read or completed the provider-specific mapping in [STACKIT Expansion](../07-stackit-expansion/00-overview.md)
+- you have a target managed Kubernetes provider in mind if you want to turn the provider-neutral templates into a working deployment
+- you know where your provider stores container images, object storage credentials, and Kubernetes access configuration
+
 ## What You Will Learn
 
 You will learn:

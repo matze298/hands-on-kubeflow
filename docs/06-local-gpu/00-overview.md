@@ -10,6 +10,16 @@ make the Kubeflow training path GPU-aware
 
 The point is not to re-teach host GPU setup. The point is to close the loop from a working local GPU-capable cluster to a KFP step that explicitly requests the GPU.
 
+## Prerequisites
+
+Before starting or resuming this chapter, make sure:
+
+- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- the GPU smoke tests from [GPU Smoke Test](../01-local-kubernetes/05-gpu-smoke-test.md) pass on your machine
+- standalone Kubeflow Pipelines is installed and reachable from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md)
+- the Chapter 3 training workflow exists from [Containerize Training](../03-local-ml-workflow/05-containerize-training.md) and [Train in Kubeflow](../03-local-ml-workflow/06-train-in-kubeflow.md)
+- use the CPU fallback path if you are resuming on `kind` instead of the GPU-capable `minikube` setup
+
 ## Updated Cluster Story
 
 For later chapters, this tutorial treats **minikube** as the default local ML/Kubeflow platform.

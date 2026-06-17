@@ -24,6 +24,14 @@ The capstone is intentionally small, but the platform shape is real. You can now
 
 This page points to the next topics worth studying. They are not required for the core tutorial. Treat them as future work.
 
+## Prerequisites
+
+Before using this chapter as a next-step guide, make sure:
+
+- you have completed the local core path through the [Capstone](../10-capstone/00-overview.md), or you know which earlier chapter you are intentionally skipping
+- no local service needs to be running unless you are revisiting a specific hands-on chapter linked from this page
+- if your local environment has gone stale, use the [FAQ](../14-faq/00-overview.md) before returning to a hands-on chapter
+
 ## Topics
 
 - [Platform choice](#kubeflow-vs-managed-ml-platforms)

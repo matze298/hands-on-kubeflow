@@ -6,6 +6,16 @@ The focus is not the model architecture. The reader already knows PyTorch and de
 
 From this chapter onward, the default local Kubernetes path is `minikube` on WSL2. The `kind` cluster remains available as the starter and fallback path, but the ML workflow assumes the GPU-capable `minikube` setup when possible.
 
+## Prerequisites
+
+Before starting or resuming this chapter, make sure:
+
+- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- `kubectl config current-context` reports `kubeflow-gpu`
+- standalone Kubeflow Pipelines is installed in the `kubeflow` namespace from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md)
+- the KFP UI can be reached through the port-forward in [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md#access-the-ui)
+- Chapter 2 pipeline concepts are familiar from [Kubeflow Pipelines](../02-kubeflow-pipelines/00-overview.md)
+
 ```text
 local ML script
   ↓

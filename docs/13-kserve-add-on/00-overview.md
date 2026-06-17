@@ -6,6 +6,16 @@ The core tutorial used a plain FastAPI `Deployment` and `Service` first. That wa
 
 KServe adds a higher-level serving API on top of those Kubernetes primitives.
 
+## Prerequisites
+
+Before starting or resuming this add-on, make sure:
+
+- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- the Chapter 5 serving path works from [Local Serving](../05-local-serving/00-overview.md)
+- MinIO is running and contains a tutorial model artifact from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md) and [Trace Lineage](../04-artifacts-and-tracking/04-trace-lineage.md)
+- the serving image can be built from [Containerize Serving](../05-local-serving/02-containerize-serving.md)
+- KServe itself does not need to be installed yet; this add-on starts with [Install KServe](01-install-kserve.md)
+
 ## What You Will Build
 
 You will add an optional KServe path that:

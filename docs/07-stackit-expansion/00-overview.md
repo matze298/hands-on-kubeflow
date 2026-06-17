@@ -75,7 +75,13 @@ The pipeline code should change as little as possible.
 
 ## Prerequisites
 
-To complete the hands-on deployment parts of this chapter, you need:
+Before starting or resuming this chapter, make sure:
+
+- you understand the local architecture from [Local ML Workflow](../03-local-ml-workflow/00-overview.md), [Artifacts and Tracking](../04-artifacts-and-tracking/00-overview.md), and [Local Serving](../05-local-serving/00-overview.md)
+- your local training and serving images can be built from [Containerize Training](../03-local-ml-workflow/05-containerize-training.md) and [Containerize Serving](../05-local-serving/02-containerize-serving.md)
+- you know how standalone KFP was installed locally from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md), because this chapter maps the same idea to SKE
+
+To complete the hands-on deployment parts of this chapter, you also need:
 
 - a STACKIT user account
 - a STACKIT customer account

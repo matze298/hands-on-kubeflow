@@ -142,6 +142,8 @@ cat outputs/container-train/metrics.json
 
 ## Import the Image into the GPU-Capable Local Cluster
 
+Building the image makes it available to your host Docker daemon, but Kubeflow starts pods inside the Kubernetes cluster. The `minikube` node has its own container runtime and image store, so you must load the image there before a pipeline step can use it. Without this import, Kubernetes may report `ImagePullBackOff` even though `docker images` shows `kubeflow-by-doing/train:local` on your machine.
+
 ```bash
 mkdir -p build
 docker save kubeflow-by-doing/train:local > build/train-image.tar

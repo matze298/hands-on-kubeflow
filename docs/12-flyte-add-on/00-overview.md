@@ -132,10 +132,12 @@ Skip it when your goal is to finish the Kubeflow course path, run the capstone, 
 
 Before starting this add-on, you should have completed:
 
-- Chapter 2, so KFP concepts are familiar
-- Chapter 3, so the training and evaluation code exists
-- Chapter 4, so artifact durability is familiar
-- Chapter 10 or 11, so the full Kubeflow path is visible
+- [Kubeflow Pipelines](../02-kubeflow-pipelines/00-overview.md), so KFP concepts are familiar
+- [Local ML Workflow](../03-local-ml-workflow/00-overview.md), so the training and evaluation code exists
+- [Artifacts and Tracking](../04-artifacts-and-tracking/00-overview.md), so artifact durability is familiar
+- [Capstone](../10-capstone/00-overview.md) or [Conclusion and Future Reading](../11-conclusion/00-overview.md), so the full Kubeflow path is visible
+
+For the local Flyte pages, no Kubernetes service needs to be running. For the minikube-backed Flyte page, restart the `kubeflow-gpu` profile from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and make sure local object storage is available from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md).
 
 Flyte is already included in this repository's dependencies:
 

@@ -4,6 +4,16 @@ Chapter 4 made the training workflow durable and traceable.
 
 Chapter 5 turns a promoted model into something callable.
 
+## Prerequisites
+
+Before starting or resuming this chapter, make sure:
+
+- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- standalone Kubeflow Pipelines is installed and reachable from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md)
+- MinIO is running and the `kubeflow-by-doing` bucket exists from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md)
+- MLflow is running if you want experiment tracking in the serving path, from [Add Experiment Tracking](../04-artifacts-and-tracking/03-add-mlflow.md)
+- a promoted model artifact exists from the Chapter 4 pipeline work in [Trace Lineage](../04-artifacts-and-tracking/04-trace-lineage.md)
+
 The goal is to move from:
 
 ```text

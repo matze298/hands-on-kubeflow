@@ -21,6 +21,15 @@ This chapter starts with `kind` as the starter cluster backend.
 
 This chapter also sets up a `minikube` Docker-driver cluster on WSL2 as the GPU-capable local ML platform for the later chapters. Use `kind` as the starter and CPU fallback cluster.
 
+## Prerequisites
+
+Before starting or resuming this chapter, make sure:
+
+- you are on a Linux or WSL2 Linux development machine with Docker available
+- you have access to an NVIDIA GPU if you want to follow the GPU-capable `minikube` path
+- the local toolchain is installed or ready to install in [Install the Local Toolchain](01-install-toolchain.md)
+- no local Kubernetes cluster needs to be running yet; this chapter creates both the `kind` starter cluster and the `kubeflow-gpu` `minikube` profile
+
 By the end of this chapter, you will have:
 
 - installed the local command-line toolchain

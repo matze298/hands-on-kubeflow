@@ -6,6 +6,15 @@ Use the smallest reset that solves the problem. A namespace reset is usually eno
 
 For a compact map of what the tutorial creates, see the [Local Platform Inventory](../reference/local-platform-inventory.md). For version pins and upgrade checks, see [Version Compatibility](../reference/version-compatibility.md).
 
+## Prerequisites
+
+Before using a reset procedure, make sure:
+
+- you know which chapter you want to resume
+- you know whether that chapter expects the `kubeflow-gpu` `minikube` profile, the `kind` fallback, or a cloud cluster
+- you have checked the relevant chapter overview for its restart prerequisites
+- you are not pointing `kubectl` at a shared or production cluster
+
 ## How Do I Reset `minikube`?
 
 Start by confirming that you are looking at the tutorial cluster:
