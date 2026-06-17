@@ -2,14 +2,14 @@
 
 Use this page when you want to understand what the tutorial creates in the local Kubernetes environment.
 
-The inventory reflects the default local path: `minikube` for the ML/Kubeflow chapters and `kind` as the starter or CPU fallback path. Cloud chapters replace local image loading and local MinIO with provider-specific registry and object-storage services.
+The inventory reflects the default local path: `k3s` for the ML/Kubeflow chapters and `kind` as the starter or CPU fallback path. Cloud chapters replace local Docker images and local MinIO with provider-specific registry and object-storage services.
 
 ## Kubernetes Contexts
 
 | Context | Role | Used in |
 |---|---|---|
 | `kind-kubeflow-by-doing` | disposable starter cluster and CPU fallback | Chapter 1 starter path |
-| `kubeflow-gpu` | default local ML/Kubeflow cluster | Chapters 2 onward |
+| `k3s-kubeflow` | default local ML/Kubeflow cluster | Chapters 2 onward |
 
 Check the current context before applying manifests:
 
@@ -84,17 +84,17 @@ kubectl -n kubeflow-by-doing get secret artifact-store-credentials
 
 | Image | Purpose | Local cluster path |
 |---|---|---|
-| `kubeflow-by-doing/train:local` | CPU training component image | load into `minikube` or `kind` |
-| `kubeflow-by-doing/train:gpu-local` | GPU training component image | load into `minikube` |
-| `kubeflow-by-doing/serve:local` | FastAPI serving image | load into `minikube` or `kind` |
-| `kubeflow-by-doing/flyte-cpu:local` | optional Flyte task image | load into `minikube` |
-| `kubeflow-by-doing/kserve:local` | optional KServe custom predictor image | load into `minikube` |
+| `kubeflow-by-doing/train:local` | CPU training component image | build in Docker for `k3s`; load into `kind` fallback |
+| `kubeflow-by-doing/train:gpu-local` | GPU training component image | build in Docker for `k3s` |
+| `kubeflow-by-doing/serve:local` | FastAPI serving image | build in Docker for `k3s`; load into `kind` fallback |
+| `kubeflow-by-doing/flyte-cpu:local` | optional Flyte task image | build in Docker for local Kubernetes |
+| `kubeflow-by-doing/kserve:local` | optional KServe custom predictor image | build in Docker for local Kubernetes |
 
-minikube image load examples:
+Default k3s image check examples:
 
 ```bash
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
-minikube image load kubeflow-by-doing/serve:local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
+docker images kubeflow-by-doing/serve:local
 ```
 
 Kind fallback example:
@@ -135,7 +135,7 @@ These values are intentionally simple for a disposable local tutorial cluster.
 
 Use the FAQ when local state needs cleanup:
 
-- [How to reset minikube](../14-faq/00-overview.md#how-do-i-reset-minikube)
+- [How to reset the local cluster](../14-faq/00-overview.md)
 - [How to reset Kubeflow](../14-faq/00-overview.md#how-do-i-reset-kubeflow)
 
 Use the [Verification Matrix](verification-matrix.md) after a reset to decide which checks to rerun.

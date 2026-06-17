@@ -120,7 +120,7 @@ nav:
       - Local Flyte Workflow: 12-flyte-add-on/02-local-flyte-workflow.md
       - Artifacts, Resources, and Secrets: 12-flyte-add-on/03-artifacts-resources-and-secrets.md
       - Remote Backend and Tradeoffs: 12-flyte-add-on/04-remote-backend-and-tradeoffs.md
-      - Run Flyte on minikube: 12-flyte-add-on/05-minikube-flyte-backend.md
+      - Run Flyte on k3s: 12-flyte-add-on/05-k3s-flyte-backend.md
   - 13. Optional KServe Add-On:
       - Overview: 13-kserve-add-on/00-overview.md
       - Install KServe: 13-kserve-add-on/01-install-kserve.md

@@ -43,12 +43,12 @@ uv run mkdocs build --strict
 | Component | Tutorial role | Upgrade check |
 |---|---|---|
 | `kind` | starter and CPU fallback cluster | Recreate starter cluster and rerun Chapter 1 jobs. |
-| `minikube` | default local ML/Kubeflow cluster | Check node readiness, storage provisioning, image loading, and the NVIDIA device plugin. |
+| `k3s` | default local ML/Kubeflow cluster | Check node readiness, storage provisioning, Docker image visibility, and the NVIDIA device plugin. |
 | NVIDIA driver and container runtime | GPU support | Rerun host `nvidia-smi`, Docker GPU smoke test, and Kubernetes GPU smoke test. |
 | standalone KFP manifests | local Kubeflow Pipelines backend | Reinstall in `kubeflow`, then compile and submit the starter pipeline. |
 | MinIO image | local S3-compatible object storage | Recreate bucket and rerun object-storage smoke tests. |
 | MLflow image | tracking server | Check tracking UI, experiment creation, and artifact logging. |
-| Flyte Helm chart | optional minikube-backed Flyte run | Render values, deploy, check projects, then inspect task pods. |
+| Flyte Helm chart | optional k3s-backed Flyte run | Render values, deploy, check projects, then inspect task pods. |
 | KServe | optional `InferenceService` serving layer | Check Kubernetes version, CRDs, controller pods, serving runtimes, and predictor pods. |
 
 ## Container Images
@@ -59,7 +59,7 @@ uv run mkdocs build --strict
 | `pytorch/pytorch:*cuda*` | Match CUDA support to the host driver and the locked PyTorch version. |
 | `ghcr.io/mlflow/mlflow:*` | Match server behavior to the local `mlflow` client package where practical. |
 | `quay.io/minio/minio:*` | Keep S3 API behavior compatible with `boto3` smoke tests. |
-| `nvidia/cuda:*base*` | Use a CUDA version supported by the host driver and minikube GPU setup. |
+| `nvidia/cuda:*base*` | Use a CUDA version supported by the host driver and k3s GPU setup. |
 | KServe predictor image | Keep the custom predictor image aligned with the tutorial package, `kserve` SDK, and the model checkpoint format. |
 
 When changing image tags, rerun the narrow smoke test first, then rerun the affected chapter checks.

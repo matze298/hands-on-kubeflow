@@ -125,7 +125,7 @@ promotion target
 The pipeline itself should not know whether CI runs against:
 
 ```text
-local minikube
+local k3s
 STACKIT SKE
 generic managed Kubernetes
 ```

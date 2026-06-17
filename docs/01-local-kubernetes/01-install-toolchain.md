@@ -14,7 +14,7 @@ Core tools:
 - NVIDIA driver and NVIDIA Container Toolkit
 - `kubectl`
 - `kind`
-- `minikube`
+- `k3s`
 - `helm`
 - `kustomize`
 - `uv`
@@ -182,42 +182,40 @@ Verify:
 kind version
 ```
 
-## Install `minikube` for the GPU-Capable Local Kubernetes Path on WSL2
+## Prepare `k3s` for the GPU-Capable Local Kubernetes Path on WSL2
 
 Keep `kind` available for the starter Kubernetes path and as the fallback if you do not have the GPU-capable local setup.
 
-`minikube` with the Docker driver is the tutorial's GPU-capable local ML platform on WSL2. Install it instead of trying to force GPU passthrough through the `kind` starter cluster.
+`k3s` with the Docker runtime is the tutorial's GPU-capable local ML platform on WSL2. Use it instead of trying to force GPU passthrough through the `kind` starter cluster.
 
-On Ubuntu, install the current `minikube` package:
-
-```bash
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-sudo dpkg -i minikube_latest_amd64.deb
-rm minikube_latest_amd64.deb
-```
-
-Verify:
+Before creating the cluster, raise WSL/Linux inotify limits for local Kubernetes:
 
 ```bash
-minikube version
+sudo sysctl -w fs.inotify.max_user_instances=1024
+sudo sysctl -w fs.inotify.max_user_watches=1048576
 ```
 
-Use minikube v1.32.0 or newer for the Docker-driver GPU path.
+Make the NVIDIA runtime the Docker default. This is needed because k3s uses Docker through `cri-dockerd`, and Kubernetes `RuntimeClass` handlers are not the path we rely on in this tutorial:
 
-Before using minikube for GPU workloads, verify Docker can see the GPU from inside WSL2:
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker --set-as-default
+sudo systemctl restart docker
+```
+
+Verify Docker can still see the GPU from inside WSL2:
 
 ```bash
 docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
 ```
 
-If this fails, fix Docker GPU support before creating the minikube cluster. Kubernetes GPU scheduling depends on the same runtime path.
+If this fails, fix Docker GPU support before creating the k3s cluster. Kubernetes GPU scheduling depends on the same runtime path.
 
-You do not need to create the minikube cluster yet. The next page creates a named profile with the Docker driver and GPU flags.
+You do not need to create the k3s cluster yet. The next page installs k3s with Docker runtime and verifies `nvidia.com/gpu`.
 
-For a quick client check:
+If you already have k3s installed from a previous run, a quick check is:
 
 ```bash
-minikube status -p kubeflow-gpu || true
+sudo k3s kubectl get nodes || true
 ```
 
 ## Install `helm`
@@ -291,10 +289,11 @@ nvidia-smi
 docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
 ```
 
-When you set up the GPU-capable `minikube` path:
+When you set up the GPU-capable `k3s` path:
 
 ```bash
-minikube status -p kubeflow-gpu
+sudo k3s kubectl get nodes
+sudo k3s kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 ```
 
 ## Common Problems
@@ -365,7 +364,7 @@ You installed and verified the local tooling needed to build a Kubernetes-native
 - [Ruff documentation](https://docs.astral.sh/ruff/)
 - [ty documentation](https://docs.astral.sh/ty/)
 - [kind quick start](https://kind.sigs.k8s.io/docs/user/quick-start/)
-- [minikube NVIDIA GPU tutorial](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
+- [k3s documentation](https://docs.k3s.io/)
 - [Kubernetes kubectl documentation](https://kubernetes.io/docs/reference/kubectl/)
 - [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 - [CUDA on WSL user guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
@@ -377,7 +376,6 @@ You are done when:
 - `docker run --rm hello-world` succeeds
 - `kubectl version --client` works
 - `kind version` works
-- `minikube version` works
 - `uv --version` works
 - `uv run ruff --version` works inside the repo
 - `uv run prek --version` works inside the repo

@@ -149,10 +149,10 @@ Build:
 docker build -f Dockerfile.kserve -t kubeflow-by-doing/kserve:local .
 ```
 
-Load into minikube:
+Because the tutorial k3s cluster uses the host Docker runtime, the image is available to local pods after the build. Confirm it exists:
 
 ```bash
-minikube image load kubeflow-by-doing/kserve:local -p kubeflow-gpu
+docker images kubeflow-by-doing/kserve:local
 ```
 
 ## Prepare a Model Artifact
@@ -317,7 +317,7 @@ The exact class and confidence are not important for this tutorial model. The pl
 You are done when:
 
 - `Dockerfile.kserve` builds
-- `kubeflow-by-doing/kserve:local` is available to minikube
+- `docker images kubeflow-by-doing/kserve:local` shows the local serving image
 - `tutorial-image-classifier` reaches `READY=True`
 - the predictor reads model files from MinIO
 - a prediction request returns `class_id` and `confidence`

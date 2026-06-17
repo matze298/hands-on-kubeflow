@@ -4,7 +4,7 @@
 
 Build a local, GPU-aware Kubeflow learning environment that turns a normal PyTorch workflow into a reproducible, containerized, Kubernetes-native MLOps workflow.
 
-The tutorial starts from a local Linux or WSL2 development machine with an NVIDIA GPU. Chapter 1 begins with `kind` for the first Kubernetes basics, then the core ML path uses `minikube` as the default local Kubernetes platform. The course expands later to STACKIT, cloud object storage, and CI/CD, then points to production serving and full Kubeflow platform operations as follow-up topics.
+The tutorial starts from a local Linux or WSL2 development machine with an NVIDIA GPU. Chapter 1 begins with `kind` for the first Kubernetes basics, then the core ML path uses `k3s` as the default local Kubernetes platform. The course expands later to STACKIT, cloud object storage, and CI/CD, then points to production serving and full Kubeflow platform operations as follow-up topics.
 
 This is a build-along tutorial: the chapter pages show the files, commands, and manifests to create, and the reader is expected to build the repository state while following along.
 
@@ -64,7 +64,7 @@ Install and verify:
 - NVIDIA driver and container runtime support
 - `kubectl`
 - `kind` for the starter cluster
-- `minikube` for the default GPU-capable local ML path
+- `k3s` for the default GPU-capable local ML path
 - `helm`
 - `kustomize`
 - `uv`
@@ -75,13 +75,13 @@ Install and verify:
 
 ### 1.2 Create a Local Kubernetes Cluster
 
-Create a disposable local Kubernetes cluster for the starter Kubernetes path, then switch to the GPU-capable `minikube` cluster for the ML chapters.
+Create a disposable local Kubernetes cluster for the starter Kubernetes path, then switch to the GPU-capable `k3s` cluster for the ML chapters.
 
 Focus:
 
 - cluster creation
 - namespaces
-- local image loading
+- local image availability
 - port forwarding
 - cleanup
 
@@ -318,7 +318,7 @@ Focus:
 - serving Dockerfile
 - Docker cache mounts for dependency reuse
 - local container test
-- image loading into the local cluster
+- image availability in the local cluster
 
 ### 5.3 Deploy the Server to Kubernetes
 
@@ -354,7 +354,7 @@ The hands-on KServe work appears later as an optional add-on, after the core ser
 
 ### 6.1 Confirm the GPU Path
 
-Briefly verify that the local `minikube` setup still exposes GPU resources to containers and pods.
+Briefly verify that the local `k3s` setup still exposes GPU resources to containers and pods.
 
 Focus:
 
@@ -392,7 +392,7 @@ Map local components to STACKIT services.
 ```text
 local Kubernetes        → STACKIT Kubernetes Engine
 local MinIO             → STACKIT object storage or self-hosted MinIO
-local image loading     → container registry
+local image distribution → container registry
 local GPU               → GPU node pool
 port forwarding         → ingress or load balancer
 ```
@@ -539,7 +539,7 @@ Map KFP components, pipeline functions, artifacts, and compile/run habits to Fly
 
 ### 12.2 Local Flyte Workflow
 
-Create `flyte/kbd_flyte_workflow.py`, reuse the tutorial's existing train/evaluate functions, run the workflow locally with `uv run flyte`, and prepare the task environment for a later minikube backend run.
+Create `flyte/kbd_flyte_workflow.py`, reuse the tutorial's existing train/evaluate functions, run the workflow locally with `uv run flyte`, and prepare the task environment for a later k3s backend run.
 
 ### 12.3 Artifacts, Resources, and Secrets
 
@@ -549,9 +549,9 @@ Explain why inline model payloads are only a teaching shortcut, then cover durab
 
 Explain what changes when Flyte moves from local execution to a remote backend, including Kubernetes task pods, images, artifact storage, identity, GPU scheduling, observability, CI/CD impact, and the final Flyte-vs-KFP decision.
 
-### 12.5 Run Flyte on minikube
+### 12.5 Run Flyte on k3s
 
-Install a local Flyte backend into the tutorial's `minikube` cluster, build a Flyte task image, load it into the minikube profile, deploy the Flyte environment, and submit the workflow so it runs as Kubernetes task pods.
+Install a local Flyte backend into the tutorial's `k3s` cluster, build a Flyte task image, verify the local Docker tag is available to k3s, deploy the Flyte environment, and submit the workflow so it runs as Kubernetes task pods.
 
 ## 13. KServe Add-On
 
@@ -575,6 +575,6 @@ Collect practical recovery procedures for common local tutorial problems.
 Focus:
 
 - resetting tutorial namespaces without rebuilding the whole cluster
-- hard-resetting the local `minikube` cluster when the platform itself is unhealthy
+- hard-resetting the local `k3s` cluster when the platform itself is unhealthy
 - restarting or reinstalling standalone Kubeflow Pipelines
 - linking back to the setup chapters instead of duplicating the full install flow

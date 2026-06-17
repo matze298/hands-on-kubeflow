@@ -24,7 +24,7 @@ cleanup plan
 
 | Capstone concern | Local | STACKIT |
 |---|---|---|
-| Kubernetes | minikube / kind | SKE |
+| Kubernetes | k3s / kind | SKE |
 | Images | local loading | container registry |
 | Object storage | MinIO | STACKIT Object Storage |
 | KFP | local install | SKE install |

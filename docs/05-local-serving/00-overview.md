@@ -8,7 +8,7 @@ Chapter 5 turns a promoted model into something callable.
 
 Before starting or resuming this chapter, make sure:
 
-- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- the GPU-capable `k3s` cluster is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
 - standalone Kubeflow Pipelines is installed and reachable from [Install Kubeflow Pipelines](../02-kubeflow-pipelines/01-install-kfp.md)
 - MinIO is running and the `kubeflow-by-doing` bucket exists from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md)
 - MLflow is running if you want experiment tracking in the serving path, from [Add Experiment Tracking](../04-artifacts-and-tracking/03-add-mlflow.md)
@@ -83,7 +83,7 @@ This chapter uses a deliberately simple serving setup:
 
 KServe is introduced only as a preview. The core path stays transparent and debuggable.
 
-This chapter assumes the default `minikube` local Kubernetes path. If you are still on the starter `kind` cluster, keep the serving workflow but use the `kind` image-loading commands where noted.
+This chapter assumes the default `k3s` local Kubernetes path. If you are still on the starter `kind` cluster, keep the serving workflow but use the `kind` image-loading commands where noted.
 
 ## Serving Architecture
 
@@ -136,7 +136,7 @@ You are done with Chapter 5 when:
 - `/healthz` returns a healthy response
 - `/predict` returns a class prediction
 - the serving image can be built locally
-- the serving image can be loaded into the default `minikube` cluster, or into `kind` as the fallback path
+- the serving image is available to the default `k3s` cluster, or loaded into `kind` as the fallback path
 - the model server runs inside Kubernetes
 - the service can be reached through port forwarding
 - a pipeline promotion path can update or smoke-test the served model

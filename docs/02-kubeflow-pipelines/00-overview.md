@@ -6,16 +6,16 @@ In Chapter 1, you ran Kubernetes workloads manually. In this chapter, you let Ku
 
 The goal is not to install the full Kubeflow platform yet. The goal is to install standalone Kubeflow Pipelines locally and use it to run a small ML-shaped workflow.
 
-Chapter 2 now assumes you continue on the GPU-capable `minikube` path from Chapter 1. If you are still on the starter `kind` context, switch contexts first in [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the "Create the GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections, then return here.
+Chapter 2 now assumes you continue on the GPU-capable `k3s` path from Chapter 1. If you are still on the starter `kind` context, switch contexts first in [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the "Create the GPU-Capable Local Cluster" and "Create the Tutorial Namespace" sections, then return here.
 
 ## Prerequisites
 
 Before starting or resuming this chapter, make sure:
 
-- the `kubeflow-gpu` `minikube` profile is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
-- `kubectl config current-context` reports `kubeflow-gpu`
+- the GPU-capable `k3s` cluster is running from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md)
+- `kubectl config current-context` reports `k3s-kubeflow`
 - the tutorial namespace `kubeflow-by-doing` exists from [Create the Tutorial Namespace](../01-local-kubernetes/02-create-local-cluster.md#create-the-tutorial-namespace)
-- the local toolchain from [Install the Local Toolchain](../01-local-kubernetes/01-install-toolchain.md) is available, especially `uv`, `kubectl`, and `minikube`
+- the local toolchain from [Install the Local Toolchain](../01-local-kubernetes/01-install-toolchain.md) is available, especially `uv`, `kubectl`, Docker, and k3s
 
 ## What You Will Build
 
@@ -48,7 +48,7 @@ An MLOps workflow needs more:
 
 Kubeflow Pipelines gives you this workflow layer on top of Kubernetes.
 
-The commands in this chapter still work on a CPU-only cluster if you only want the workflow mechanics. The default path from here on, however, is the GPU-capable `minikube` cluster because later PyTorch work assumes that setup.
+The commands in this chapter still work on a CPU-only cluster if you only want the workflow mechanics. The default path from here on, however, is the GPU-capable `k3s` cluster because later PyTorch work assumes that setup.
 
 ## Mental Model
 

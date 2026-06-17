@@ -80,17 +80,17 @@ docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
 
 ## Make Images Available to the Cluster
 
-### minikube
+### k3s
 
 ```bash
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
-minikube image load kubeflow-by-doing/serve:local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
+docker images kubeflow-by-doing/serve:local
 ```
 
 For the optional GPU capstone path:
 
 ```bash
-minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:gpu-local
 ```
 
 ### kind fallback

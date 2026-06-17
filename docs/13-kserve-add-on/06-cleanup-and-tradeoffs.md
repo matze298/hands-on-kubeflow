@@ -55,10 +55,10 @@ Optional local Docker cleanup:
 docker rmi kubeflow-by-doing/kserve:local
 ```
 
-minikube image cleanup is usually not necessary for a local tutorial. If disk space matters, inspect minikube images:
+Image cleanup is usually not necessary for a local tutorial. If disk space matters, inspect local Docker images:
 
 ```bash
-minikube image ls -p kubeflow-gpu | grep kubeflow-by-doing
+docker images | grep kubeflow-by-doing
 ```
 
 ## Remove KServe Itself
@@ -76,7 +76,7 @@ kubectl get crd | grep serving.kserve.io
 kubectl get namespaces
 ```
 
-For a completely clean local cluster, use the FAQ's `minikube` reset procedure instead of manually deleting every optional dependency one by one.
+For a completely clean local cluster, use the FAQ's `k3s` reset procedure instead of manually deleting every optional dependency one by one.
 
 ## What KServe Improved
 

@@ -44,20 +44,16 @@ docker build -f Dockerfile.gpu -t kubeflow-by-doing/train:gpu-local .
 
 ## Make Images Available to the Cluster
 
-### minikube
+### k3s
 
-Use the repo's chosen minikube image workflow:
+Use the repo's chosen k3s image workflow. Because k3s uses Docker as its runtime in this tutorial, locally built images are available to k3s pods:
 
 ```bash
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
-minikube image load kubeflow-by-doing/train:gpu-local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
+docker images kubeflow-by-doing/train:gpu-local
 ```
 
 Verify:
-
-```bash
-minikube image ls -p kubeflow-gpu | grep kubeflow-by-doing || true
-```
 
 ### kind fallback
 
@@ -65,7 +61,7 @@ minikube image ls -p kubeflow-gpu | grep kubeflow-by-doing || true
 kind load docker-image kubeflow-by-doing/train:local --name kubeflow-by-doing
 ```
 
-The GPU image path in this chapter is minikube-only in the default tutorial flow. If you stay on `kind`, keep using the CPU fallback run and do not expect the GPU run to work unless you have separately configured a GPU-capable `kind` cluster.
+The GPU image path in this chapter is k3s-only in the default tutorial flow. If you stay on `kind`, keep using the CPU fallback run and do not expect the GPU run to work unless you have separately configured a GPU-capable `kind` cluster.
 
 ## Compile the Pipeline
 
@@ -102,7 +98,7 @@ pipeline succeeds
 
 ## Run GPU Path
 
-This run assumes the minikube GPU-capable path from the earlier chapters.
+This run assumes the k3s GPU-capable path from the earlier chapters.
 
 Run with:
 
@@ -195,7 +191,7 @@ This is a scheduling failure. Continue to the next page.
 You are done when:
 
 - CPU fallback run succeeds
-- GPU run succeeds on minikube GPU path
+- GPU run succeeds on k3s GPU path
 - training pod for GPU run requests `nvidia.com/gpu`
 - training logs show CUDA usage
 - artifacts are still produced
@@ -205,7 +201,8 @@ You are done when:
 
 - [KFP run a pipeline](https://www.kubeflow.org/docs/components/pipelines/user-guides/core-functions/run-a-pipeline/)
 - [Kubernetes GPU scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
-- [minikube GPU add-on](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
+- [k3s documentation](https://docs.k3s.io/)
+- [NVIDIA Kubernetes device plugin](https://github.com/NVIDIA/k8s-device-plugin)
 
 ## Next Step
 

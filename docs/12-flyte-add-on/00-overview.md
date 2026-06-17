@@ -42,7 +42,7 @@ src/kubeflow_by_doing/train.py
 src/kubeflow_by_doing/evaluate.py
 ```
 
-The first version will use a small local teaching shortcut for the model handoff. Later pages explain durable Flyte files, object storage, backend tradeoffs, and a minikube-backed Flyte run.
+The first version will use a small local teaching shortcut for the model handoff. Later pages explain durable Flyte files, object storage, backend tradeoffs, and a k3s-backed Flyte run.
 
 ## Add-On Structure
 
@@ -53,9 +53,9 @@ This add-on is split into six pages:
 3. [Local Flyte Workflow](02-local-flyte-workflow.md)
 4. [Artifacts, Resources, and Secrets](03-artifacts-resources-and-secrets.md)
 5. [Remote Backend and Tradeoffs](04-remote-backend-and-tradeoffs.md)
-6. [Run Flyte on minikube](05-minikube-flyte-backend.md)
+6. [Run Flyte on k3s](05-k3s-flyte-backend.md)
 
-The order matters. Start with the concept mapping, run the local workflow, study what must change for remote execution, then run the same workflow against a minikube-hosted Flyte backend.
+The order matters. Start with the concept mapping, run the local workflow, study what must change for remote execution, then run the same workflow against a k3s-hosted Flyte backend.
 
 ## What Flyte Changes
 
@@ -94,7 +94,7 @@ Flyte is worth evaluating when these benefits matter:
 - A team can use a workflow orchestrator without adopting the entire Kubeflow platform.
 - The programming model is often approachable for Python-heavy ML teams.
 - Remote Flyte runs still map to containerized execution on a backend, so the workflow is not trapped on one laptop.
-- A minikube backend lets you evaluate Flyte with the same Kubernetes mental model used by the Kubeflow path.
+- A k3s backend lets you evaluate Flyte with the same Kubernetes mental model used by the Kubeflow path.
 
 For this tutorial, the strongest Flyte benefit is the local developer loop. You can express a workflow as normal Python tasks and run the top-level task from the repository root.
 
@@ -108,7 +108,7 @@ Flyte also adds real costs:
 - A remote Flyte backend is another platform to operate, secure, upgrade, and explain to users.
 - Artifact handling still needs durable storage once tasks run in different containers.
 - GPU scheduling, registry access, object storage, and secrets still need platform decisions.
-- A local minikube backend is more realistic than local execution, but it is also more operational work.
+- A local k3s backend is more realistic than local execution, but it is also more operational work.
 - If the organization already standardized on Kubeflow, Flyte can become another workflow dialect to support.
 
 Flyte can make workflow code cleaner. It does not remove platform engineering.
@@ -122,7 +122,7 @@ Use it when you want to answer:
 - Would this workflow be easier to express in Flyte?
 - Does local Flyte execution improve iteration speed?
 - How much of the Kubeflow course knowledge still applies?
-- Can the same Flyte workflow run as Kubernetes task pods on minikube?
+- Can the same Flyte workflow run as Kubernetes task pods on k3s?
 - What platform operations would move from KFP to Flyte?
 - Would a Flyte backend simplify or complicate our real environment?
 
@@ -137,7 +137,7 @@ Before starting this add-on, you should have completed:
 - [Artifacts and Tracking](../04-artifacts-and-tracking/00-overview.md), so artifact durability is familiar
 - [Capstone](../10-capstone/00-overview.md) or [Conclusion and Future Reading](../11-conclusion/00-overview.md), so the full Kubeflow path is visible
 
-For the local Flyte pages, no Kubernetes service needs to be running. For the minikube-backed Flyte page, restart the `kubeflow-gpu` profile from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and make sure local object storage is available from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md).
+For the local Flyte pages, no Kubernetes service needs to be running. For the k3s-backed Flyte page, restart the `k3s-kubeflow` profile from [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and make sure local object storage is available from [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md).
 
 Flyte is already included in this repository's dependencies:
 

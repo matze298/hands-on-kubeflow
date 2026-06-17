@@ -279,7 +279,7 @@ uv run pytest
 mkdir -p build
 docker build -t kubeflow-by-doing/train:local .
 docker save kubeflow-by-doing/train:local > build/train-image.tar
-minikube image load kubeflow-by-doing/train:local -p kubeflow-gpu
+docker images kubeflow-by-doing/train:local
 ```
 
 If you are using the `kind` fallback path, load the image with:

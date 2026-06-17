@@ -4,7 +4,7 @@ In this page, you create the local Kubernetes cluster used for the rest of the t
 
 We use `kind` as the starter cluster backend for the initial Kubernetes exercises.
 
-This page also shows the `minikube` Docker-driver path that becomes the GPU-capable local ML platform for the later chapters.
+This page also shows the `k3s` Docker-runtime path that becomes the GPU-capable local ML platform for the later chapters.
 
 ## What You Will Build
 
@@ -89,99 +89,88 @@ kubeflow-by-doing-worker          Ready    <none>          ...
 
 ## Create the GPU-Capable Local Cluster
 
-If you want Kubernetes pods to request `nvidia.com/gpu` locally on WSL2, use `minikube` with the Docker driver instead of trying to retrofit GPU passthrough into the `kind` starter cluster.
+If you want Kubernetes pods to request `nvidia.com/gpu` locally on WSL2, use `k3s` with Docker runtime instead of trying to retrofit GPU passthrough into the `kind` starter cluster.
 
-GPU support for Kubernetes-on-WSL2 is still something you validate on your own machine before continuing. The tutorial uses this minikube path because it starts from the Docker GPU runtime that you already checked in the toolchain page.
+GPU support for Kubernetes-on-WSL2 is still something you validate on your own machine before continuing. The tutorial uses this k3s path because it starts from the Docker GPU runtime that you already checked in the toolchain page.
 
-The start command below uses `--gpus all`. On setups that use CDI device names instead, the equivalent minikube flag is `--gpus nvidia.com`.
+The setup below uses Docker as the k3s runtime and configures Docker's default runtime as NVIDIA. That avoids relying on a Kubernetes `RuntimeClass` handler that is not supported by the Docker-backed k3s path.
 
 In practice, this path does four things:
 
-- starts a local Kubernetes cluster inside Docker
-- passes the host GPU runtime through to the minikube node
-- enables the NVIDIA device plugin when the GPU resource is not advertised yet
-- prepares the tutorial namespace on the `kubeflow-gpu` context
+- raises WSL/Linux inotify limits for local Kubernetes
+- configures Docker to use the NVIDIA runtime by default
+- installs k3s with Docker runtime
+- installs the NVIDIA device plugin and verifies a CUDA pod can request `nvidia.com/gpu`
 
-Create this file:
+The repository includes a probe script that performs the full setup and validation:
 
 ```bash
-mkdir -p infra/minikube
-cat > infra/minikube/bootstrap-gpu-cluster.sh <<'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-
-docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu24.04 nvidia-smi
-
-minikube delete -p kubeflow-gpu || true
-
-minikube start \
-  -p kubeflow-gpu \
-  --driver=docker \
-  --container-runtime=docker \
-  --gpus all \
-  --cpus=8 \
-  --memory=8192 \
-  --disk-size=80g
-
-kubectl config use-context kubeflow-gpu
-kubectl create namespace kubeflow-by-doing --dry-run=client -o yaml | kubectl apply -f -
-kubectl config set-context --current --namespace=kubeflow-by-doing
-
-kubectl get nodes -o wide
-kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
-
-if ! kubectl get nodes -o jsonpath='{range .items[*]}{.status.allocatable.nvidia\.com/gpu}{end}' | grep -q '[0-9]'; then
-  minikube addons enable nvidia-device-plugin -p kubeflow-gpu
-  kubectl rollout status daemonset/nvidia-device-plugin-daemonset -n kube-system --timeout=180s || true
-  kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
-fi
-EOF
-
-chmod +x infra/minikube/bootstrap-gpu-cluster.sh
+chmod +x infra/k3s/test-gpu-k3s.sh infra/k3s/bootstrap-gpu-cluster.sh
 ```
 
 This script:
 
 - verifies Docker GPU support with `nvidia-smi`
-- recreates a clean `kubeflow-gpu` minikube profile
-- starts minikube with the Docker driver, Docker container runtime, and `--gpus all`
-- switches the current context to `kubeflow-gpu`
-- creates the tutorial namespace and sets it as the default namespace for that context
-- enables the `nvidia-device-plugin` add-on if the node does not advertise `nvidia.com/gpu`
-
-Use the current `nvidia-device-plugin` add-on name. The old `nvidia-gpu-device-plugin` add-on name is deprecated.
+- raises inotify limits for the current system
+- configures Docker's default runtime as NVIDIA
+- reinstalls k3s with Docker runtime
+- waits for k3s networking and storage
+- installs the NVIDIA device plugin
+- verifies `nvidia.com/gpu` is allocatable
+- runs a CUDA pod that prints `nvidia-smi -L`
 
 Then bootstrap the GPU-ready cluster:
 
 ```bash
-bash infra/minikube/bootstrap-gpu-cluster.sh
+bash infra/k3s/bootstrap-gpu-cluster.sh
 ```
 
 Verify:
 
 ```bash
 kubectl config current-context
-kubectl get pods -n kube-system
-minikube addons list -p kubeflow-gpu | grep -i nvidia
-kubectl get pods -A | grep -i nvidia
-kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
+sudo k3s kubectl get pods -n kube-system
+sudo k3s kubectl get pods -A | grep -i nvidia
+sudo k3s kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
+sudo k3s kubectl logs -n gpu-smoke pod/k3s-gpu-smoke
 ```
 
 Expected result:
 
-- the current context is `kubeflow-gpu`
-- core `kube-system` pods are `Running`
-- the NVIDIA device plugin add-on is enabled or the GPU resource is already visible
-- at least one node reports a non-empty `allocatable gpu=` value
+- k3s reports one `Ready` node
+- core `kube-system` pods are `Running` or `Completed`
+- the NVIDIA device plugin is `Running`
+- at least one node reports `allocatable gpu=1` or another non-empty GPU count
+- the smoke pod logs show your NVIDIA GPU
 
-If `kube-system` is unhealthy or `allocatable gpu=` is blank, stop the GPU path here and debug the minikube setup before moving on to pod specs or Kubeflow workloads.
+If your normal `kubectl` context does not point at k3s yet, copy the kubeconfig:
+
+```bash
+mkdir -p ~/.kube
+sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-kubeflow.yaml
+sudo chown "$USER:$USER" ~/.kube/k3s-kubeflow.yaml
+export KUBECONFIG=~/.kube/k3s-kubeflow.yaml
+kubectl config rename-context default k3s-kubeflow || true
+kubectl config use-context k3s-kubeflow
+```
+
+Then create the tutorial namespace on the k3s context:
+
+```bash
+kubectl create namespace kubeflow-by-doing --dry-run=client -o yaml | kubectl apply -f -
+kubectl config set-context --current --namespace=kubeflow-by-doing
+kubectl get nodes -o wide
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
+```
+
+If `kube-system` is unhealthy or `allocatable gpu=` is blank, stop the GPU path here and debug the k3s setup before moving on to pod specs or Kubeflow workloads.
 
 ## Create the Tutorial Namespace
 
 Before creating the namespace, make sure `kubectl` points at the cluster you want to prepare:
 
 - use `kind-kubeflow-by-doing` for the starter Kubernetes path
-- use `kubeflow-gpu` for the GPU-capable ML path
+- use `k3s-kubeflow` for the GPU-capable ML path
 
 ```bash
 kubectl create namespace kubeflow-by-doing
@@ -271,7 +260,7 @@ kubectl describe resourcequota tutorial-quota
 
 If your machine has less memory, adjust the quota or skip this step.
 
-If you are working on the GPU-capable `minikube` path, apply the same namespace and quota manifests there after switching context.
+If you are working on the GPU-capable `k3s` path, apply the same namespace and quota manifests there after switching context.
 
 ## Common Problems
 
@@ -327,7 +316,7 @@ As a practical default, reserve at least:
 
 ```text
 CPU: 8 cores if possible
-Memory: 8 GiB minimum for the local minikube path, 16–32 GiB better for heavier Kubeflow workloads
+Memory: 8 GiB minimum for the local k3s path, 16–32 GiB better for heavier Kubeflow workloads
 Disk: 50+ GiB free
 ```
 
@@ -335,9 +324,9 @@ Disk: 50+ GiB free
 
 That is expected. The `kind` starter cluster is the baseline path for the Kubernetes and Kubeflow basics.
 
-If you want local Kubernetes GPU scheduling on WSL2, use the `minikube` path from this page instead of continuing to debug `kind` node runtime wiring.
+If you want local Kubernetes GPU scheduling on WSL2, use the `k3s` path from this page instead of continuing to debug `kind` node runtime wiring.
 
-### `minikube` core pods are unhealthy
+### `k3s` core pods are unhealthy
 
 Before installing Kubeflow Pipelines, make sure the cluster itself is healthy:
 
@@ -346,7 +335,86 @@ kubectl get pods -n kube-system
 kubectl get pods -A | grep -i nvidia || true
 ```
 
-If `kube-proxy`, `coredns`, or storage-related pods are in `CrashLoopBackOff`, do not continue to Chapter 2 yet.
+If `coredns`, `local-path-provisioner`, or the NVIDIA device plugin are in `CrashLoopBackOff`, do not continue to Chapter 2 yet.
+
+### `k3s` exits with `too many open files`
+
+On WSL2, k3s can fail during startup with inotify errors such as:
+
+```text
+Failed to start cAdvisor
+inotify_init: too many open files
+```
+
+Raise the inotify limits and reinstall the local cluster:
+
+```bash
+./infra/k3s/test-gpu-k3s.sh --raise-limits --configure-docker --reinstall
+```
+
+The bootstrap script uses the same limits. If you set them manually, use:
+
+```bash
+sudo sysctl -w fs.inotify.max_user_instances=1024
+sudo sysctl -w fs.inotify.max_user_watches=1048576
+```
+
+### Flannel is not ready yet
+
+If early pods report this event:
+
+```text
+failed to load flannel 'subnet.env' file: open /run/flannel/subnet.env: no such file or directory
+```
+
+wait for `kube-system` to settle before debugging the workload itself:
+
+```bash
+kubectl get pods -n kube-system
+sudo test -f /run/flannel/subnet.env && echo ready
+```
+
+The k3s test script waits for this file because GPU and device-plugin pods can be scheduled before networking is fully initialized.
+
+### NVIDIA device plugin logs `ERROR_LIBRARY_NOT_FOUND`
+
+If the device plugin crashes and logs:
+
+```text
+Failed to initialize NVML: ERROR_LIBRARY_NOT_FOUND
+If this is a GPU node, did you set the docker default runtime to `nvidia`?
+```
+
+Docker can run GPU containers, but k3s pods are not getting the NVIDIA runtime by default. Configure Docker's default runtime and restart k3s:
+
+```bash
+./infra/k3s/test-gpu-k3s.sh --raise-limits --configure-docker --reinstall
+```
+
+This is why the tutorial configures Docker with `--set-as-default` before installing k3s.
+
+### The GPU pod says `RuntimeHandler "nvidia" not supported`
+
+With k3s installed using `--docker`, the GPU pod should rely on Docker's default NVIDIA runtime. Do not add `runtimeClassName: nvidia` for this local path unless you have separately configured that handler.
+
+The smoke script uses this default:
+
+```bash
+RUNTIME_CLASS=docker-default ./infra/k3s/test-gpu-k3s.sh --skip-install
+```
+
+That omits `runtimeClassName` and lets the pod use the Docker runtime path that was already verified.
+
+### The device plugin is running, but `nvidia.com/gpu` is blank
+
+The node capacity can lag briefly after the NVIDIA device plugin starts. Check the plugin logs and wait for the kubelet registration:
+
+```bash
+kubectl logs -n kube-system -l name=nvidia-device-plugin-ds --tail=120
+kubectl describe node "$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')" | grep -A20 -E "Capacity|Allocatable"
+```
+
+If the logs show `Detected platform: wsl`, `Registered device plugin`, and the node later reports `nvidia.com/gpu: 1`, continue. If registration never appears, rerun the k3s bootstrap with Docker runtime configuration.
 
 ## Cleanup
 
@@ -359,8 +427,8 @@ kind delete cluster --name kubeflow-by-doing
 To reset the GPU-ready cluster:
 
 ```bash
-minikube delete -p kubeflow-gpu
-bash infra/minikube/bootstrap-gpu-cluster.sh
+sudo k3s-uninstall.sh
+bash infra/k3s/bootstrap-gpu-cluster.sh
 ```
 
 Do not delete it yet if you are continuing the tutorial.
@@ -371,14 +439,14 @@ You created a local Kubernetes cluster and a namespace for tutorial workloads.
 
 You also learned that local Kubernetes should be treated as disposable infrastructure.
 
-You also saw that the tutorial separates the `kind` starter baseline from the GPU-capable `minikube` path used by the later ML chapters.
+You also saw that the tutorial separates the `kind` starter baseline from the GPU-capable `k3s` path used by the later ML chapters.
 
 ## References
 
 - [kind quick start](https://kind.sigs.k8s.io/docs/user/quick-start/)
 - [kind configuration](https://kind.sigs.k8s.io/docs/user/configuration/)
-- [minikube NVIDIA GPU tutorial](https://minikube.sigs.k8s.io/docs/tutorials/nvidia_gpu/)
-- [minikube image command](https://minikube.sigs.k8s.io/docs/commands/image/)
+- [k3s documentation](https://docs.k3s.io/)
+- [NVIDIA Kubernetes device plugin](https://github.com/NVIDIA/k8s-device-plugin)
 - [Kubernetes namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Kubernetes resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
 
@@ -391,7 +459,7 @@ You are done when:
 - the default namespace is `kubeflow-by-doing`
 - `kubectl get pods -A` works
 - you know how to delete and recreate the cluster
-- if you use the GPU-ready `minikube` path, `kubectl get nodes -o jsonpath=...` shows a non-empty `nvidia.com/gpu`
+- if you use the GPU-ready `k3s` path, `kubectl get nodes -o jsonpath=...` shows a non-empty `nvidia.com/gpu`
 
 ## Next Step
 

@@ -1,6 +1,6 @@
 # Install KServe
 
-This page installs KServe into the local `minikube` cluster.
+This page installs KServe into the local `k3s` cluster.
 
 The install is optional and separate from the core path. Do not add it until the Chapter 5 serving workflow and Chapter 10 capstone are clear.
 
@@ -21,10 +21,10 @@ kserve
 
 ## Prerequisites
 
-Use the `minikube` context:
+Use the `k3s` context:
 
 ```bash
-kubectl config use-context kubeflow-gpu
+kubectl config use-context k3s-kubeflow
 kubectl config current-context
 kubectl get nodes -o wide
 ```
@@ -35,7 +35,7 @@ KServe 0.18 requires Kubernetes 1.32 or newer. Check your server version:
 kubectl version --output=json
 ```
 
-If your local `minikube` version is older than the KServe requirement, stop here and keep the KServe chapter as reading material until you upgrade the local cluster. Do not break the working core tutorial just to force this optional add-on.
+If your local `k3s` version is older than the KServe requirement, stop here and keep the KServe chapter as reading material until you upgrade the local cluster. Do not break the working core tutorial just to force this optional add-on.
 
 You also need:
 
@@ -136,7 +136,7 @@ Add a short note to `infra/kserve/README.md` after installation:
 
 - KServe: v0.18.0
 - mode: Standard
-- cluster: minikube
+- cluster: k3s
 ```
 
 This makes later debugging easier when the KServe docs or chart defaults change.
@@ -149,7 +149,7 @@ KServe may install CRDs but fail to run controllers or webhooks correctly if the
 
 Fix:
 
-- upgrade `minikube`, or
+- upgrade `k3s`, or
 - skip this optional chapter on the current machine.
 
 ### Webhook pods are not ready

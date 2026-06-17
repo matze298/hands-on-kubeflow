@@ -2,7 +2,7 @@
 
 This page collects recovery procedures that are useful when a local tutorial environment gets into a confusing state.
 
-Use the smallest reset that solves the problem. A namespace reset is usually enough for a broken tutorial service. A full `minikube` reset is a local-cluster rebuild.
+Use the smallest reset that solves the problem. A namespace reset is usually enough for a broken tutorial service. A full `k3s` reset is a local-cluster rebuild.
 
 For a compact map of what the tutorial creates, see the [Local Platform Inventory](../reference/local-platform-inventory.md). For version pins and upgrade checks, see [Version Compatibility](../reference/version-compatibility.md).
 
@@ -11,11 +11,11 @@ For a compact map of what the tutorial creates, see the [Local Platform Inventor
 Before using a reset procedure, make sure:
 
 - you know which chapter you want to resume
-- you know whether that chapter expects the `kubeflow-gpu` `minikube` profile, the `kind` fallback, or a cloud cluster
+- you know whether that chapter expects the `k3s-kubeflow` context, the `kind` fallback, or a cloud cluster
 - you have checked the relevant chapter overview for its restart prerequisites
 - you are not pointing `kubectl` at a shared or production cluster
 
-## How Do I Reset `minikube`?
+## How Do I Reset `k3s`?
 
 Start by confirming that you are looking at the tutorial cluster:
 
@@ -28,51 +28,37 @@ kubectl get namespaces
 For the default local ML path, the current context should be:
 
 ```text
-kubeflow-gpu
+k3s-kubeflow
 ```
 
-If you are still setting up the cluster, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the `minikube` bootstrap and namespace sections.
+If you are still setting up the cluster, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md), especially the `k3s` bootstrap and namespace sections.
 
 ### `kubectl` Says the Server Refused the Connection
 
-This error means `kubectl` is using a kubeconfig entry for a local API server port, but the `minikube` control plane behind that port is not running:
+This error means `kubectl` is using a kubeconfig entry for a local API server port, but the `k3s` control plane behind that port is not running:
 
 ```text
 Get "https://127.0.0.1:32771/api?timeout=32s": dial tcp 127.0.0.1:32771: connect: connection refused
 The connection to the server 127.0.0.1:32771 was refused - did you specify the right host or port?
 ```
 
-First confirm that `kubectl` is pointing at the tutorial profile and check `minikube` itself:
+First confirm that `kubectl` is pointing at the tutorial context and check the `k3s` service:
 
 ```bash
 kubectl config current-context
-minikube status -p kubeflow-gpu
+sudo systemctl status k3s --no-pager
 ```
 
-If the context is `kubeflow-gpu` but `minikube status` reports `host: Stopped`, `kubelet: Stopped`, or `apiserver: Stopped`, restart the profile:
+If the context is `k3s-kubeflow` but the service is stopped or the API server refuses connections, restart the tutorial cluster setup:
 
 ```bash
-minikube start \
-  -p kubeflow-gpu \
-  --driver=docker \
-  --container-runtime=docker \
-  --gpus all \
-  --cpus=8 \
-  --memory=8192 \
-  --disk-size=80g
+bash infra/k3s/bootstrap-gpu-cluster.sh
 ```
 
-If `minikube` still reports that the requested memory is above your system limit, use the largest value your WSL2/Docker environment can actually allocate, for example:
+If the service still fails early with `too many open files` or inotify errors, raise the WSL2 inotify limits and rebuild:
 
 ```bash
-minikube start \
-  -p kubeflow-gpu \
-  --driver=docker \
-  --container-runtime=docker \
-  --gpus all \
-  --cpus=8 \
-  --memory=6144 \
-  --disk-size=80g
+./infra/k3s/test-gpu-k3s.sh --raise-limits --configure-docker --reinstall
 ```
 
 After the profile starts, restore the tutorial namespace on the current context:
@@ -95,7 +81,7 @@ kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu=
 Use this when Kubernetes itself is healthy but the tutorial workloads are stale, partially installed, or no longer match the chapter you are following.
 
 ```bash
-kubectl config use-context kubeflow-gpu
+kubectl config use-context k3s-kubeflow
 kubectl delete namespace kubeflow-by-doing --ignore-not-found
 kubectl delete namespace kubeflow --ignore-not-found
 kubectl delete namespace minio --ignore-not-found
@@ -114,24 +100,35 @@ After this reset, reinstall only the pieces needed by your current chapter:
 - [Install Local Object Storage](../04-artifacts-and-tracking/01-install-minio.md)
 - [Add Experiment Tracking](../04-artifacts-and-tracking/03-add-mlflow.md)
 
-### Hard Reset the `minikube` Cluster
+### Hard Reset the `k3s` Cluster
 
 Use this when core cluster pods are unhealthy, GPU addon state is broken, storage is inconsistent, or you want a clean local cluster.
 
 !!! warning
 
-    This deletes workloads and cluster state from the local `minikube` cluster. Do not run it against a shared or non-tutorial cluster.
+    This deletes workloads and cluster state from the local `k3s` cluster. Do not run it against a shared or non-tutorial cluster.
 
 Stop local port forwards first, then run:
 
 ```bash
-minikube delete -p kubeflow-gpu
+sudo k3s-uninstall.sh
 ```
 
 Rebuild the tutorial cluster setup from Chapter 1:
 
 ```bash
-bash infra/minikube/bootstrap-gpu-cluster.sh
+bash infra/k3s/bootstrap-gpu-cluster.sh
+```
+
+Refresh the user kubeconfig after every k3s reinstall. The old copied kubeconfig can contain stale certificates or server data from the deleted cluster:
+
+```bash
+mkdir -p ~/.kube
+sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-kubeflow.yaml
+sudo chown "$USER:" ~/.kube/k3s-kubeflow.yaml
+export KUBECONFIG=~/.kube/k3s-kubeflow.yaml
+kubectl config rename-context default k3s-kubeflow || true
+kubectl config use-context k3s-kubeflow
 ```
 
 Verify the cluster before reinstalling Kubeflow components:
@@ -140,11 +137,25 @@ Verify the cluster before reinstalling Kubeflow components:
 kubectl get nodes -o wide
 kubectl get pods -n kube-system
 kubectl get pods -A | grep -i nvidia || true
-minikube addons list -p kubeflow-gpu | grep -i nvidia
 kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" capacity gpu="}{.status.capacity.nvidia\.com/gpu}{" allocatable gpu="}{.status.allocatable.nvidia\.com/gpu}{"\n"}{end}'
 ```
 
-If GPU allocatable is empty, stay in Chapter 1 and fix the `minikube` GPU path before continuing to Kubeflow Pipelines.
+If GPU allocatable is empty, stay in Chapter 1 and fix the `k3s` GPU path before continuing to Kubeflow Pipelines.
+
+## Which k3s GPU Setup Error Did I Hit?
+
+These are the local WSL2/k3s failure modes this tutorial path is designed around.
+
+| Symptom | What it usually means | Fix |
+|---|---|---|
+| `inotify_init: too many open files` or `Failed to start cAdvisor` | WSL/Linux inotify limits are too low for local Kubernetes. | Run `./infra/k3s/test-gpu-k3s.sh --raise-limits --configure-docker --reinstall`. |
+| `failed to load flannel 'subnet.env'` | k3s networking is not fully initialized yet. | Wait for `kube-system` and `/run/flannel/subnet.env`; the k3s test script does this before running the GPU pod. |
+| NVIDIA device plugin logs `Failed to initialize NVML: ERROR_LIBRARY_NOT_FOUND` | Docker can see the GPU, but Kubernetes pods are not getting the NVIDIA runtime. | Configure Docker's default runtime with `--configure-docker`, then reinstall or restart k3s. |
+| Node shows no `nvidia.com/gpu`, but the device plugin pod is running | Device-plugin registration may still be settling, or the plugin cannot see NVML. | Check `kubectl logs -n kube-system -l name=nvidia-device-plugin-ds --tail=120` and `kubectl describe node ...`; rerun the bootstrap if it never registers. |
+| GPU pod event says `RuntimeHandler "nvidia" not supported` | The Docker-backed k3s path is not using a Kubernetes `RuntimeClass` handler. | Omit `runtimeClassName`; rely on Docker's default NVIDIA runtime. |
+| Kubeflow storage pods stay `Pending` with unbound PVCs on the old local setup | The previous local cluster path could fail before Kubeflow had working storage. | Use the k3s path and verify the default `local-path` storage class before installing KFP. |
+
+For the detailed commands and expected outputs, return to [Create a Local Kubernetes Cluster](../01-local-kubernetes/02-create-local-cluster.md) and [GPU Smoke Test](../01-local-kubernetes/05-gpu-smoke-test.md).
 
 ## How Do I Reset Kubeflow?
 
@@ -158,10 +169,10 @@ kubectl get pods -n kubeflow
 kubectl get events -n kubeflow --sort-by=.lastTimestamp
 ```
 
-If the current context is not `kubeflow-gpu`, switch back before resetting local KFP:
+If the current context is not `k3s-kubeflow`, switch back before resetting local KFP:
 
 ```bash
-kubectl config use-context kubeflow-gpu
+kubectl config use-context k3s-kubeflow
 ```
 
 ### Restart KFP Pods
@@ -220,14 +231,14 @@ Do not delete object storage just to fix the KFP UI. Delete MinIO only when you 
 | KFP manifest install failed halfway | reinstall standalone KFP |
 | `kubeflow-by-doing` workloads are stale | soft reset tutorial workloads |
 | MinIO or MLflow data is wrong | reset that chapter's namespace or manifests deliberately |
-| `kube-system` pods are broken | hard reset `minikube` |
-| GPU resources disappeared | verify Chapter 1 GPU setup, then hard reset `minikube` if needed |
+| `kube-system` pods are broken | hard reset `k3s` |
+| GPU resources disappeared | verify Chapter 1 GPU setup, then hard reset `k3s` if needed |
 
 ## Acceptance Criteria
 
 You are done when:
 
-- `kubectl config current-context` is `kubeflow-gpu`
+- `kubectl config current-context` is `k3s-kubeflow`
 - `kubectl get nodes` shows ready nodes
 - `kubectl get pods -n kube-system` has no unexpected `CrashLoopBackOff` pods
 - `kubectl get namespace kubeflow-by-doing` succeeds
