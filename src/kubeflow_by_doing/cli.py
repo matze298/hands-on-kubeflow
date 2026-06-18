@@ -22,6 +22,8 @@ def train_model(  # noqa: PLR0913, PLR0917
     n_train: int = typer.Option(256, help="Number of synthetic training samples."),
     n_val: int = typer.Option(64, help="Number of synthetic validation samples."),
     batch_size: int = typer.Option(32, help="Batch size."),
+    run_id: str | None = (typer.Option(None, help="Run ID used for artifact layout.")),
+    upload_artifacts: bool = (typer.Option(False, help="Upload artifacts to object storage.")),  # noqa: FBT001, FBT003
 ) -> None:
     """Trains a model."""
     rprint(
@@ -34,6 +36,8 @@ def train_model(  # noqa: PLR0913, PLR0917
             n_train=n_train,
             n_val=n_val,
             batch_size=batch_size,
+            run_id=run_id,
+            upload_artifacts=upload_artifacts,
         )
     )
 
@@ -47,6 +51,8 @@ def evaluate_model(  # noqa: PLR0913, PLR0917
     n_train: int = typer.Option(256, help="Number of synthetic training samples."),
     n_val: int = typer.Option(64, help="Number of synthetic validation samples."),
     batch_size: int = typer.Option(32, help="Batch size."),
+    run_id: str | None = (typer.Option(None, help="Run ID used for artifact layout.")),
+    upload_artifacts: bool = (typer.Option(False, help="Upload artifacts to object storage.")),  # noqa: FBT001, FBT003
 ) -> None:
     """Evaluates a model."""
     rprint(
@@ -58,6 +64,8 @@ def evaluate_model(  # noqa: PLR0913, PLR0917
             n_train=n_train,
             n_val=n_val,
             batch_size=batch_size,
+            run_id=run_id,
+            upload_artifacts=upload_artifacts,
         )
     )
 

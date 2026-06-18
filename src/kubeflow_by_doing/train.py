@@ -2,7 +2,7 @@
 
 import json
 import random
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import torch
 from torch import nn
@@ -10,6 +10,7 @@ from torch.optim import Adam
 
 from kubeflow_by_doing.data import DatasetConfig, make_dataloaders
 from kubeflow_by_doing.model import TinyImageClassifier
+from kubeflow_by_doing.storage import ObjectStorageConfig, ensure_bucket, run_prefix, upload_directory
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -47,7 +48,9 @@ def train(  # noqa:PLR0913
     n_train: int = 256,
     n_val: int = 64,
     batch_size: int = 32,
-) -> dict[str, float | int | str]:
+    run_id: str | None = None,
+    upload_artifacts: bool = False,
+) -> dict[str, float | int | str | list[str]]:
     """Trains the model.
 
     Returns:
@@ -91,7 +94,7 @@ def train(  # noqa:PLR0913
         output_dir / "model.pt",
     )
 
-    summary: dict[str, float | int | str] = {
+    summary: dict[str, Any] = {
         "epochs": epochs,
         "learning_rate": learning_rate,
         "seed": seed,
@@ -101,5 +104,23 @@ def train(  # noqa:PLR0913
         "device": str(torch_device),
         "last_train_loss": last_loss,
     }
+
+    if upload_artifacts:
+        if run_id is None:
+            msg = "run_id is required when upload_artifacts=True"
+            raise ValueError(msg)
+
+        storage_config = ObjectStorageConfig.from_env()
+        ensure_bucket(storage_config)
+
+        prefix = f"{run_prefix(run_id)}/models"
+
+        uploaded_uris = upload_directory(local_dir=output_dir, prefix=prefix, config=storage_config)
+
+        summary["model_artifact_prefix"] = f"s3://{storage_config.bucket}/{prefix}"
+        summary["uploaded_artifacts"] = uploaded_uris
+
+    # Dump summary
     (output_dir / "train_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
     return summary

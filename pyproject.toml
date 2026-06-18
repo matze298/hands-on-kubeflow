@@ -5,6 +5,7 @@ description = "Local-first Kubeflow tutorial project."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "boto3>=1.43.33",
     "flyte[tui]>=2.4.4",
     "kfp>=2.16.1",
     "rich>=15.0.0",

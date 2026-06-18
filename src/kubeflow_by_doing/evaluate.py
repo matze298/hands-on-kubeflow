@@ -7,13 +7,14 @@ import torch
 
 from kubeflow_by_doing.data import DatasetConfig, make_dataloaders
 from kubeflow_by_doing.model import TinyImageClassifier
+from kubeflow_by_doing.storage import ObjectStorageConfig, ensure_bucket, run_prefix, upload_file
 from kubeflow_by_doing.train import select_device, set_seed
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 
-def evaluate(  # noqa:PLR0913
+def evaluate(  # noqa:PLR0913, PLR0914
     *,
     model_dir: Path,
     metrics_path: Path,
@@ -22,6 +23,8 @@ def evaluate(  # noqa:PLR0913
     n_train: int = 256,
     n_val: int = 64,
     batch_size: int = 32,
+    run_id: str | None = None,
+    upload_artifacts: bool = False,
 ) -> dict[str, float | int | str]:
     """Evaluates a trained model.
 
@@ -30,6 +33,7 @@ def evaluate(  # noqa:PLR0913
 
     Raises:
         FileNotFoundError: If the model artifact is not found.
+        ValueError: If artifacts are uploaded, but run_id is not set.
     """
     set_seed(seed)
 
@@ -73,4 +77,18 @@ def evaluate(  # noqa:PLR0913
     }
     metrics_path.parent.mkdir(parents=True, exist_ok=True)
     metrics_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+
+    if upload_artifacts:
+        if run_id is None:
+            msg = "run_id is required when upload_artifacts=True"
+            raise ValueError(msg)
+
+        storage_config = ObjectStorageConfig.from_env()
+        ensure_bucket(storage_config)
+
+        key = f"{run_prefix(run_id)}/metrics/{metrics_path.name}"
+        metrics_uri = upload_file(local_path=metrics_path, key=key, config=storage_config)
+
+        metrics["metrics_uri"] = metrics_uri
+
     return metrics
