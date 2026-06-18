@@ -52,6 +52,12 @@ ENTRYPOINT ["uv", "run", "kbd"]
 
     Keep the PyTorch/CUDA image tag aligned with the local NVIDIA driver and the PyTorch version in `uv.lock`. When upgrading PyTorch, CUDA, or the NVIDIA driver, update this tag intentionally and rerun the Docker and Kubernetes GPU smoke tests before continuing.
 
+!!! note "Avoiding duplicate Torch downloads"
+
+    This Dockerfile remains lockfile-driven: `uv sync` installs the packages recorded in `uv.lock`. If the PyTorch base image does not exactly match the locked Torch environment, `uv` may download Torch and CUDA-related wheels again.
+
+    The faster alternative is to use a PyTorch runtime image whose Torch, Python, CUDA, and cuDNN versions match this project's dependencies, set `uv` to install into that environment, and skip reinstalling `torch`. Only use that route when such a base image exists for the dependency combination you need. If no viable base image exists, the lockfile-driven approach is slower on the first build but more flexible.
+
 `# syntax=docker/dockerfile:1.7` enables the Dockerfile features used below, including the `RUN --mount=type=cache` cache mount.
 
 ## Add a CUDA Check Command

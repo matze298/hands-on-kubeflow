@@ -78,6 +78,12 @@ This keeps the image invocation model simple and keeps dependency downloads in a
 - `docker run ... train-model ...` expands to `uv run kbd train-model ...`
 - KFP container components can reuse the image entrypoint and pass only CLI arguments
 
+!!! note "Torch download size"
+
+    PyTorch wheels can be large, especially on Linux where the locked package may include CUDA runtime dependencies such as cuDNN, cuBLAS, NCCL, and Triton. The Dockerfile above keeps the Python environment fully lockfile-driven, which is flexible when changing Python or PyTorch versions, but the first uncached build can spend a long time downloading Torch packages.
+
+    A faster alternative is to start from a PyTorch runtime base image whose Torch, Python, CUDA, and cuDNN versions match this project's dependencies, then configure `uv` to install into that environment and skip reinstalling `torch`. Only use that route when a viable base image exists for the dependency combination you need. Otherwise, keep the lockfile-driven `python:3.14-slim` build and let BuildKit cache the downloads.
+
 ## Build the Image
 
 ```bash
