@@ -123,15 +123,31 @@ curl -sfL https://get.k3s.io | sudo env INSTALL_K3S_EXEC="--docker --write-kubec
 bash infra/k3s/deploy_cluster.sh
 ```
 
-`deploy_cluster.sh` refreshes the user kubeconfig after every k3s reinstall. If you need to do that step manually, copy the new k3s kubeconfig before using `kubectl`:
+`deploy_cluster.sh` refreshes the user kubeconfig after every k3s reinstall and merges the `k3s-kubeflow` context into the normal `~/.kube/config`. If you need to do that step manually, export the k3s kubeconfig into a temporary file and merge it before using `kubectl`:
 
 ```bash
 mkdir -p ~/.kube
-sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/k3s-kubeflow.yaml
-sudo chown "$USER:" ~/.kube/k3s-kubeflow.yaml
-export KUBECONFIG=~/.kube/k3s-kubeflow.yaml
-kubectl config rename-context default k3s-kubeflow || true
+source_kubeconfig="$(mktemp)"
+merged_kubeconfig="$(mktemp)"
+sudo k3s kubectl config view --raw --flatten > "${source_kubeconfig}"
+sed -i \
+  -e "s/name: default/name: k3s-kubeflow/g" \
+  -e "s/cluster: default/cluster: k3s-kubeflow/g" \
+  -e "s/user: default/user: k3s-kubeflow/g" \
+  -e "s/current-context: default/current-context: k3s-kubeflow/g" \
+  "${source_kubeconfig}"
+if [ -f "$HOME/.kube/config" ]; then
+  export KUBECONFIG="${source_kubeconfig}:$HOME/.kube/config"
+else
+  export KUBECONFIG="${source_kubeconfig}"
+fi
+kubectl config view --flatten > "${merged_kubeconfig}"
+mv "${merged_kubeconfig}" ~/.kube/config
+chmod 600 ~/.kube/config
+export KUBECONFIG="$HOME/.kube/config"
 kubectl config use-context k3s-kubeflow
+kubectl config set-context --current --namespace=kubeflow-by-doing
+rm -f "${source_kubeconfig}"
 ```
 
 Verify the cluster before reinstalling Kubeflow components:
