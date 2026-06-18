@@ -12,8 +12,18 @@ infra/minio/
 ├── secret.yaml
 ├── pvc.yaml
 ├── deployment.yaml
-└── service.yaml
+├── service.yaml
+└── app-secret.yaml
 ```
+
+Each file has one job:
+
+- `namespace.yaml` creates the `minio` namespace for the local object-storage service.
+- `secret.yaml` stores the MinIO root username and password used by the MinIO server and console.
+- `pvc.yaml` requests persistent disk space for MinIO data.
+- `deployment.yaml` runs the MinIO server pod and mounts the persistent volume at `/data`.
+- `service.yaml` gives MinIO a stable in-cluster address for the S3 API and web console.
+- `app-secret.yaml` gives tutorial pipeline pods the S3-compatible endpoint, bucket name, and credentials they need to write artifacts.
 
 Then you will create a bucket:
 
