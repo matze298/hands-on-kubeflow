@@ -24,6 +24,8 @@ pydocstyle.convention = "google"
 [lint.per-file-ignores]
 "setup.py" = ["PLC0415", "S404", "S603"]
 "components/**.py" = [
+    "E402", # Kubeflow component modules need local imports for containerized execution
+    "PLC0415", # Kubeflow component functions need runtime-local imports for containerized execution
     "TC002", # kubeflow pipelines dsl needs to be imported without type checking to work correctly
 ]
 "tests/**.py" = [

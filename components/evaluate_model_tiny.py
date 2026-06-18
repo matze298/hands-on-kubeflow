@@ -10,8 +10,8 @@ def evaluate_model(
     metrics: Output[Metrics],
 ) -> None:
     """Evaluates the model."""
-    import json  # noqa: PLC0415
-    from pathlib import Path  # noqa: PLC0415
+    import json
+    from pathlib import Path
 
     model_path: Path = Path(model.path) / "model.json"
     model_data = json.loads(model_path.read_text(encoding="utf-8"))

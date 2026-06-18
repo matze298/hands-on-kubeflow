@@ -7,9 +7,9 @@ from kfp.dsl.component_decorator import component
 @component(base_image="python:3.12-slim")
 def generate_dataset(dataset: Output[Dataset], n_samples: int = 100) -> None:
     """Generates a dataset."""
-    import json  # noqa: PLC0415
-    import random  # noqa: PLC0415
-    from pathlib import Path  # noqa: PLC0415
+    import json
+    import random
+    from pathlib import Path
 
     path = Path(dataset.path)
     path.mkdir(parents=True, exist_ok=True)

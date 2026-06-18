@@ -50,12 +50,12 @@ from kfp.dsl.types.type_annotations import Input, Output
 
 
 @component(base_image="python:3.12-slim")
-def read_accuracy(metrics_path: str) -> float:
+def read_accuracy(metrics: Input[Artifact]) -> float:
     from pathlib import Path
     import json
 
-    metrics = json.loads(Path(metrics_path).read_text(encoding="utf-8"))
-    return float(metrics["accuracy"])
+    metrics_data = json.loads(Path(metrics.path).read_text(encoding="utf-8"))
+    return float(metrics_data["accuracy"])
 
 
 @component(base_image="python:3.12-slim")
@@ -130,7 +130,7 @@ def image_classification_pipeline(  # noqa: PLR0913, PLR0917
         batch_size=batch_size,
     )
 
-    accuracy_task = read_accuracy(metrics_path=evaluate_task.outputs["metrics_artifact"])
+    accuracy_task = read_accuracy(metrics=evaluate_task.outputs["metrics_artifact"])
 
     with If(accuracy_task.output >= min_accuracy):
         promote_model(

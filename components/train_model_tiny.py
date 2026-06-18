@@ -11,8 +11,8 @@ def train_model(
     learning_rate: float = 0.01,
 ) -> None:
     """Trains a model."""
-    import json  # noqa: PLC0415
-    from pathlib import Path  # noqa: PLC0415
+    import json
+    from pathlib import Path
 
     data_path = Path(dataset.path) / "data.json"
     samples = json.loads(data_path.read_text(encoding="utf-8"))
